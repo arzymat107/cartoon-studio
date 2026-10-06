@@ -19,7 +19,11 @@ picker.addEventListener('change', () => {
 await loadSounds();
 
 const stageFrame = document.querySelector<HTMLElement>('#stage')!;
-const stage = new Stage(stageFrame, { width: 1920, height: 1080, background: '#111' });
+const width = episode.width ?? 1920;
+const height = episode.height ?? 1080;
+stageFrame.style.aspectRatio = `${width} / ${height}`;
+stageFrame.classList.toggle('portrait', height > width);
+const stage = new Stage(stageFrame, { width, height, background: '#111' });
 const movie = new Movie(stage, episode);
 audio.attach(movie);
 new Player(document.querySelector('#player')!, movie);
@@ -32,9 +36,12 @@ for (const type of ['pointerdown', 'keydown'] as const) {
 if (params.has('export')) {
   // Driven by scripts/export-video.mjs: UI hidden, stage fills the viewport.
   document.body.classList.add('export-mode');
-  movie.seek(0);
+  // ?export&t=12 shows a clean full-size frame – handy for YouTube thumbnails.
+  movie.seek(Number(params.get('t') ?? 0));
   Object.assign(window, {
     exporter: {
+      width,
+      height,
       duration: movie.duration,
       seek: (time: number) => movie.seek(time),
       /** Whole soundtrack as a base64 WAV. */

@@ -1,7 +1,8 @@
 /**
  * Renders an episode to an MP4 video with sound (ready for YouTube).
  *
- *   npm run export                          → exports/demo.mp4 (1920×1080, 30 fps)
+ *   npm run export                          → exports/demo.mp4 (episode's size, 30 fps)
+ *   npm run export -- --episode football    → exports/football.mp4 (vertical 1080×1920)
  *   npm run export -- --episode demo --fps 60 --out exports/my-cartoon.mp4
  *
  * How it works: a headless browser (your installed Edge or Chrome) opens the cartoon in
@@ -26,8 +27,6 @@ const option = (name, fallback) => {
 const episode = option('episode', 'demo');
 const fps = Number(option('fps', 30));
 const out = resolve(root, option('out', `exports/${episode}.mp4`));
-const WIDTH = 1920;
-const HEIGHT = 1080;
 
 const server = await createServer({ root, logLevel: 'warn', server: { port: 0, strictPort: false } });
 await server.listen();
@@ -36,15 +35,20 @@ const baseUrl = server.resolvedUrls.local[0];
 const browser = await launchBrowser();
 const wavPath = join(tmpdir(), `cartoon-audio-${process.pid}.wav`);
 try {
-  const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
   page.on('pageerror', (error) => console.error('page error:', error.message));
   await page.goto(`${baseUrl}?export&episode=${encodeURIComponent(episode)}`);
   await page.waitForFunction(() => 'exporter' in window, null, { timeout: 60_000 });
   await page.evaluate(() => document.fonts.ready);
 
-  const duration = await page.evaluate(() => window.exporter.duration);
+  // The episode decides the frame size (landscape or vertical).
+  const { width, height, duration } = await page.evaluate(() => {
+    const { width, height, duration } = window.exporter;
+    return { width, height, duration };
+  });
+  await page.setViewportSize({ width, height });
   const frames = Math.ceil(duration * fps) + 1;
-  console.log(`episode "${episode}": ${duration.toFixed(1)} s, ${frames} frames at ${fps} fps`);
+  console.log(`episode "${episode}": ${width}×${height}, ${duration.toFixed(1)} s, ${frames} frames at ${fps} fps`);
 
   console.log('rendering sound…');
   const wavBase64 = await page.evaluate(() => window.exporter.renderAudio());

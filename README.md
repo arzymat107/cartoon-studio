@@ -196,6 +196,65 @@ Windows' built-in voices still work with `"engine": "windows"` (see the comment 
 You can also record real voices with any recorder (Audacity is free, or use your phone) and save them
 in the same folder. A real voice actor sounds much better than text-to-speech.
 
+## Football kit
+
+Components (`src/components/sport/`):
+
+| Component | What it is |
+| --- | --- |
+| `Footballer` | Character in a kit: shirt (optional stripes and trim), number, shorts, socks, boots |
+| `Referee` | Footballer in black with a whistle and hidden yellow and red cards |
+| `Ball` | Ball with a ground shadow (`x` = along the ground, `body` = height and spin) |
+| `Goal` | Side-view goal whose `net` can shake |
+| `Stands`, `Pitch`, `AdBoards` | Crowd (rows can jump), striped grass, touchline boards |
+| `Scoreboard` | TV score bug; `tl.add(scoreboard.setScore('home', 1), 'goal')` |
+
+Animations (`src/animations/football.ts`): `shoot` (kick and ball flight), `flight` (true parabola),
+`bounce`, `roll`, `shakeNet`, `celebrate`, `handsOnHead`, `flop` / `getUp`, `showCard`,
+`crowdCheer`, `crowdGroan`, `crowdIdle`, `crowdMurmur`. Sounds: `synth.kick`, `clang`, `swish`,
+`whistle`, `cheer`, `groan`, `murmur`.
+
+Every `Character` now supports caricature options: `headScale`, `beard`, `hairStyle: 'quiff'`,
+`sleeves: 'short'` and `legWear: 'shorts'` with `socks`.
+
+**Detailed faces.** Pass `face` for a more realistic head: a shaped jaw, eyes with irises, eyebrows,
+nose, lips, layered hair and beards. Without it you get the simple round cartoon face.
+
+```ts
+new Footballer({
+  kit, beard: '#5a3a22',
+  face: { width: 39, height: 48, jaw: 26, eyeColor: '#5b3a1e', browTilt: -1.5, nose: 'straight' },
+});
+```
+
+Options: `width`, `height`, `jaw`, `chin` (face shape), `eyeColor`, `browColor`, `browWeight`,
+`browTilt` (+ confident, − kind or worried), `nose` (`small` | `straight` | `broad`), `lips`,
+`cheekbones`, `stubble`. The eyebrows are their own actor (`char.brows`), so you can raise them for surprise.
+
+**Shot types.** `flight()` and `shoot()` draw an arc when given a `peak` (lob, chip, cross) and
+a straight line with `straight: true` (driven shot):
+`shoot(player, ball, { toX: goal.x + 95, land: 330, straight: true, duration: 0.55 })`.
+
+**Thumbnails.** Open `?episode=football&export&t=23.4` for a clean, full-size frame at any moment,
+then take a screenshot for the YouTube thumbnail.
+
+The `football` episode (`?episode=football`) is a vertical Short with caricatures of two famous
+players. The cast is in `src/episodes/football/cast.ts` and the night stadium set in `stadium.ts`.
+
+**Parody rules for real people.** Use only colors and numbers (no crests, logos or sponsors), give
+them generic voices (never clone a real voice), keep the "animated parody" notice on screen, and keep
+the jokes about football, never about private life, injuries or origin.
+
+## Vertical videos (Shorts, TikTok, Reels)
+
+Give an episode a size in `src/episodes/index.ts`:
+
+```ts
+football: { title: '…', width: 1080, height: 1920, scenes: [...] },
+```
+
+The player shows it upright, and `npm run export -- --episode football` renders a 1080×1920 MP4.
+
 ## Export a video (MP4)
 
 ```
@@ -220,7 +279,6 @@ not committed to git.
 ## Roadmap ideas
 
 - **Lip-sync:** generate real mouth shapes from recorded voices with [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync) instead of simple open/close flapping.
-- **Vertical export** (9:16) for YouTube Shorts and TikTok: a second camera framing per scene.
 - **Shape morphing and paths:** GSAP MorphSVGPlugin for facial expressions, MotionPathPlugin for flying objects.
 - **More rigs:** animals, vehicles, and a Character with elbows and knees (two-segment limbs).
 - **Heavy scenes** (thousands of particles): add a PixiJS (WebGL) layer behind the SVG.

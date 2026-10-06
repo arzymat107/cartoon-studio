@@ -8,6 +8,9 @@ export type SceneClass = new (stage: Stage) => Scene;
 export interface Episode {
   title: string;
   scenes: SceneClass[];
+  /** Frame size. Default 1920×1080 (YouTube); use 1080×1920 for Shorts / TikTok / Reels. */
+  width?: number;
+  height?: number;
 }
 
 export interface Chapter {

@@ -1,12 +1,21 @@
 {
   "characters": {
     "bob": { "engine": "kokoro", "voice": "am_puck", "speed": 1 },
-    "alice": { "engine": "kokoro", "voice": "af_heart", "speed": 1.05 }
+    "alice": { "engine": "kokoro", "voice": "af_heart", "speed": 1.05 },
+    "messi": { "engine": "kokoro", "voice": "am_michael", "speed": 0.95 },
+    "ronaldo": { "engine": "kokoro", "voice": "am_fenrir", "speed": 1.05 },
+    "referee": { "engine": "kokoro", "voice": "bm_george", "speed": 1 }
   },
   "lines": [
     { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
     { "id": "alice-hi-bob", "character": "alice", "text": "Hi Bob! What a lovely day!" },
     { "id": "bob-lets-celebrate", "character": "bob", "text": "Let's celebrate!" },
-    { "id": "alice-yay", "character": "alice", "text": "Yaaay!" }
+    { "id": "alice-yay", "character": "alice", "text": "Yaaay!" },
+
+    { "id": "ronaldo-challenge", "character": "ronaldo", "text": "Free kick contest. Loser buys dinner!" },
+    { "id": "messi-okay", "character": "messi", "text": "Okay." },
+    { "id": "ronaldo-crossbar", "character": "ronaldo", "text": "Who moved the crossbar?!" },
+    { "id": "referee-card", "character": "referee", "text": "Yellow card. Too dramatic!" },
+    { "id": "messi-dinner", "character": "messi", "text": "Dinner is on you." }
   ]
 }

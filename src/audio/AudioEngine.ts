@@ -34,6 +34,8 @@ export class AudioEngine {
   private readonly clips: ClipInstance[] = [];
   private _muted = false;
   private offline: OfflineRender | null = null;
+  /** Synthesized sounds still playing, so they can be cut off on pause or seek. */
+  private readonly playing = new Set<AudioScheduledSourceNode>();
 
   /** Web Audio context, created on first use (the offline context while exporting). */
   get context(): BaseAudioContext {
@@ -86,6 +88,13 @@ export class AudioEngine {
 
   addClip(clip: ClipInstance): void {
     this.clips.push(clip);
+  }
+
+  /** Register a synthesized sound so it stops when playback pauses. */
+  track(node: AudioScheduledSourceNode): void {
+    if (this.offline) return;
+    this.playing.add(node);
+    node.addEventListener('ended', () => this.playing.delete(node));
   }
 
   /**
@@ -142,6 +151,13 @@ export class AudioEngine {
   private sync(): void {
     const playing = !!this.movie?.playing;
     const speed = this.movie?.speed ?? 1;
+
+    if (!playing && this.playing.size) {
+      for (const node of this.playing) {
+        try { node.stop(); } catch { /* already stopped */ }
+      }
+      this.playing.clear();
+    }
 
     for (const clip of this.clips) {
       const { element, marker } = clip;

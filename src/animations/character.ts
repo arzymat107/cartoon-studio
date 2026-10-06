@@ -138,7 +138,7 @@ export interface SayOptions {
   duration?: number;
   /** Extra reading time after talking stops. */
   hold?: number;
-  /** Bubble height above the feet (multiplied by the character's scale). */
+  /** Bubble height above the feet, before the character's scale. Default: just above the head. */
   offsetY?: number;
   offsetX?: number;
 }
@@ -146,7 +146,7 @@ export interface SayOptions {
 /** Pop a speech bubble above the character (wherever it is at that moment) and talk. */
 export function say(
   char: Character, bubble: SpeechBubble,
-  { voice, duration = 2, hold = 0.6, offsetY = 275, offsetX = 0 }: SayOptions = {},
+  { voice, duration = 2, hold = 0.6, offsetY = char.height + 15, offsetX = 0 }: SayOptions = {},
 ): Timeline {
   const recording = voice !== undefined ? soundDuration(voice) : undefined;
   const talkTime = recording ?? duration;
