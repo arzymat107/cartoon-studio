@@ -1,14 +1,24 @@
 /**
- * Generates voice lines with Windows text-to-speech (offline, no external service).
+ * Generates voice lines with text-to-speech. Everything runs on this computer.
  *
  *   npm run voices              generate missing lines
  *   npm run voices -- --force   regenerate all lines
+ *   npm run voices -- bob       only lines of character "bob" (combine with --force)
  *
- * Edit scripts/voices.json to add lines or change a character's voice:
- *   voice  – installed voice name (Settings → Time & language → Speech to add more)
- *   rate   – speaking speed, -10 … 10 (0 = normal)
- *   pitch  – 1 = unchanged, < 1 deeper (and slower), > 1 higher (and faster)
- *            Tip: combine a low pitch with a higher rate to keep normal speed.
+ * Edit scripts/voices.json to add lines or change a character's voice.
+ *
+ * engine "kokoro" (default) – natural AI voices, any OS. The model (~90 MB) is downloaded
+ *   once from Hugging Face, then works offline.
+ *   voice – e.g. am_puck, am_michael, am_fenrir, bm_george (male), af_heart, af_bella, bf_emma (female).
+ *           a = American, b = British. Full list: https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md
+ *   speed – 1 = normal, 1.2 = faster, 0.85 = slower
+ *
+ * engine "windows" – Windows built-in voices (Settings → Time & language → Speech to add more).
+ *   voice – installed voice name, e.g. "Microsoft Zira Desktop"
+ *   rate  – speaking speed, -10 … 10 (0 = normal)
+ *
+ * Both engines:
+ *   pitch – 1 = unchanged, < 1 deeper (and slower), > 1 higher (and faster)
  *
  * Output: src/assets/sounds/voices/<id>.wav → use as say(char, bubble, { voice: 'voices/<id>' })
  */
@@ -21,16 +31,16 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(join(root, 'scripts/voices.json'), 'utf8'));
 const outDir = join(root, 'src/assets/sounds/voices');
-const force = process.argv.includes('--force');
-
-if (process.platform !== 'win32') {
-  console.error('This script uses Windows text-to-speech. On other systems, record the lines and save them to', outDir);
-  process.exit(1);
-}
+const args = process.argv.slice(2);
+const force = args.includes('--force');
+const only = args.filter((a) => !a.startsWith('--'));
+/** Kokoro model, loaded on first use. */
+let kokoro = null;
 
 mkdirSync(outDir, { recursive: true });
 
 for (const line of config.lines) {
+  if (only.length && !only.includes(line.character)) continue;
   const target = join(outDir, `${line.id}.wav`);
   if (existsSync(target) && !force) {
     console.log(`skip     ${line.id} (exists, use --force to regenerate)`);
@@ -39,19 +49,37 @@ for (const line of config.lines) {
   const character = config.characters[line.character];
   if (!character) throw new Error(`Unknown character "${line.character}" in line "${line.id}"`);
 
-  const raw = join(tmpdir(), `voice-${line.id}-${process.pid}.wav`);
-  synthesize(line.text, character, raw);
+  const engine = character.engine ?? 'kokoro';
+  const wav = engine === 'windows' ? await windowsSpeak(line.text, character) : await kokoroSpeak(line.text, character);
+  const shifted = resample(wav.samples, character.pitch ?? 1);
+  const trimmed = normalize(trimSilence(shifted, wav.sampleRate));
+  writeFileSync(target, writeWav(trimmed, wav.sampleRate));
+  console.log(`created  ${line.id}.wav  ${(trimmed.length / wav.sampleRate).toFixed(2)}s  [${engine} ${character.voice}]  "${line.text}"`);
+}
+
+/** Kokoro-82M neural TTS (24 kHz). Loaded once; the model is cached after the first download. */
+async function kokoroSpeak(text, { voice = 'af_heart', speed = 1 }) {
+  if (!kokoro) {
+    console.log('loading  Kokoro model (first run downloads ~90 MB)…');
+    const { KokoroTTS } = await import('kokoro-js');
+    kokoro = await KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', { dtype: 'q8', device: 'cpu' });
+  }
+  const audio = await kokoro.generate(text, { voice, speed });
+  const samples = Int16Array.from(audio.audio, (v) => Math.round(Math.max(-1, Math.min(1, v)) * 32767));
+  return { sampleRate: audio.sampling_rate, samples };
+}
+
+async function windowsSpeak(text, character) {
+  if (process.platform !== 'win32') throw new Error('engine "windows" only works on Windows – use "kokoro"');
+  const raw = join(tmpdir(), `voice-${process.pid}-${Date.now()}.wav`);
+  synthesizeWindows(text, character, raw);
   const wav = readWav(readFileSync(raw));
   rmSync(raw);
-
-  const shifted = resample(wav.samples, character.pitch ?? 1);
-  const trimmed = trimSilence(shifted, wav.sampleRate);
-  writeFileSync(target, writeWav(trimmed, wav.sampleRate));
-  console.log(`created  ${line.id}.wav  ${(trimmed.length / wav.sampleRate).toFixed(2)}s  "${line.text}"`);
+  return wav;
 }
 
 /** Speak `text` into a 22 kHz 16-bit mono WAV file using System.Speech. */
-function synthesize(text, { voice, rate = 0 }, file) {
+function synthesizeWindows(text, { voice, rate = 0 }, file) {
   const script = `
     Add-Type -AssemblyName System.Speech
     $s = New-Object System.Speech.Synthesis.SpeechSynthesizer
@@ -128,6 +156,14 @@ function resample(samples, pitch) {
     out[i] = Math.round(a + (b - a) * (pos - j));
   }
   return out;
+}
+
+/** Scale so the loudest sample hits `peak`, so every line plays at the same level. */
+function normalize(samples, peak = 0.89) {
+  const max = samples.reduce((m, s) => Math.max(m, Math.abs(s)), 0);
+  if (max === 0) return samples;
+  const gain = (peak * 32767) / max;
+  return samples.map((s) => Math.round(s * gain));
 }
 
 /** Cut silence at the start and end (keeping a little padding) so mouths move with the words. */

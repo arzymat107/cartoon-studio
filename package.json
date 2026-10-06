@@ -15,6 +15,7 @@
     "gsap": "^3.15.0"
   },
   "devDependencies": {
+    "kokoro-js": "^1.2.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.3"
   }

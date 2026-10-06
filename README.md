@@ -172,14 +172,24 @@ tl.add(say(bob, hello, { voice: 'voices/bob-hello' }), 2);
 tl.add(clip('music/theme', { volume: 0.3, loop: true, duration: tl.duration() }), 0);
 ```
 
-**Generated voices (Windows text-to-speech)**
+**Generated voices (Kokoro AI text-to-speech)**
 
-The demo's voice lines are generated offline with `npm run voices`. Add a line to
-`scripts/voices.json` and run it again; it creates `src/assets/sounds/voices/<id>.wav`.
-Each character has a `voice`, `rate` (speed) and `pitch`. Bob and Alice both use the
-Zira voice: Bob is pitched down and Alice pitched up. If you install more voices (Settings →
-Time & language → Speech), set a character's `voice` to its name and run
-`npm run voices -- --force` to regenerate every line.
+The demo's voice lines are generated with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M), a free,
+open-source (Apache 2.0) neural voice model that runs on your computer. The model (~90 MB)
+downloads once from Hugging Face; after that it works offline.
+
+1. Add a line to `scripts/voices.json`:
+   `{ "id": "bob-wow", "character": "bob", "text": "Wow, look at that!" }`
+2. Run `npm run voices`. It creates `src/assets/sounds/voices/bob-wow.wav`, trims the silence and evens out the volume.
+3. Use it in a scene: `say(bob, bubble, { voice: 'voices/bob-wow' })`.
+
+Each character in `voices.json` has a `voice`, a `speed` (1 = normal) and an optional `pitch`.
+Bob uses `am_puck` and Alice uses `af_heart`. Other good voices: `am_michael`, `am_fenrir`,
+`bm_george` (male) and `af_bella`, `bf_emma` (female); the prefix `a` means American and `b` British. See the
+[full list](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md). After changing a voice,
+regenerate with `npm run voices -- --force` (or `npm run voices -- --force bob` for one character).
+Windows' built-in voices still work with `"engine": "windows"` (see the comment at the top of
+`scripts/generate-voices.mjs`).
 
 You can also record real voices with any recorder (Audacity is free, or use your phone) and save them
 in the same folder. A real voice actor sounds much better than text-to-speech.

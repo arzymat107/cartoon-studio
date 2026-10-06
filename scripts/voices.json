@@ -1,12 +1,12 @@
 {
   "characters": {
-    "bob": { "voice": "Microsoft Zira Desktop", "rate": 2, "pitch": 0.78 },
-    "alice": { "voice": "Microsoft Zira Desktop", "rate": -1, "pitch": 1.15 }
+    "bob": { "engine": "kokoro", "voice": "am_puck", "speed": 1 },
+    "alice": { "engine": "kokoro", "voice": "af_heart", "speed": 1.05 }
   },
   "lines": [
     { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
     { "id": "alice-hi-bob", "character": "alice", "text": "Hi Bob! What a lovely day!" },
     { "id": "bob-lets-celebrate", "character": "bob", "text": "Let's celebrate!" },
-    { "id": "alice-yay", "character": "alice", "text": "Yay!" }
+    { "id": "alice-yay", "character": "alice", "text": "Yaaay!" }
   ]
 }
