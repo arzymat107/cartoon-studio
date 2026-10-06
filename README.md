@@ -16,8 +16,8 @@ npm run dev        # http://localhost:5173
 | `npm run preview`   | Serve the production build            |
 | `npm run typecheck` | TypeScript only                       |
 
-URL options: `?episode=demo` picks an episode, `?t=4.5` opens paused at 4.5 s, `?paused` opens paused at the start.
-Keyboard: <kbd>Space</kbd> play/pause, <kbd>←</kbd>/<kbd>→</kbd> seek 1 s, <kbd>Home</kbd> restart.
+URL options: `?episode=demo` picks an episode, `?t=4.5` opens paused at 4.5 s.
+Keyboard: <kbd>Space</kbd> play/pause, <kbd>←</kbd>/<kbd>→</kbd> seek 1 s, <kbd>Home</kbd> restart, <kbd>M</kbd> mute.
 
 ## Stack
 
@@ -36,8 +36,13 @@ src/
 │  ├─ Stage.ts          The 1920×1080 SVG canvas
 │  ├─ Camera.ts         Pan/zoom container (focus(x, y, zoom))
 │  ├─ Scene.ts          build() actors + animate(timeline)
-│  ├─ Movie.ts          Joins an episode's scenes into one master timeline
-│  └─ Player.ts         Play / pause / scrub / speed / chapters UI
+│  ├─ Movie.ts          Joins an episode's scenes into one master timeline; play/pause/seek
+│  └─ Player.ts         Play / pause / scrub / mute / speed / chapters UI
+├─ audio/               Sound
+│  ├─ AudioEngine.ts    Keeps sound in sync with the timeline (pause, scrub, speed, mute)
+│  ├─ synth.ts          Generated sounds: pop, boing, step, whoosh, chirp, voice blip, notes
+│  └─ library.ts        Loads every file in src/assets/sounds/ by name
+├─ assets/sounds/       Your audio files (voices, music, effects)
 ├─ components/          Reusable "puppets" (all extend Actor)
 │  ├─ characters/       Character (rigged: legs, torso, arms, head, eyes, mouth)
 │  ├─ environment/      Sky, Sun, Cloud, Ground, Tree
@@ -45,7 +50,8 @@ src/
 │  └─ SvgArt.ts         Wrap any hand-drawn .svg file as an Actor
 ├─ animations/          Reusable acting, each returns a timeline
 │  ├─ character.ts      walk, wave, cheer, blink, blinkRandomly, talk, say, face, standStill
-│  └─ motion.ts         fadeIn/Out, popIn/Out, drift, sway, bob, spin, jump
+│  ├─ motion.ts         fadeIn/Out, popIn/Out, drift, sway, bob, spin, jump
+│  └─ sound.ts          sfx, clip, melody, birdsong
 └─ episodes/            Your cartoons
    ├─ index.ts          Episode registry
    └─ demo/
@@ -137,6 +143,38 @@ export const episodes = {
 
 Open `?episode=park`.
 
+## Sound and voices
+
+Sound is placed on the timeline like any animation, so it stays in sync when you pause, scrub,
+jump to a chapter or change speed. Browsers block sound until the user clicks, which is why the
+page starts with a big **Play with sound** button.
+
+**Built-in sounds (no files needed)**
+
+- Characters talk in a gibberish voice (Animal Crossing style). Pick the voice per character:
+  `new Character({ voice: { pitch: 1.5, wave: 'sine' } })`, or `voice: false` for a silent one.
+- `walk` plays footsteps, `jump` plays a boing, and `say` plays a pop when the bubble appears.
+  Turn them off with `footsteps: false` or `sound: false`.
+- Effects anywhere on the timeline: `tl.add(sfx(synth.whoosh), 'chat')`.
+  Available: `pop`, `boing`, `step`, `whoosh`, `chirp`, `blip`, `note`.
+- Tunes: `tl.add(melody('C5 E5 G5 - C6:2', { bpm: 180 }), 0)`, where `:2` is the length in beats and `-` is a rest.
+- Birds: `tl.add(birdsong(duration), 0)`.
+
+**Audio files: recorded voices, music, effects**
+
+Drop files into `src/assets/sounds/` (see its README) and use them by name:
+
+```ts
+// Recorded voice: Bob's mouth moves for exactly the length of the recording.
+tl.add(say(bob, hello, { voice: 'voices/bob-hello' }), 2);
+
+// Background music for the whole scene.
+tl.add(clip('music/theme', { volume: 0.3, loop: true, duration: tl.duration() }), 0);
+```
+
+To record voices, any recorder works: Audacity (free), your phone, or an online text-to-speech
+tool exported to mp3.
+
 ## Rules of thumb
 
 - **Timelines must be finite.** Never use `repeat: -1` in a scene, or the player can't scrub it. For a background loop, compute the scene length and pass it in (see `animateMeadow`).
@@ -146,8 +184,7 @@ Open `?episode=park`.
 
 ## Roadmap ideas
 
-- **Sound and voices:** [Howler.js](https://howlerjs.com) synced to the master timeline (`tl.call(() => sound.play())`, plus seek sync).
-- **Lip-sync:** generate mouth shapes from audio with [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync).
+- **Lip-sync:** generate real mouth shapes from recorded voices with [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync) instead of simple open/close flapping.
 - **Export to MP4:** step the timeline frame by frame with Playwright (`?t=` already supported), screenshot each frame, then join them with ffmpeg.
 - **Shape morphing and paths:** GSAP MorphSVGPlugin for facial expressions, MotionPathPlugin for flying objects.
 - **More rigs:** animals, vehicles, and a Character with elbows and knees (two-segment limbs).

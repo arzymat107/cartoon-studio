@@ -42,7 +42,41 @@ main { max-width: 1280px; margin: 0 auto; padding: 0 16px 32px; }
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
 }
 
+.stage-frame { position: relative; }
+
 .stage-frame svg { display: block; width: 100%; height: 100%; }
+
+.start-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: rgb(0 0 0 / 0.35);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.start-overlay span {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  padding-left: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #1b1b1b;
+  font-size: 2rem;
+  transition: transform 0.15s;
+}
+
+.start-overlay:hover span { transform: scale(1.08); }
 
 .player-bar {
   display: flex;

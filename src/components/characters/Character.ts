@@ -9,7 +9,17 @@ export interface CharacterLook {
   hairStyle: 'short' | 'long' | 'bald';
 }
 
-export interface CharacterOptions extends ActorOptions, Partial<CharacterLook> {}
+/** Settings for the synthesized gibberish voice used when a line has no recording. */
+export interface CharacterVoice {
+  /** 1 = medium, 0.8 = deeper, 1.5 = higher. */
+  pitch: number;
+  wave: OscillatorType;
+}
+
+export interface CharacterOptions extends ActorOptions, Partial<CharacterLook> {
+  /** `false` = silent when talking. */
+  voice?: Partial<CharacterVoice> | false;
+}
 
 const DEFAULT_LOOK: CharacterLook = {
   skin: '#ffd7b5',
@@ -40,6 +50,7 @@ export class Character extends Actor {
   static readonly MOUTH_REST = 0.3;
 
   readonly look: CharacterLook;
+  readonly voice: CharacterVoice | null;
   readonly torso: Actor;
   readonly head: Actor;
   readonly eyes: Actor;
@@ -50,8 +61,9 @@ export class Character extends Actor {
   readonly rightLeg: Actor;
 
   constructor(options: CharacterOptions = {}) {
-    const { skin, hair, shirt, pants, shoes, hairStyle, ...actorOptions } = options;
+    const { skin, hair, shirt, pants, shoes, hairStyle, voice, ...actorOptions } = options;
     super({ name: 'Character', ...actorOptions });
+    this.voice = voice === false ? null : { pitch: voice?.pitch ?? 1, wave: voice?.wave ?? 'triangle' };
     const look: CharacterLook = (this.look = {
       skin: skin ?? DEFAULT_LOOK.skin,
       hair: hair ?? DEFAULT_LOOK.hair,

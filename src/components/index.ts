@@ -1,4 +1,4 @@
-export { Character, type CharacterLook, type CharacterOptions } from './characters/Character';
+export { Character, type CharacterLook, type CharacterOptions, type CharacterVoice } from './characters/Character';
 export { Cloud, type CloudOptions } from './environment/Cloud';
 export { Ground, type GroundOptions } from './environment/Ground';
 export { Sky, type SkyOptions } from './environment/Sky';

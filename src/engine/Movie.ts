@@ -20,11 +20,16 @@ export interface MovieOptions {
   transition?: number;
 }
 
-/** Builds every scene of an episode and joins their timelines into one master timeline. */
+/**
+ * Builds every scene of an episode and joins their timelines into one master timeline.
+ * Control playback through the Movie (not the timeline) so listeners such as the
+ * player UI and the audio engine stay in sync.
+ */
 export class Movie {
   readonly timeline: Timeline;
   readonly scenes: Scene[] = [];
   readonly chapters: Chapter[] = [];
+  private readonly listeners = new Set<() => void>();
 
   constructor(stage: Stage, episode: Episode, { transition = 0.5 }: MovieOptions = {}) {
     this.timeline = gsap.timeline({ paused: true });
@@ -47,5 +52,65 @@ export class Movie {
       this.scenes.push(scene);
       this.chapters.push({ title: scene.title, time: start });
     }
+
+    this.timeline.eventCallback('onUpdate', () => this.notify());
+    this.timeline.eventCallback('onComplete', () => this.notify());
+  }
+
+  get playing(): boolean {
+    return !this.timeline.paused() && this.timeline.progress() < 1;
+  }
+
+  get time(): number {
+    return this.timeline.time();
+  }
+
+  get duration(): number {
+    return this.timeline.duration();
+  }
+
+  get speed(): number {
+    return this.timeline.timeScale();
+  }
+
+  play(): void {
+    if (this.timeline.progress() >= 1) this.timeline.restart();
+    else this.timeline.play();
+    this.notify();
+  }
+
+  pause(): void {
+    this.timeline.pause();
+    this.notify();
+  }
+
+  toggle(): void {
+    if (this.playing) this.pause();
+    else this.play();
+  }
+
+  restart(): void {
+    this.timeline.restart();
+    this.notify();
+  }
+
+  seek(time: number): void {
+    this.timeline.seek(Math.min(Math.max(time, 0), this.duration));
+    this.notify();
+  }
+
+  setSpeed(speed: number): void {
+    this.timeline.timeScale(speed);
+    this.notify();
+  }
+
+  /** Called on every frame, play, pause, seek and speed change. Returns an unsubscribe function. */
+  onChange(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notify(): void {
+    for (const listener of this.listeners) listener();
   }
 }

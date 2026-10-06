@@ -3,7 +3,9 @@
  * Each returns a GSAP timeline/tween you place on a scene timeline: tl.add(sway(tree.foliage), 0)
  */
 import { gsap } from 'gsap';
+import { synth } from '@/audio';
 import type { Actor, Timeline, Tween } from '@/engine';
+import { sfx } from './sound';
 
 export interface MotionLoopOptions {
   angle?: number;
@@ -58,9 +60,10 @@ export function spin(actor: Actor, { turns = 1, duration = 2, ease = 'none' } = 
 }
 
 /** Hop up and land, `times` in a row. */
-export function jump(actor: Actor, { height = 140, duration = 0.6, times = 1 } = {}): Timeline {
+export function jump(actor: Actor, { height = 140, duration = 0.6, times = 1, sound = true } = {}): Timeline {
   const tl = gsap.timeline();
   for (let i = 0; i < times; i++) {
+    if (sound) tl.add(sfx(synth.boing));
     tl.to(actor, { y: `-=${height}`, duration: duration / 2, ease: 'power2.out' })
       .to(actor, { y: `+=${height}`, duration: duration / 2, ease: 'power2.in' });
   }

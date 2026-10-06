@@ -1,4 +1,4 @@
-import { blinkRandomly, say, walk, wave } from '@/animations';
+import { blinkRandomly, melody, say, walk, wave } from '@/animations';
 import { SpeechBubble, type Character } from '@/components';
 import { Scene, type Timeline } from '@/engine';
 import { createBob } from '../cast';
@@ -21,7 +21,8 @@ export class MorningScene extends Scene {
   animate(tl: Timeline): void {
     const { dawn, sun } = this.meadow;
 
-    tl.to(dawn, { opacity: 0, duration: 3.5 }, 0)
+    tl.add(melody('C5 E5 G5 E5 G5 C6:3', { bpm: 200 }), 0.4)
+      .to(dawn, { opacity: 0, duration: 3.5 }, 0)
       .to(sun, { y: 230, duration: 3.5, ease: 'power1.out' }, 0)
       .add(walk(this.bob, { to: 760, duration: 3.5 }), 1)
       .addLabel('greet')

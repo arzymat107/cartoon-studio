@@ -6,9 +6,11 @@
  * never changes how the first frame looks.
  */
 import { gsap } from 'gsap';
+import { synth } from '@/audio';
 import { Character, type SpeechBubble } from '@/components';
 import type { Timeline } from '@/engine';
 import { popIn, popOut } from './motion';
+import { clip, sfx, soundDuration } from './sound';
 
 const { ARM_REST, TORSO_Y, MOUTH_REST } = Character;
 
@@ -33,10 +35,14 @@ export interface WalkOptions {
   /** Seconds per step. */
   stepDuration?: number;
   ease?: string;
+  /** Play footstep sounds. */
+  footsteps?: boolean;
 }
 
 /** Walk to x = `to`, turning to face the direction of travel. */
-export function walk(char: Character, { to, duration = 2, stepDuration = 0.32, ease = 'none' }: WalkOptions): Timeline {
+export function walk(
+  char: Character, { to, duration = 2, stepDuration = 0.32, ease = 'none', footsteps = true }: WalkOptions,
+): Timeline {
   const steps = Math.max(2, Math.round(duration / stepDuration));
   const swing = {
     duration: duration / steps, repeat: steps - 1, yoyo: true, ease: 'sine.inOut', immediateRender: false,
@@ -44,7 +50,11 @@ export function walk(char: Character, { to, duration = 2, stepDuration = 0.32, e
   const leg = 28;
   const arm = 22;
 
-  return gsap.timeline()
+  const tl = gsap.timeline();
+  if (footsteps) {
+    for (let i = 1; i <= steps; i++) tl.add(sfx(synth.step), (i * duration) / steps);
+  }
+  return tl
     .set(char, { scaleX: () => (to >= char.x ? 1 : -1) * Math.abs(char.scaleX), immediateRender: false }, 0)
     .to(char, { x: to, duration, ease }, 0)
     .fromTo(char.leftLeg, { rotation: -leg }, { rotation: leg, ...swing }, 0)
@@ -97,16 +107,34 @@ export function blinkRandomly(char: Character, duration: number, { min = 1.8, ma
   return tl.set({}, {}, duration);
 }
 
-/** Flap the mouth for `duration` seconds. */
-export function talk(char: Character, { duration = 1, speed = 0.11 } = {}): Timeline {
+/**
+ * Flap the mouth for `duration` seconds. With `voice` (default) every syllable
+ * also plays the character's synthesized gibberish voice.
+ */
+export function talk(char: Character, { duration = 1, speed = 0.11, voice = true } = {}): Timeline {
   const flaps = Math.max(1, Math.round(duration / (speed * 2)));
-  return gsap.timeline().fromTo(char.mouth, { scaleY: MOUTH_REST }, {
+  const tl = gsap.timeline().fromTo(char.mouth, { scaleY: MOUTH_REST }, {
     scaleY: 1, duration: speed, repeat: flaps * 2 - 1, yoyo: true, ease: 'sine.inOut', immediateRender: false,
   });
+  const charVoice = char.voice;
+  if (voice && charVoice) {
+    for (let i = 0; i < flaps; i++) {
+      // Skip the odd syllable so it sounds like words rather than a machine gun.
+      if (i > 0 && Math.random() < 0.15) continue;
+      tl.add(sfx(() => synth.blip(charVoice.pitch, charVoice.wave)), i * speed * 2);
+    }
+  }
+  return tl;
 }
 
 export interface SayOptions {
-  /** How long the character talks. */
+  /**
+   * Recorded voice line from src/assets/sounds/ (e.g. 'voices/bob-hello').
+   * The character talks for exactly as long as the recording.
+   * Without it, the character's synthesized voice is used.
+   */
+  voice?: string;
+  /** How long the character talks (ignored when `voice` is found). */
   duration?: number;
   /** Extra reading time after talking stops. */
   hold?: number;
@@ -118,15 +146,23 @@ export interface SayOptions {
 /** Pop a speech bubble above the character (wherever it is at that moment) and talk. */
 export function say(
   char: Character, bubble: SpeechBubble,
-  { duration = 2, hold = 0.6, offsetY = 275, offsetX = 0 }: SayOptions = {},
+  { voice, duration = 2, hold = 0.6, offsetY = 275, offsetX = 0 }: SayOptions = {},
 ): Timeline {
-  return gsap.timeline()
+  const recording = voice !== undefined ? soundDuration(voice) : undefined;
+  const talkTime = recording ?? duration;
+
+  const tl = gsap.timeline()
     .set(bubble, {
       x: () => char.x + offsetX,
       y: () => char.y - offsetY * Math.abs(char.scaleY),
       immediateRender: false,
     }, 0)
+    .add(sfx(synth.pop), 0)
     .add(popIn(bubble), 0)
-    .add(talk(char, { duration }), 0.1)
-    .add(popOut(bubble), duration + hold);
+    .add(talk(char, { duration: talkTime, voice: recording === undefined }), 0.1)
+    .add(popOut(bubble), talkTime + hold);
+
+  if (recording !== undefined) tl.add(clip(voice!), 0.1);
+  else if (voice !== undefined) console.warn(`Voice "${voice}" not found – using the synthesized voice.`);
+  return tl;
 }

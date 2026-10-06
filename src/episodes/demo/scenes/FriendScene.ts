@@ -1,4 +1,5 @@
-import { blinkRandomly, cheer, jump, say, walk } from '@/animations';
+import { synth } from '@/audio';
+import { blinkRandomly, cheer, jump, melody, say, sfx, walk } from '@/animations';
 import { SpeechBubble, type Character } from '@/components';
 import { Scene, type Timeline } from '@/engine';
 import { createAlice, createBob } from '../cast';
@@ -30,10 +31,13 @@ export class FriendScene extends Scene {
     tl.add(walk(alice, { to: 1180, duration: 3.2 }), 0.3)
       .addLabel('chat')
       .to(camera, { ...camera.focus(970, 640, 1.5), duration: 1.5, ease: 'power2.inOut' }, 'chat')
+      .add(sfx(synth.whoosh), 'chat')
       .add(say(alice, this.aliceHi, { duration: 1.8 }), 'chat+=0.4')
       .add(say(bob, this.bobReply, { duration: 1.3 }), '>-0.2')
       .addLabel('party')
       .to(camera, { ...camera.reset(), duration: 1.2, ease: 'power2.inOut' }, 'party')
+      .add(sfx(synth.whoosh), 'party')
+      .add(melody('G5 C6 E6 G6 - E6 G6:3', { bpm: 260 }), 'party+=0.3')
       .add(cheer(bob, { duration: 1.4 }), 'party+=0.3')
       .add(cheer(alice, { duration: 1.4 }), 'party+=0.4')
       .add(jump(bob, { times: 2 }), 'party+=0.3')

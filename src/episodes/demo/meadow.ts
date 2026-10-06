@@ -1,6 +1,6 @@
 /** A reusable set (background) shared by several scenes. */
 import { gsap } from 'gsap';
-import { drift, spin, sway } from '@/animations';
+import { birdsong, drift, spin, sway } from '@/animations';
 import { Cloud, Ground, Sky, Sun, Tree } from '@/components';
 import type { Actor, Timeline } from '@/engine';
 
@@ -36,9 +36,10 @@ export function createMeadow(width: number, height: number, { sunrise = false } 
   return { sky, dawn, sun, clouds, ground, trees, layers: [sky, dawn, sun, ...clouds, ground, ...trees] };
 }
 
-/** Background life: drifting clouds, spinning sun rays, trees in the wind. */
+/** Background life: drifting clouds, spinning sun rays, trees in the wind, birds singing. */
 export function animateMeadow(meadow: Meadow, duration: number): Timeline {
   const tl = gsap.timeline();
+  tl.add(birdsong(duration), 0);
   tl.add(spin(meadow.sun.rays, { turns: duration / 30, duration }), 0);
   meadow.clouds.forEach((cloud, i) => tl.add(drift(cloud, { dx: (15 + i * 8) * duration, duration }), 0));
   meadow.trees.forEach((tree, i) => tl.add(sway(tree.foliage, { angle: 2.5, period: 2.6 + i * 0.5, duration }), 0));
