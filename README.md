@@ -15,6 +15,8 @@ npm run dev        # http://localhost:5173
 | `npm run build`     | Type-check + production build (`dist/`) |
 | `npm run preview`   | Serve the production build            |
 | `npm run typecheck` | TypeScript only                       |
+| `npm run voices`    | Generate voice lines (see Sound and voices) |
+| `npm run export`    | Render an episode to MP4 → `exports/` |
 
 URL options: `?episode=demo` picks an episode, `?t=4.5` opens paused at 4.5 s.
 Keyboard: <kbd>Space</kbd> play/pause, <kbd>←</kbd>/<kbd>→</kbd> seek 1 s, <kbd>Home</kbd> restart, <kbd>M</kbd> mute.
@@ -194,6 +196,20 @@ Windows' built-in voices still work with `"engine": "windows"` (see the comment 
 You can also record real voices with any recorder (Audacity is free, or use your phone) and save them
 in the same folder. A real voice actor sounds much better than text-to-speech.
 
+## Export a video (MP4)
+
+```
+npm run export                                    # exports/demo.mp4, 1920×1080, 30 fps
+npm run export -- --episode demo --fps 60         # smoother motion, takes about twice as long
+npm run export -- --out exports/episode-1.mp4     # choose the file name
+```
+
+The script opens the cartoon in your installed Edge or Chrome (hidden), renders the soundtrack,
+and captures each frame. Then ffmpeg (bundled with the project) builds an H.264/AAC MP4. Nothing
+is recorded in real time, so the result is smooth even on a slow computer. The output plays everywhere and is
+ready for YouTube, Instagram, TikTok (crop to vertical first) or a messenger. The `exports/` folder is
+not committed to git.
+
 ## Rules of thumb
 
 - **Timelines must be finite.** Never use `repeat: -1` in a scene, or the player can't scrub it. For a background loop, compute the scene length and pass it in (see `animateMeadow`).
@@ -204,7 +220,7 @@ in the same folder. A real voice actor sounds much better than text-to-speech.
 ## Roadmap ideas
 
 - **Lip-sync:** generate real mouth shapes from recorded voices with [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync) instead of simple open/close flapping.
-- **Export to MP4:** step the timeline frame by frame with Playwright (`?t=` already supported), screenshot each frame, then join them with ffmpeg.
+- **Vertical export** (9:16) for YouTube Shorts and TikTok: a second camera framing per scene.
 - **Shape morphing and paths:** GSAP MorphSVGPlugin for facial expressions, MotionPathPlugin for flying objects.
 - **More rigs:** animals, vehicles, and a Character with elbows and knees (two-segment limbs).
 - **Heavy scenes** (thousands of particles): add a PixiJS (WebGL) layer behind the SVG.

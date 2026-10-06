@@ -18,7 +18,7 @@ interface ToneOptions {
 
 function tone({ type = 'sine', from, to = from, duration, volume = 0.2, attack = 0.005, delay = 0 }: ToneOptions): void {
   const ctx = audio.context;
-  const t = ctx.currentTime + delay;
+  const t = audio.now() + delay;
   const osc = ctx.createOscillator();
   osc.type = type;
   osc.frequency.setValueAtTime(from, t);
@@ -53,7 +53,7 @@ function noise({ duration, volume = 0.15, filter = 'lowpass', from, to = from, q
     const data = noiseBuffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
   }
-  const t = ctx.currentTime;
+  const t = audio.now();
   const source = ctx.createBufferSource();
   source.buffer = noiseBuffer;
 

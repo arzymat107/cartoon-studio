@@ -1,5 +1,5 @@
 import './style.css';
-import { audio, loadSounds } from '@/audio';
+import { audio, encodeWav, loadSounds } from '@/audio';
 import { Movie, Player, Stage } from '@/engine';
 import { defaultEpisode, episodes } from '@/episodes';
 
@@ -29,7 +29,24 @@ for (const type of ['pointerdown', 'keydown'] as const) {
   window.addEventListener(type, () => audio.unlock(), { once: true, capture: true });
 }
 
-if (params.has('t')) {
+if (params.has('export')) {
+  // Driven by scripts/export-video.mjs: UI hidden, stage fills the viewport.
+  document.body.classList.add('export-mode');
+  movie.seek(0);
+  Object.assign(window, {
+    exporter: {
+      duration: movie.duration,
+      seek: (time: number) => movie.seek(time),
+      /** Whole soundtrack as a base64 WAV. */
+      renderAudio: async () => {
+        const bytes = encodeWav(await audio.renderOffline());
+        let binary = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+        return btoa(binary);
+      },
+    },
+  });
+} else if (params.has('t')) {
   // ?t=4.5 opens paused on that moment.
   movie.seek(Number(params.get('t')));
 } else {
