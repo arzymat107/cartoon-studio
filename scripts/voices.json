@@ -1,0 +1,12 @@
+{
+  "characters": {
+    "bob": { "voice": "Microsoft Zira Desktop", "rate": 2, "pitch": 0.78 },
+    "alice": { "voice": "Microsoft Zira Desktop", "rate": -1, "pitch": 1.15 }
+  },
+  "lines": [
+    { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
+    { "id": "alice-hi-bob", "character": "alice", "text": "Hi Bob! What a lovely day!" },
+    { "id": "bob-lets-celebrate", "character": "bob", "text": "Let's celebrate!" },
+    { "id": "alice-yay", "character": "alice", "text": "Yay!" }
+  ]
+}

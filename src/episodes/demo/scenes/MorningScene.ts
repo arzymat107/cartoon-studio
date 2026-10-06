@@ -27,7 +27,7 @@ export class MorningScene extends Scene {
       .add(walk(this.bob, { to: 760, duration: 3.5 }), 1)
       .addLabel('greet')
       .add(wave(this.bob), 'greet')
-      .add(say(this.bob, this.hello, { duration: 1.6 }), 'greet+=0.3');
+      .add(say(this.bob, this.hello, { voice: 'voices/bob-good-morning' }), 'greet+=0.3');
 
     // Background life runs for the whole scene.
     const length = tl.duration() + 0.5;

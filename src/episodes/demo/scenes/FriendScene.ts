@@ -32,8 +32,8 @@ export class FriendScene extends Scene {
       .addLabel('chat')
       .to(camera, { ...camera.focus(970, 640, 1.5), duration: 1.5, ease: 'power2.inOut' }, 'chat')
       .add(sfx(synth.whoosh), 'chat')
-      .add(say(alice, this.aliceHi, { duration: 1.8 }), 'chat+=0.4')
-      .add(say(bob, this.bobReply, { duration: 1.3 }), '>-0.2')
+      .add(say(alice, this.aliceHi, { voice: 'voices/alice-hi-bob' }), 'chat+=0.4')
+      .add(say(bob, this.bobReply, { voice: 'voices/bob-lets-celebrate' }), '>-0.2')
       .addLabel('party')
       .to(camera, { ...camera.reset(), duration: 1.2, ease: 'power2.inOut' }, 'party')
       .add(sfx(synth.whoosh), 'party')
@@ -42,7 +42,7 @@ export class FriendScene extends Scene {
       .add(cheer(alice, { duration: 1.4 }), 'party+=0.4')
       .add(jump(bob, { times: 2 }), 'party+=0.3')
       .add(jump(alice, { times: 2 }), 'party+=0.45')
-      .add(say(alice, this.aliceYay, { duration: 0.8 }), 'party+=0.5');
+      .add(say(alice, this.aliceYay, { voice: 'voices/alice-yay', hold: 1 }), 'party+=0.5');
 
     const length = tl.duration() + 0.8;
     tl.add(animateMeadow(this.meadow, length), 0)

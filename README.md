@@ -172,8 +172,17 @@ tl.add(say(bob, hello, { voice: 'voices/bob-hello' }), 2);
 tl.add(clip('music/theme', { volume: 0.3, loop: true, duration: tl.duration() }), 0);
 ```
 
-To record voices, any recorder works: Audacity (free), your phone, or an online text-to-speech
-tool exported to mp3.
+**Generated voices (Windows text-to-speech)**
+
+The demo's voice lines are generated offline with `npm run voices`. Add a line to
+`scripts/voices.json` and run it again; it creates `src/assets/sounds/voices/<id>.wav`.
+Each character has a `voice`, `rate` (speed) and `pitch`. Bob and Alice both use the
+Zira voice: Bob is pitched down and Alice pitched up. If you install more voices (Settings →
+Time & language → Speech), set a character's `voice` to its name and run
+`npm run voices -- --force` to regenerate every line.
+
+You can also record real voices with any recorder (Audacity is free, or use your phone) and save them
+in the same folder. A real voice actor sounds much better than text-to-speech.
 
 ## Rules of thumb
 
