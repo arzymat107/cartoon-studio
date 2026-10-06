@@ -3,6 +3,7 @@
  *
  *   npm run export                          → exports/demo.mp4 (episode's size, 30 fps)
  *   npm run export -- --episode football    → exports/football.mp4 (vertical 1080×1920)
+ *   --progress-json                         machine-readable progress (used by the Export button)
  *   npm run export -- --episode demo --fps 60 --out exports/my-cartoon.mp4
  *
  * How it works: a headless browser (your installed Edge or Chrome) opens the cartoon in
@@ -27,6 +28,18 @@ const option = (name, fallback) => {
 const episode = option('episode', 'demo');
 const fps = Number(option('fps', 30));
 const out = resolve(root, option('out', `exports/${episode}.mp4`));
+const jsonProgress = process.argv.includes('--progress-json');
+
+/** Progress for humans (one updating line) or for the dev server's Export button (`@@progress {…}` lines). */
+function report(stage, done = 0, total = 1) {
+  if (jsonProgress) {
+    console.log(`@@progress ${JSON.stringify({ stage, done, total })}`);
+  } else if (stage === 'video') {
+    process.stdout.write(`\rrendering video… ${Math.round((done / total) * 100)}% (${done}/${total} frames)   `);
+  } else {
+    console.log(`${stage === 'sound' ? 'rendering sound' : stage}…`);
+  }
+}
 
 const server = await createServer({ root, logLevel: 'warn', server: { port: 0, strictPort: false } });
 await server.listen();
@@ -50,7 +63,7 @@ try {
   const frames = Math.ceil(duration * fps) + 1;
   console.log(`episode "${episode}": ${width}×${height}, ${duration.toFixed(1)} s, ${frames} frames at ${fps} fps`);
 
-  console.log('rendering sound…');
+  report('sound');
   const wavBase64 = await page.evaluate(() => window.exporter.renderAudio());
   writeFileSync(wavPath, Buffer.from(wavBase64, 'base64'));
 
@@ -72,14 +85,13 @@ try {
     await page.evaluate((t) => window.exporter.seek(t), Math.min(i / fps, duration));
     const png = await page.screenshot({ type: 'png' });
     if (!ffmpeg.stdin.write(png)) await new Promise((ok) => ffmpeg.stdin.once('drain', ok));
-    if (i % fps === 0 || i === frames - 1) {
-      const pct = Math.round(((i + 1) / frames) * 100);
-      process.stdout.write(`\rrendering video… ${pct}% (${i + 1}/${frames} frames)   `);
-    }
+    if (i % 10 === 0 || i === frames - 1) report('video', i + 1, frames);
   }
+  report('encoding');
   ffmpeg.stdin.end();
   await finished;
-  console.log(`\ndone in ${((Date.now() - started) / 1000).toFixed(0)} s → ${out}`);
+  if (jsonProgress) console.log(`@@done ${JSON.stringify({ file: out })}`);
+  else console.log(`\ndone in ${((Date.now() - started) / 1000).toFixed(0)} s → ${out}`);
 } finally {
   await browser.close();
   await server.close();

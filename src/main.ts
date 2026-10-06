@@ -2,10 +2,12 @@ import './style.css';
 import { audio, encodeWav, loadSounds } from '@/audio';
 import { Movie, Player, Stage } from '@/engine';
 import { defaultEpisode, episodes } from '@/episodes';
+import { createExportButton } from '@/ui/ExportButton';
 
 const params = new URLSearchParams(location.search);
-const key = params.get('episode') ?? defaultEpisode;
-const episode = episodes[key] ?? episodes[defaultEpisode];
+const requested = params.get('episode') ?? defaultEpisode;
+const key = requested in episodes ? requested : defaultEpisode;
+const episode = episodes[key];
 document.title = `${episode.title} · Cartoon Studio`;
 
 const picker = document.querySelector<HTMLSelectElement>('#episode-select')!;
@@ -26,7 +28,8 @@ stageFrame.classList.toggle('portrait', height > width);
 const stage = new Stage(stageFrame, { width, height, background: '#111' });
 const movie = new Movie(stage, episode);
 audio.attach(movie);
-new Player(document.querySelector('#player')!, movie);
+const player = new Player(document.querySelector('#player')!, movie);
+player.addControl(createExportButton(key));
 
 // Browsers only allow sound after the user interacts with the page.
 for (const type of ['pointerdown', 'keydown'] as const) {

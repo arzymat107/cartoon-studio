@@ -80,6 +80,12 @@ export class Player {
     this.sync();
   }
 
+  /** Add an extra control (e.g. the Export button) to the bar, before the speed menu. */
+  addControl(control: HTMLElement): void {
+    const bar = this.playButton.parentElement!;
+    bar.insertBefore(control, bar.querySelector('select'));
+  }
+
   private toggleMute(): void {
     audio.muted = !audio.muted;
     this.sync();

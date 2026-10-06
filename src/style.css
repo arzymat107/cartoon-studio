@@ -115,6 +115,20 @@ button:hover, select:hover { border-color: var(--muted); }
 
 button.primary { background: var(--accent); color: #1b1b1b; min-width: 44px; }
 
+/* Export button: the background fills up as the export progresses (--progress 0…1). */
+.export-button {
+  --progress: 0;
+  white-space: nowrap;
+  background:
+    linear-gradient(90deg, rgb(255 183 3 / 0.35) calc(var(--progress) * 100%), transparent 0),
+    var(--panel-hover);
+  font-variant-numeric: tabular-nums;
+}
+
+.export-button.busy { cursor: progress; border-color: var(--accent); }
+
+.export-button:disabled { opacity: 1; }
+
 .chapters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 
 .chapters button { background: var(--panel); font-size: 0.85rem; }

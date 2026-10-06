@@ -257,6 +257,14 @@ The player shows it upright, and `npm run export -- --episode football` renders 
 
 ## Export a video (MP4)
 
+**From the page:** click **⬇ Export MP4** in the player bar. The button shows progress, and the
+video downloads when it's ready (it's also saved in `exports/`). The button asks the local studio
+server to render the video, so it works with `npm run dev` (or `npm run preview`) but not on a plain
+static web host. Behind it are three small endpoints in `scripts/export-server.mjs` that run the same
+export script as the command line.
+
+**From the terminal:**
+
 ```
 npm run export                                    # exports/demo.mp4, 1920×1080, 30 fps
 npm run export -- --episode demo --fps 60         # smoother motion, takes about twice as long
