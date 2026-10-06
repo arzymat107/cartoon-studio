@@ -1,0 +1,84 @@
+:root {
+  color-scheme: dark;
+  --bg: #14151a;
+  --panel: #1f2129;
+  --panel-hover: #2a2d38;
+  --accent: #ffb703;
+  --text: #e9e9ef;
+  --muted: #9a9cab;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px 16px;
+}
+
+.topbar h1 { margin: 0; font-size: 1.15rem; letter-spacing: 0.02em; }
+
+.episode-picker { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.9rem; }
+
+main { max-width: 1280px; margin: 0 auto; padding: 0 16px 32px; }
+
+.stage-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
+}
+
+.stage-frame svg { display: block; width: 100%; height: 100%; }
+
+.player-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: var(--panel);
+  border-radius: 10px;
+}
+
+.player-bar input[type='range'] { flex: 1; min-width: 0; accent-color: var(--accent); }
+
+.player-bar .time { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+
+button, select {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel-hover);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+button:hover, select:hover { border-color: var(--muted); }
+
+button.primary { background: var(--accent); color: #1b1b1b; min-width: 44px; }
+
+.chapters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.chapters button { background: var(--panel); font-size: 0.85rem; }
+
+.chapters button.active { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 600px) {
+  .player-bar { flex-wrap: wrap; }
+  .player-bar input[type='range'] { flex-basis: 100%; order: 10; }
+}
