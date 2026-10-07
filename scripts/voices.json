@@ -4,7 +4,8 @@
     "alice": { "engine": "kokoro", "voice": "af_heart", "speed": 1.05 },
     "messi": { "engine": "kokoro", "voice": "am_michael", "speed": 0.95 },
     "ronaldo": { "engine": "kokoro", "voice": "am_fenrir", "speed": 1.05 },
-    "referee": { "engine": "kokoro", "voice": "bm_george", "speed": 1 }
+    "referee": { "engine": "kokoro", "voice": "bm_george", "speed": 1 },
+    "coach": { "engine": "kokoro", "voice": "bm_lewis", "speed": 0.95 }
   },
   "lines": [
     { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
@@ -18,6 +19,11 @@
     { "id": "referee-card", "character": "referee", "text": "Yellow card. Too dramatic!" },
     { "id": "messi-dinner", "character": "messi", "text": "Dinner is on you." },
 
-    { "id": "messi-farewell", "character": "messi", "text": "Thank you, Argentina. It was a dream." }
+    { "id": "messi-farewell", "character": "messi", "text": "Thank you, Argentina. It was a dream." },
+
+    { "id": "coach-not-start", "character": "coach", "text": "Cristiano will not start the next match." },
+    { "id": "ronaldo-not-start", "character": "ronaldo", "text": "Not start? Me?!" },
+    { "id": "ronaldo-going-home", "character": "ronaldo", "text": "Fine. I'm going home." },
+    { "id": "coach-something-said", "character": "coach", "text": "Was it something I said?" }
   ]
 }

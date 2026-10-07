@@ -4,10 +4,10 @@
  */
 import { gsap } from 'gsap';
 import {
-  blinkRandomly, cheer, crowdCheer, emote, flight, popIn, popOut, say, sfx, shoot, SHOT_CONTACT, walk, wave,
+  blinkRandomly, cheer, crowdCheer, emote, juggle, popIn, popOut, say, sfx, shoot, SHOT_CONTACT, walk, wave,
 } from '@/animations';
 import { synth } from '@/audio';
-import { Ball, SpeechBubble, StatCounter, TextLabel, type Footballer, type Character } from '@/components';
+import { Ball, SpeechBubble, StatCounter, TextLabel, type Footballer } from '@/components';
 import { Actor, Scene, seededRandom, type Timeline } from '@/engine';
 import { createMessi } from '../../football/cast';
 import { createParodyNotice } from '../../football/overlay';
@@ -80,7 +80,7 @@ export class FarewellScene extends Scene {
       .add(walk(messi, { to: 470, duration: 2.2 }), 0.4)
 
       // A few touches for old times' sake.
-      .add(juggle(messi, ball, 4), 2.9)
+      .add(juggle(messi, ball, { touches: 4 }), 2.9)
 
       // The numbers.
       .addLabel('stats', 5.2)
@@ -130,20 +130,6 @@ export class FarewellScene extends Scene {
     tl.add(animateStadium(this.stadium, length), 0)
       .add(blinkRandomly(messi, length), 0);
   }
-}
-
-/** Keepy-uppies: each touch flicks the ball up off the right foot. */
-function juggle(player: Character, ball: Ball, touches: number): Timeline {
-  const tl = gsap.timeline();
-  const step = 0.55;
-  for (let i = 0; i < touches; i++) {
-    const t = i * step;
-    const last = i === touches - 1;
-    tl.to(player.rightLeg, { rotation: -40, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.out' }, t)
-      .add(sfx(() => synth.kick(0.3)), t + 0.1)
-      .add(flight(ball, { dx: 0, from: i === 0 ? 0 : 30, peak: 230, land: last ? 0 : 30, duration: step - 0.05, spin: 0.6 }), t + 0.1);
-  }
-  return tl;
 }
 
 /** Sky-blue, white and gold paper strips, hidden above the screen until `fallConfetti()`. */

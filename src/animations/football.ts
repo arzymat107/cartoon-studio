@@ -115,6 +115,22 @@ export function shakeNet(goal: Goal): Timeline {
     .to(goal.net, { scaleX: 1, duration: 0.9, ease: 'elastic.out(1.2, 0.35)' }, 0.12);
 }
 
+/**
+ * Keepy-uppies: each touch flicks the ball up off the right foot (ball in front of the player).
+ * With `drop: true` the last touch lets the ball fall to the ground.
+ */
+export function juggle(player: Character, ball: Ball, { touches = 4, step = 0.55, height = 230, drop = true } = {}): Timeline {
+  const tl = gsap.timeline();
+  for (let i = 0; i < touches; i++) {
+    const t = i * step;
+    const last = i === touches - 1;
+    tl.to(player.rightLeg, { rotation: -40, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.out' }, t)
+      .add(sfx(() => synth.kick(0.3)), t + 0.1)
+      .add(flight(ball, { dx: 0, from: i === 0 ? 0 : 30, peak: height, land: last && drop ? 0 : 30, duration: step - 0.05, spin: 0.6 }), t + 0.1);
+  }
+  return tl;
+}
+
 /** Arms up and jumping вЂ“ goal celebration. */
 export function celebrate(char: Character, { jumps = 2, height = 110 } = {}): Timeline {
   return gsap.timeline()

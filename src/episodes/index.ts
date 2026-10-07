@@ -1,4 +1,5 @@
 import type { Episode } from '@/engine';
+import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
 import { MorningScene } from './demo/scenes/MorningScene';
@@ -20,6 +21,12 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: [FarewellScene],
+  },
+  benched: {
+    title: 'Ronaldo – Benched?! (Short)',
+    width: 1080,
+    height: 1920,
+    scenes: [BenchedScene],
   },
 };
 
