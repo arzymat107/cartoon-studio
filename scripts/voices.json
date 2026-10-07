@@ -16,6 +16,8 @@
     { "id": "messi-okay", "character": "messi", "text": "Okay." },
     { "id": "ronaldo-crossbar", "character": "ronaldo", "text": "Who moved the crossbar?!" },
     { "id": "referee-card", "character": "referee", "text": "Yellow card. Too dramatic!" },
-    { "id": "messi-dinner", "character": "messi", "text": "Dinner is on you." }
+    { "id": "messi-dinner", "character": "messi", "text": "Dinner is on you." },
+
+    { "id": "messi-farewell", "character": "messi", "text": "Thank you, Argentina. It was a dream." }
   ]
 }

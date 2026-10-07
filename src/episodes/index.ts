@@ -1,5 +1,6 @@
 import type { Episode } from '@/engine';
 import { FriendScene } from './demo/scenes/FriendScene';
+import { FarewellScene } from './farewell/scenes/FarewellScene';
 import { MorningScene } from './demo/scenes/MorningScene';
 import { ChallengeScene } from './football/scenes/ChallengeScene';
 import { MagicChipScene } from './football/scenes/MagicChipScene';
@@ -13,6 +14,12 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: [ChallengeScene, PowerShotScene, MagicChipScene],
+  },
+  farewell: {
+    title: 'Messi – The Last Dance (Short)',
+    width: 1080,
+    height: 1920,
+    scenes: [FarewellScene],
   },
 };
 

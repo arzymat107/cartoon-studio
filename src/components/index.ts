@@ -14,5 +14,6 @@ export { Referee } from './sport/Referee';
 export { Scoreboard, type ScoreboardOptions, type ScoreboardTeam } from './sport/Scoreboard';
 export { Stands, type StandsOptions } from './sport/Stands';
 export { SpeechBubble, type SpeechBubbleOptions } from './ui/SpeechBubble';
+export { StatCounter, type StatCounterOptions } from './ui/StatCounter';
 export { TextLabel, type TextLabelOptions } from './ui/TextLabel';
 export { SvgArt, type SvgArtOptions } from './SvgArt';
