@@ -1,5 +1,5 @@
 import {
-  blinkRandomly, bounce, crowdGroan, face, flight, handsOnHead, say, sfx, shoot, SHOT_CONTACT, walk,
+  blinkRandomly, bounce, crowdGroan, emote, face, flight, handsOnHead, say, sfx, shoot, SHOT_CONTACT, walk,
 } from '@/animations';
 import { synth } from '@/audio';
 import { Ball, SpeechBubble, type Footballer } from '@/components';
@@ -38,6 +38,7 @@ export class PowerShotScene extends Scene {
     tl.add(walk(ronaldo, { to: 250, duration: 1.2 }), 0.3)
       .add(face(ronaldo, 1), '+=0.3')
       .to(ronaldo.torso, { y: -78, duration: 0.25, yoyo: true, repeat: 1 }, '+=0.3')
+      .add(emote(ronaldo, 'angry'), '<')
       .addLabel('runup', '+=0.4')
       .add(walk(ronaldo, { to: KICK_SPOT, duration: 0.55, stepDuration: 0.14 }), 'runup')
       .addLabel('shot')
@@ -50,7 +51,10 @@ export class PowerShotScene extends Scene {
       .add(bounce(ball, { dx: -140, height: 90, times: 3, duration: 0.5 }))
       .add(crowdGroan(this.stadium.stands), 'crossbar+=0.3')
       .to(camera, { ...camera.reset(), duration: 0.8, ease: 'power2.inOut' }, 'crossbar+=0.6')
+      .add(emote(ronaldo, 'shocked'), 'crossbar+=0.3')
       .add(handsOnHead(ronaldo, { duration: 1.6 }), 'crossbar+=0.3')
+      .add(emote(messi, 'cheeky'), 'crossbar+=0.8')
+      .add(emote(ronaldo, 'angry'), 'crossbar+=1.9')
       .add(say(ronaldo, this.complaint, { voice: 'voices/ronaldo-crossbar', hold: 0.9 }), 'crossbar+=1.9');
 
     const length = tl.duration() + 0.3;

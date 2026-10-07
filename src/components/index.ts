@@ -1,4 +1,5 @@
 export { Character, type CharacterLook, type CharacterOptions, type CharacterVoice } from './characters/Character';
+export { EXPRESSIONS, MOUTH_RANGE, type Expression } from './characters/expressions';
 export { DEFAULT_FACE, type FaceFeatures } from './characters/face';
 export { Cloud, type CloudOptions } from './environment/Cloud';
 export { Ground, type GroundOptions } from './environment/Ground';

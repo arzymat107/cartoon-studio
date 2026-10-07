@@ -7,12 +7,12 @@
  */
 import { gsap } from 'gsap';
 import { synth } from '@/audio';
-import { Character, type SpeechBubble } from '@/components';
+import { Character, MOUTH_RANGE, type Expression, type SpeechBubble } from '@/components';
 import type { Timeline } from '@/engine';
 import { popIn, popOut } from './motion';
 import { clip, sfx, soundDuration } from './sound';
 
-const { ARM_REST, TORSO_Y, MOUTH_REST } = Character;
+const { ARM_REST, TORSO_Y } = Character;
 
 /** Return limbs and body to the neutral standing pose. */
 export function standStill(char: Character, { duration = 0.25 } = {}): Timeline {
@@ -87,6 +87,22 @@ export function cheer(char: Character, { duration = 1 } = {}): Timeline {
     .to(char.rightArm, { rotation: -ARM_REST, duration: 0.3 }, duration);
 }
 
+/**
+ * Change facial expression (detailed faces): 'neutral', 'angry', 'happy', 'cheeky' (tongue out),
+ * 'smug' or 'shocked'. Instant, like a cartoon cut; seeking back restores the previous face.
+ *   tl.add(emote(ronaldo, 'angry'), 'crossbar+=0.5')
+ */
+export function emote(char: Character, name: Expression): Timeline {
+  const tl = gsap.timeline();
+  if (!char.expressions) return tl;
+  for (const [key, layers] of Object.entries(char.expressions)) {
+    tl.set(layers, { opacity: key === name ? 1 : 0, immediateRender: false }, 0);
+  }
+  const [rest, open] = MOUTH_RANGE[name];
+  return tl.set(char, { mouthRest: rest, mouthOpen: open, immediateRender: false }, 0)
+    .set(char.mouth, { scaleY: rest, immediateRender: false }, 0);
+}
+
 export function blink(char: Character, { times = 1 } = {}): Timeline {
   const tl = gsap.timeline();
   for (let i = 0; i < times; i++) {
@@ -113,8 +129,9 @@ export function blinkRandomly(char: Character, duration: number, { min = 1.8, ma
  */
 export function talk(char: Character, { duration = 1, speed = 0.11, voice = true } = {}): Timeline {
   const flaps = Math.max(1, Math.round(duration / (speed * 2)));
-  const tl = gsap.timeline().fromTo(char.mouth, { scaleY: MOUTH_REST }, {
-    scaleY: 1, duration: speed, repeat: flaps * 2 - 1, yoyo: true, ease: 'sine.inOut', immediateRender: false,
+  // Function values: read the expression's mouth range when the talking starts.
+  const tl = gsap.timeline().fromTo(char.mouth, { scaleY: () => char.mouthRest }, {
+    scaleY: () => char.mouthOpen, duration: speed, repeat: flaps * 2 - 1, yoyo: true, ease: 'sine.inOut', immediateRender: false,
   });
   const charVoice = char.voice;
   if (voice && charVoice) {

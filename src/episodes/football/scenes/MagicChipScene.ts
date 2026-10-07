@@ -1,5 +1,5 @@
 import {
-  blinkRandomly, celebrate, crowdCheer, face, flight, flop, popIn, say, sfx, shakeNet, shoot, SHOT_CONTACT, showCard, walk,
+  blinkRandomly, celebrate, crowdCheer, emote, face, flight, flop, popIn, say, sfx, shakeNet, shoot, SHOT_CONTACT, showCard, walk,
 } from '@/animations';
 import { synth } from '@/audio';
 import { Ball, SpeechBubble, TextLabel, type Footballer, type Referee, type Scoreboard } from '@/components';
@@ -66,15 +66,21 @@ export class MagicChipScene extends Scene {
       .to(camera, { ...camera.reset(), duration: 0.9, ease: 'power2.inOut' }, 'goal+=0.8')
       // Messi runs off to celebrate; Ronaldo collapses in disbelief.
       .add(walk(messi, { to: 745, duration: 0.75, stepDuration: 0.14 }), 'goal+=0.1')
+      .add(emote(messi, 'happy'), 'goal+=0.1')
       .add(celebrate(messi, { jumps: 2 }), 'goal+=0.85')
+      .add(emote(ronaldo, 'shocked'), 'goal+=0.2')
       .add(flop(ronaldo, { direction: 1 }), 'goal+=0.5')
       // The referee has seen enough.
       .addLabel('ref', 'goal+=1.9')
       .add(walk(referee, { to: 570, duration: 1.5, stepDuration: 0.2 }), 'ref')
       .add(face(referee, -1), 'ref')
+      .add(emote(messi, 'neutral'), 'ref')
+      .add(emote(referee, 'angry'), 'ref+=1.5')
+      .add(emote(ronaldo, 'angry'), 'ref+=1.6')
       .add(showCard(referee, 'yellow', { duration: 2.6 }), 'ref+=1.6')
       .add(say(referee, this.cardLine, { voice: 'voices/referee-card', hold: 0.7 }), 'ref+=1.9')
       .add(face(messi, -1), '>')
+      .add(emote(messi, 'cheeky'), '<')
       .add(say(messi, this.dinnerLine, { voice: 'voices/messi-dinner', hold: 1 }), '>+0.1')
       .add(sfx(() => synth.whistle(3, 0.3)), '<+0.6')
       .add(popIn(this.ending), '<+0.8');

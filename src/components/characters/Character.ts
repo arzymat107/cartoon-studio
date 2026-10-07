@@ -1,4 +1,5 @@
 import { Actor, type ActorOptions } from '@/engine';
+import { MOUTH_RANGE, type Expression, type ExpressionLayers } from './expressions';
 import { DEFAULT_FACE, drawDetailedHead, type FaceFeatures } from './face';
 
 export interface CharacterLook {
@@ -35,6 +36,8 @@ export interface CharacterOptions extends ActorOptions, Partial<CharacterLook> {
    * Leave out for the simple round cartoon face.
    */
   face?: Partial<FaceFeatures>;
+  /** Starting expression (detailed face only). Change it on a timeline with `emote()`. */
+  expression?: Expression;
 }
 
 const DEFAULT_LOOK: CharacterLook = {
@@ -65,6 +68,7 @@ const DEFAULT_LOOK: CharacterLook = {
  *         ├─ eyes             scaleY → blink
  *         ├─ brows            y → raise in surprise (detailed face only)
  *         └─ mouth            scaleY → talk
+ *   Detailed faces hold one layer per expression in eyes, brows, mouth and head (see `emote()`).
  */
 export class Character extends Actor {
   /** Resting arm angle (left arm +, right arm −). */
@@ -78,6 +82,11 @@ export class Character extends Actor {
   readonly brows: Actor;
   /** Top of the hair in head space (negative), measured while drawing. */
   private headTop = -86;
+  /** Layers of each expression (detailed face only), shown by `emote()`. */
+  readonly expressions: ExpressionLayers | null = null;
+  /** Mouth scaleY at rest and fully open; set by `emote()`, used by `talk()`. */
+  mouthRest = Character.MOUTH_REST;
+  mouthOpen = 1;
   readonly torso: Actor;
   /** Drawn on top of the shirt but under the arms and head. */
   readonly torsoDetail: Actor;
@@ -91,7 +100,7 @@ export class Character extends Actor {
 
   constructor(options: CharacterOptions = {}) {
     const {
-      skin, hair, shirt, pants, shoes, hairStyle, beard, sleeves, legWear, socks, headScale, voice, face,
+      skin, hair, shirt, pants, shoes, hairStyle, beard, sleeves, legWear, socks, headScale, voice, face, expression,
       ...actorOptions
     } = options;
     super({ name: 'Character', ...actorOptions });
@@ -133,13 +142,29 @@ export class Character extends Actor {
     this.brows = new Actor({ name: 'brows' });
     this.mouth = new Actor({ name: 'mouth', y: -22, scaleY: Character.MOUTH_REST });
     if (this.face) {
-      this.headTop = drawDetailedHead({ head: this.head, eyes: this.eyes, brows: this.brows, mouth: this.mouth }, look, this.face);
+      const detailed = drawDetailedHead({ head: this.head, eyes: this.eyes, brows: this.brows, mouth: this.mouth }, look, this.face);
+      this.headTop = detailed.top;
+      this.expressions = detailed.expressions;
+      if (expression) this.setExpression(expression);
     } else {
       this.drawHead(look);
     }
 
     this.torso.add(this.torsoDetail, this.leftArm, this.rightArm, this.head);
     this.add(this.leftLeg, this.rightLeg, this.torso);
+  }
+
+  /**
+   * Switch expression immediately (e.g. while building a scene). On a timeline use
+   * `emote(char, 'angry')` instead, so seeking back restores the previous face.
+   */
+  setExpression(name: Expression): void {
+    if (!this.expressions) return;
+    for (const [key, layers] of Object.entries(this.expressions)) {
+      for (const layer of layers) layer.opacity = key === name ? 1 : 0;
+    }
+    [this.mouthRest, this.mouthOpen] = MOUTH_RANGE[name];
+    this.mouth.scaleY = this.mouthRest;
   }
 
   /** Height from the feet to the top of the head (unscaled), e.g. for placing speech bubbles. */

@@ -1,9 +1,11 @@
 /**
- * Detailed face style: shaped face and jaw, almond eyes with irises, eyebrows, nose,
- * lips, ears, layered hair and beards. Used by Character when `face` options are given.
+ * Detailed face style: shaped face and jaw, nose, ears, layered hair and beards. Eyes, brows
+ * and mouth come from expressions.ts (one layer per expression).
+ * Used by Character when `face` options are given.
  * All coordinates are in the head's space: origin at the neck, y up is negative.
  */
-import { Actor, svg, uid } from '@/engine';
+import type { Actor } from '@/engine';
+import { drawExpressions, type ExpressionLayers } from './expressions';
 
 export interface FaceFeatures {
   /** Half-width and half-height of the face. */
@@ -84,8 +86,14 @@ export interface HeadLook {
   beard: string | null;
 }
 
-/** Draw the detailed head. Returns the y of the top of the hair (for speech-bubble placement). */
-export function drawDetailedHead({ head, eyes, brows, mouth }: HeadParts, look: HeadLook, face: FaceFeatures): number {
+export interface DetailedHead {
+  /** y of the top of the hair (for speech-bubble placement). */
+  top: number;
+  expressions: ExpressionLayers;
+}
+
+/** Draw the detailed head with all its expressions (neutral visible). */
+export function drawDetailedHead({ head, eyes, brows, mouth }: HeadParts, look: HeadLook, face: FaceFeatures): DetailedHead {
   const { width: rx, height: ry, jaw, chin } = face;
   const cy = -4 - ry; // face center: the chin sits on top of the neck
   const skinShadow = shade(look.skin, 0.18);
@@ -169,47 +177,6 @@ export function drawDetailedHead({ head, eyes, brows, mouth }: HeadParts, look: 
     head.draw('ellipse', { cx: side * (noseWidth * 0.45), cy: cy + 13.5, rx: 2, ry: 1.3, fill: line, opacity: 0.6 });
   }
 
-  // ── Mouth and lips ────────────────────────────────────────────────────
-  mouth.y = cy + 28;
-  mouth.draw('ellipse', { cx: 0, cy: 0, rx: 12, ry: 8, fill: '#4a1414' });
-  mouth.draw('ellipse', { cx: 0, cy: 4.5, rx: 7, ry: 3, fill: '#c0504d' }); // tongue
-  head.draw('path', {
-    d: `M -10 ${cy + 33} Q 0 ${cy + 37} 10 ${cy + 33}`,
-    stroke: face.lips, 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round', opacity: 0.8,
-  });
-
-  // ── Eyes ──────────────────────────────────────────────────────────────
-  eyes.y = cy - 2;
-  const eyeX = rx * 0.4;
-  for (const side of [-1, 1]) {
-    const ex = side * eyeX;
-    const almond = `M ${ex - 10} 0 Q ${ex} -8 ${ex + 10} 0 Q ${ex} 6.5 ${ex - 10} 0 Z`;
-    const clipId = uid('eye');
-    const clip = eyes.draw('clipPath', { id: clipId });
-    clip.appendChild(svg('path', { d: almond }));
-    eyes.draw('path', { d: almond, fill: '#fdfaf6' });
-    const iris = eyes.draw('g', { 'clip-path': `url(#${clipId})` });
-    // Irises shifted slightly forward: the character looks where it faces.
-    iris.append(
-      svg('circle', { cx: ex + 1.5, cy: -0.5, r: 5.2, fill: face.eyeColor }),
-      svg('circle', { cx: ex + 1.5, cy: -0.5, r: 2.5, fill: '#111' }),
-      svg('circle', { cx: ex + 3, cy: -2.2, r: 1.2, fill: '#fff' }),
-    );
-    eyes.draw('path', { d: `M ${ex - 10.5} 0.5 Q ${ex} -8.5 ${ex + 10.5} 0.5`, stroke: '#2a1a12', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round' });
-    eyes.draw('path', { d: `M ${ex - 7} 4.5 Q ${ex} 7 ${ex + 7} 4.5`, stroke: skinShadow, 'stroke-width': 1.2, fill: 'none', opacity: 0.8 });
-  }
-
-  // ── Eyebrows (own actor so they can be raised for surprise) ───────────
-  brows.y = cy - 15;
-  for (const side of [-1, 1]) {
-    const inner = side * 6;
-    const outer = side * (eyeX + 12);
-    brows.draw('path', {
-      d: `M ${inner} 2 Q ${side * (eyeX + 1)} ${-5 - face.browTilt * 0.5} ${outer} ${1 - face.browTilt}`,
-      stroke: face.browColor, 'stroke-width': face.browWeight, fill: 'none', 'stroke-linecap': 'round',
-    });
-  }
-
   // ── Front hair ────────────────────────────────────────────────────────
   let top = cy - ry;
   const highlight = 'rgba(255,255,255,0.18)';
@@ -220,15 +187,15 @@ export function drawDetailedHead({ head, eyes, brows, mouth }: HeadParts, look: 
         [rx - 4, cy - ry * 0.2], [rx * 0.6, cy - ry * 0.65], [0, cy - ry * 0.72]])),
       fill: look.hair, opacity: 0.55,
     });
-    // …and a tall, swept-up top that leans forward.
-    top = cy - ry - 26;
+    // …and a short, neat top swept up at the front.
+    top = cy - ry - 13;
     head.draw('path', {
-      d: smoothPath([[-rx + 1, cy - ry * 0.45], [-rx * 0.75, cy - ry - 8], [-rx * 0.1, cy - ry - 22], [rx * 0.5, top],
-        [rx + 4, cy - ry - 13], [rx + 1, cy - ry * 0.58], [rx * 0.5, cy - ry * 0.66], [0, cy - ry * 0.68], [-rx * 0.6, cy - ry * 0.6]]),
+      d: smoothPath([[-rx + 1, cy - ry * 0.45], [-rx * 0.75, cy - ry - 4], [-rx * 0.1, cy - ry - 10], [rx * 0.5, top],
+        [rx + 3, cy - ry - 6], [rx + 1, cy - ry * 0.58], [rx * 0.5, cy - ry * 0.66], [0, cy - ry * 0.68], [-rx * 0.6, cy - ry * 0.6]]),
       fill: look.hair,
     });
-    for (const [x1, y1, x2, y2] of [[-20, -16, 14, -24], [-12, -8, 22, -16], [-24, -4, 4, -12]] as const) {
-      head.draw('path', { d: `M ${x1} ${cy - ry + y1} Q ${(x1 + x2) / 2} ${cy - ry + Math.min(y1, y2) - 8} ${x2} ${cy - ry + y2}`, stroke: highlight, 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' });
+    for (const [x1, y1, x2, y2] of [[-20, -7, 14, -11], [-12, -2, 22, -6]] as const) {
+      head.draw('path', { d: `M ${x1} ${cy - ry + y1} Q ${(x1 + x2) / 2} ${cy - ry + Math.min(y1, y2) - 4} ${x2} ${cy - ry + y2}`, stroke: highlight, 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' });
     }
   } else if (look.hairStyle !== 'bald') {
     // Side part with a fringe swept across the forehead, sideburns down to the ears.
@@ -245,6 +212,8 @@ export function drawDetailedHead({ head, eyes, brows, mouth }: HeadParts, look: 
     }
   }
 
+  // ── Eyes, brows, mouth: one layer per expression, on top ─────────────
+  const expressions = drawExpressions({ head, eyes, brows, mouth }, { rx, ry, cy, skin: look.skin, skinShadow }, face);
   head.add(eyes, brows, mouth);
-  return top;
+  return { top, expressions };
 }

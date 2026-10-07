@@ -1,4 +1,4 @@
-import { blinkRandomly, face, popIn, popOut, say, sfx, walk } from '@/animations';
+import { blinkRandomly, emote, face, popIn, popOut, say, sfx, walk } from '@/animations';
 import { synth } from '@/audio';
 import { Ball, SpeechBubble, TextLabel, type Footballer } from '@/components';
 import { Scene, type Timeline } from '@/engine';
@@ -42,8 +42,10 @@ export class ChallengeScene extends Scene {
       .add(popOut(this.titleCard), 2.3)
       .add(walk(messi, { to: 200, duration: 2.2 }), 0.4)
       .add(face(ronaldo, -1), 0)
+      .add(emote(ronaldo, 'smug'), 2.6)
       .add(say(ronaldo, this.challenge, { voice: 'voices/ronaldo-challenge', hold: 0.8 }), 2.8)
-      .add(say(messi, this.okay, { voice: 'voices/messi-okay', hold: 0.8 }), '>-0.4');
+      .add(emote(messi, 'smug'), '>-0.5')
+      .add(say(messi, this.okay, { voice: 'voices/messi-okay', hold: 0.8 }), '>+0.1');
 
     const length = tl.duration() + 0.4;
     tl.add(animateStadium(this.stadium, length), 0)

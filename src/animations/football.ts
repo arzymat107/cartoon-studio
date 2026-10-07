@@ -12,7 +12,7 @@ import { cheer } from './character';
 import { jump } from './motion';
 import { sfx } from './sound';
 
-const { ARM_REST, TORSO_Y, MOUTH_REST } = Character;
+const { ARM_REST, TORSO_Y } = Character;
 
 export interface FlightOptions {
   /** Where the ball comes down: absolute xвЂ¦ */
@@ -127,10 +127,10 @@ export function handsOnHead(char: Character, { duration = 1.4 } = {}): Timeline 
   return gsap.timeline()
     .to(char.leftArm, { rotation: 165, duration: 0.25, ease: 'back.out(2)' }, 0)
     .to(char.rightArm, { rotation: -165, duration: 0.25, ease: 'back.out(2)' }, 0)
-    .to(char.mouth, { scaleY: 1, duration: 0.2 }, 0)
+    .to(char.mouth, { scaleY: () => char.mouthOpen, duration: 0.2 }, 0)
     .to(char.leftArm, { rotation: ARM_REST, duration: 0.35 }, duration)
     .to(char.rightArm, { rotation: -ARM_REST, duration: 0.35 }, duration)
-    .to(char.mouth, { scaleY: MOUTH_REST, duration: 0.2 }, duration);
+    .to(char.mouth, { scaleY: () => char.mouthRest, duration: 0.2 }, duration);
 }
 
 /**
@@ -142,7 +142,7 @@ export function flop(char: Character, { direction = 1 as 1 | -1, kicks = 3 } = {
   return gsap.timeline()
     .to(char.leftArm, { rotation: 150, duration: 0.15 }, 0)
     .to(char.rightArm, { rotation: -150, duration: 0.15 }, 0)
-    .to(char.mouth, { scaleY: 1, duration: 0.15 }, 0)
+    .to(char.mouth, { scaleY: () => char.mouthOpen, duration: 0.15 }, 0)
     .to(char, { rotation: direction * 90, y: `-=${lift}`, duration: 0.45, ease: 'power2.in' }, 0.1)
     .add(sfx(() => synth.kick(0.7)), 0.55)
     .to(char, { rotation: direction * 82, duration: 0.1, repeat: 1, yoyo: true }, 0.55)
@@ -159,7 +159,7 @@ export function getUp(char: Character, { duration = 0.5 } = {}): Timeline {
     .to(char.leftArm, { rotation: ARM_REST, duration }, 0)
     .to(char.rightArm, { rotation: -ARM_REST, duration }, 0)
     .to(char.torso, { y: TORSO_Y, duration }, 0)
-    .to(char.mouth, { scaleY: MOUTH_REST, duration: 0.2 }, 0);
+    .to(char.mouth, { scaleY: () => char.mouthRest, duration: 0.2 }, 0);
 }
 
 /** Whistle and show a card high in the air. */
