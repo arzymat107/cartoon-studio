@@ -3,6 +3,10 @@ import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FinedScene } from './fined/scenes/FinedScene';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
+import { RuizGoalScene } from './psg-barca/scenes/RuizGoalScene';
+import { TableScene } from './psg-barca/scenes/TableScene';
+import { VitinhaGoalScene } from './psg-barca/scenes/VitinhaGoalScene';
+import { YamalGoalScene } from './psg-barca/scenes/YamalGoalScene';
 import { MorningScene } from './demo/scenes/MorningScene';
 import { ChallengeScene } from './football/scenes/ChallengeScene';
 import { MagicChipScene } from './football/scenes/MagicChipScene';
@@ -34,6 +38,12 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: [FinedScene],
+  },
+  'psg-barca': {
+    title: 'PSG 4–2 Barça (Short)',
+    width: 1080,
+    height: 1920,
+    scenes: [YamalGoalScene, VitinhaGoalScene, RuizGoalScene, TableScene],
   },
 };
 

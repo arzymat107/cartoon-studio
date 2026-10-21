@@ -17,10 +17,13 @@ export interface Stadium {
   background: Actor[];
 }
 
-export function createStadium(width: number, height: number): Stadium {
+/** `shirts` = the colors fans wear (default: the free-kick episode's teams). */
+export function createStadium(
+  width: number, height: number, { shirts = ['#75c3ea', '#ffffff', '#c8102e', '#1e7f3a', '#ffd60a'] } = {},
+): Stadium {
   const sky = new Sky({ width, height, top: '#0b1736', bottom: '#4b3b7c' });
   const lights = [floodlight(110, 160), floodlight(width - 110, 160)];
-  const stands = new Stands({ width, top: 560, bottom: 1180, shirts: ['#75c3ea', '#ffffff', '#c8102e', '#1e7f3a', '#ffd60a'] });
+  const stands = new Stands({ width, top: 560, bottom: 1180, shirts });
   const boards = new AdBoards({ width, y: 1180, height: 64 });
   const pitch = new Pitch({ width, top: 1244, height: height - 1244 });
   const goal = new Goal({ x: 800, y: GROUND_Y, height: 400, depth: 230 });

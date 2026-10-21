@@ -6,7 +6,12 @@
     "ronaldo": { "engine": "kokoro", "voice": "am_fenrir", "speed": 1.05 },
     "referee": { "engine": "kokoro", "voice": "bm_george", "speed": 1 },
     "coach": { "engine": "kokoro", "voice": "bm_lewis", "speed": 0.95 },
-    "judge": { "engine": "kokoro", "voice": "bm_daniel", "speed": 0.95 }
+    "judge": { "engine": "kokoro", "voice": "bm_daniel", "speed": 0.95 },
+    "yamal": { "engine": "kokoro", "voice": "am_puck", "speed": 1.1 },
+    "safonov": { "engine": "kokoro", "voice": "am_adam", "speed": 1 },
+    "garcia": { "engine": "kokoro", "voice": "am_liam", "speed": 1 },
+    "cancelo": { "engine": "kokoro", "voice": "am_eric", "speed": 1 },
+    "ruiz": { "engine": "kokoro", "voice": "am_michael", "speed": 0.8 }
   },
   "lines": [
     { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
@@ -32,6 +37,13 @@
     { "id": "judge-fine", "character": "judge", "text": "Thirty-day ban. And a fine of two hundred and fifteen pounds!" },
     { "id": "ronaldo-39-seconds", "character": "ronaldo", "text": "Two hundred fifteen? Give me thirty-nine seconds." },
     { "id": "ronaldo-keep-change", "character": "ronaldo", "text": "Done. Keep the change." },
-    { "id": "judge-tip", "character": "judge", "text": "Was that a punishment, or a tip?" }
+    { "id": "judge-tip", "character": "judge", "text": "Was that a punishment, or a tip?" },
+
+    { "id": "yamal-thanks", "character": "yamal", "text": "Thanks!" },
+    { "id": "safonov-oops", "character": "safonov", "text": "Oops." },
+    { "id": "garcia-ouch", "character": "garcia", "text": "Ouch!" },
+    { "id": "cancelo-huh", "character": "cancelo", "text": "Huh?!" },
+    { "id": "ruiz-easy", "character": "ruiz", "text": "Easy." },
+    { "id": "yamal-next-time", "character": "yamal", "text": "Next time!" }
   ]
 }
