@@ -3,7 +3,6 @@
  * for a high ball that never comes, and Fabián Ruiz – who tiptoed in behind Cancelo with a cup of
  * tea – taps it into the empty net.
  */
-import { gsap } from 'gsap';
 import {
   blinkRandomly, crowdCheer, emote, face, jump, melody, roll, say, sfx, shakeNet, walk,
 } from '@/animations';
@@ -12,7 +11,7 @@ import { Ball, Character, SpeechBubble, type Footballer, type Scoreboard } from 
 import { Actor, Scene, type Timeline } from '@/engine';
 import { createParodyNotice } from '../../football/overlay';
 import { animateStadium, createStadium, GROUND_Y, type Stadium } from '../../football/stadium';
-import { sitDown, tiptoe } from '../acting';
+import { sip, sitDown, tiptoe } from '../acting';
 import {
   createBalde, createCancelo, createHakimi, createJoanGarcia, createMartin, createMatchScoreboard, createRuiz, dizzyStars,
   FAN_SHIRTS, teaCup,
@@ -144,15 +143,3 @@ export class RuizGoalScene extends Scene {
     for (const char of [hakimi, balde, martin, cancelo, keeper, ruiz]) tl.add(blinkRandomly(char, length), 0);
   }
 }
-
-/** Raise the cup to the mouth and back, keeping it upright. */
-function sip(char: Character, cup: Actor): Timeline {
-  return gsap.timeline()
-    .to(char.rightArm, { rotation: -150, duration: 0.3 }, 0)
-    .to(cup, { rotation: 150, duration: 0.3 }, 0)
-    .to(char.head, { rotation: -10, duration: 0.3 }, 0.2)
-    .to(char.rightArm, { rotation: -Character.ARM_REST, duration: 0.3 }, 0.9)
-    .to(cup, { rotation: Character.ARM_REST, duration: 0.3 }, 0.9)
-    .to(char.head, { rotation: 0, duration: 0.3 }, 0.9);
-}
-

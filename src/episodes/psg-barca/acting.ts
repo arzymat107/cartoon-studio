@@ -54,3 +54,14 @@ export function lookAround(char: Character, { times = 2, interval = 0.18 } = {})
   for (let i = 0; i < times * 2; i++) tl.set(char, { scaleX: i % 2 ? facing : -facing, immediateRender: false }, i * interval);
   return tl.set(char, { scaleX: facing, immediateRender: false }, times * 2 * interval);
 }
+
+/** Raise the cup in the right hand to the mouth and back, keeping it upright. */
+export function sip(char: Character, cup: Actor): Timeline {
+  return gsap.timeline()
+    .to(char.rightArm, { rotation: -150, duration: 0.3 }, 0)
+    .to(cup, { rotation: 150, duration: 0.3 }, 0)
+    .to(char.head, { rotation: -10, duration: 0.3 }, 0.2)
+    .to(char.rightArm, { rotation: -ARM_REST, duration: 0.3 }, 0.9)
+    .to(cup, { rotation: ARM_REST, duration: 0.3 }, 0.9)
+    .to(char.head, { rotation: 0, duration: 0.3 }, 0.9);
+}

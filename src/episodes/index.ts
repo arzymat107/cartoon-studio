@@ -3,6 +3,10 @@ import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FinedScene } from './fined/scenes/FinedScene';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
+import { DressingRoomScene } from './madrid-laughs/scenes/DressingRoomScene';
+import { FullTimeScene } from './madrid-laughs/scenes/FullTimeScene';
+import { TableScene as MadridTableScene } from './madrid-laughs/scenes/TableScene';
+import { VideoCallScene } from './madrid-laughs/scenes/VideoCallScene';
 import { RuizGoalScene } from './psg-barca/scenes/RuizGoalScene';
 import { TableScene } from './psg-barca/scenes/TableScene';
 import { VitinhaGoalScene } from './psg-barca/scenes/VitinhaGoalScene';
@@ -44,6 +48,12 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: [YamalGoalScene, VitinhaGoalScene, RuizGoalScene, TableScene],
+  },
+  'madrid-laughs': {
+    title: 'Real Madrid – Same Night, Different Vibes (Short)',
+    width: 1080,
+    height: 1920,
+    scenes: [FullTimeScene, DressingRoomScene, VideoCallScene, MadridTableScene],
   },
 };
 

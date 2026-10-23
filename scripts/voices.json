@@ -11,7 +11,11 @@
     "safonov": { "engine": "kokoro", "voice": "am_adam", "speed": 1 },
     "garcia": { "engine": "kokoro", "voice": "am_liam", "speed": 1 },
     "cancelo": { "engine": "kokoro", "voice": "am_eric", "speed": 1 },
-    "ruiz": { "engine": "kokoro", "voice": "am_michael", "speed": 0.8 }
+    "ruiz": { "engine": "kokoro", "voice": "am_michael", "speed": 0.8 },
+    "courtois": { "engine": "kokoro", "voice": "bm_george", "speed": 0.9 },
+    "bellingham": { "engine": "kokoro", "voice": "bm_lewis", "speed": 0.95 },
+    "madrid": { "engine": "kokoro", "voice": "am_fenrir", "speed": 0.95 },
+    "mbappe": { "engine": "kokoro", "voice": "am_onyx", "speed": 0.9 }
   },
   "lines": [
     { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
@@ -44,6 +48,14 @@
     { "id": "garcia-ouch", "character": "garcia", "text": "Ouch!" },
     { "id": "cancelo-huh", "character": "cancelo", "text": "Huh?!" },
     { "id": "ruiz-easy", "character": "ruiz", "text": "Easy." },
-    { "id": "yamal-next-time", "character": "yamal", "text": "Next time!" }
+    { "id": "yamal-next-time", "character": "yamal", "text": "Next time!" },
+
+    { "id": "courtois-one-shot", "character": "courtois", "text": "One shot. I had one shot." },
+    { "id": "bellingham-eleven-wins", "character": "bellingham", "text": "Eleven wins... gone." },
+    { "id": "garcia-almost", "character": "garcia", "text": "I almost had it..." },
+    { "id": "cancelo-tea", "character": "cancelo", "text": "Who brings tea to a football match?!" },
+    { "id": "yamal-banger", "character": "yamal", "text": "I scored a banger, you know." },
+    { "id": "madrid-we-know", "character": "madrid", "text": "We know, Lamine. We know." },
+    { "id": "mbappe-merci", "character": "mbappe", "text": "Merci, mes amis." }
   ]
 }
