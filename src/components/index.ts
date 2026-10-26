@@ -10,7 +10,8 @@ export { FIGURE_BUILDS, FIGURE_REST, type FigureBuild, type FigureBuildName, typ
 export { COSTUMES, type Costume, type CostumeName } from './figures/costumes';
 export { FIGURE_EXPRESSIONS, type FaceSpec, type FigureExpression } from './figures/expressions';
 export { createMbappePortrait, MBAPPE, MbappeFigure } from './figures/players/mbappe';
-export { createPortrait, PortraitFigure, type FigureSpec, type PortraitFigureOptions } from './figures/PortraitFigure';
+export { BARCA_KIT, createYamalPortrait, SPAIN_KIT, YAMAL, YamalFigure } from './figures/players/yamal';
+export { createPortrait, PortraitFigure, type FigureSpec, type PortraitFigureOptions, type ShortsStyle } from './figures/PortraitFigure';
 export { Ball, type BallOptions } from './sport/Ball';
 export { Footballer, type FootballerOptions, type Kit } from './sport/Footballer';
 export { Goal, type GoalOptions } from './sport/Goal';

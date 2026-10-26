@@ -6,12 +6,13 @@ import { Actor, svg } from '@/engine';
 import { smoothPath } from '../characters/face';
 import { f, Shape, shade, type Point, type SkinPalette } from './paint';
 
-/** An invisible rig joint: tweening it redraws the limb it belongs to. */
+/** An invisible rig joint: tweening it redraws the limb it belongs to (and anything else listening). */
 export class Joint extends Actor {
-  onChange?: () => void;
+  readonly listeners: (() => void)[] = [];
   protected override render(): void {
     super.render();
-    this.onChange?.();
+    // Undefined while Actor's constructor runs the first render.
+    this.listeners?.forEach((listener) => listener());
   }
 }
 
@@ -67,7 +68,8 @@ export class Limb {
       band: cover.band ? layer.appendChild(svg('path', { stroke: cover.band, 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round' })) : undefined,
     }));
     if (spec.endOnTop) layer.appendChild(this.endGroup);
-    upper.onChange = lower.onChange = () => this.update();
+    upper.listeners.push(() => this.update());
+    lower.listeners.push(() => this.update());
     this.update();
   }
 

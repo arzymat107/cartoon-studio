@@ -251,12 +251,19 @@ the jokes about football, never about private life, injuries or origin.
 
 A `PortraitFigure` is a real player as a full-body cartoon: a head traced from a photo on a
 shaded, big-head body. Arms and legs bend smoothly at the elbows and knees, the spine bends at the
-waist, and the face has eyelids, a talking mouth and eight expressions. Mbappé is the first one.
+waist, and the face has eyelids, a talking mouth and eight expressions.
+
+Every player has a **signature** that makes him unique in the cartoons, set in his spec:
+
+| Player | Signature |
+| --- | --- |
+| `MbappeFigure` | "Kylian the dictator": wears the generalissimo uniform by default (`costume: 'kit'` for match scenes); `salute`, `handInCoat`, `command` |
+| `YamalFigure` | Huge baggy shorts hanging off his hips and flapping as he moves (`shorts: 'baggy'`; also `'low'`, `'normal'`), lanky build, braces; `hitchShorts` pulls them up – briefly; `flapShorts` = gust of wind |
 
 ```
 src/components/figures/
 ├─ PortraitFigure.ts    The figure: rig, kit, face layers; FigureSpec = what a player file provides
-├─ players/mbappe.ts    MBAPPE spec, MbappeFigure, createMbappePortrait (one file per player)
+├─ players/            One file per player: mbappe.ts, yamal.ts (spec, Figure class, portrait)
 ├─ expressions.ts       Expression list, eye and brow generator, FaceSpec
 ├─ costumes.ts          'generalissimo', 'emperor' ("Kylian the dictator")
 ├─ body.ts              Builds ('athletic', 'lanky', 'stocky') and the relaxed rest pose
@@ -282,7 +289,7 @@ tl.add(act.run(mbappe, { to: 800 }))
   .add(act.blinkRandomly(mbappe, tl.duration()), 0);
 ```
 
-Options: `kit` (defaults to the player's), `build`, `costume`, `expression`, plus the usual
+Options: `kit`, `build`, `costume`, `shorts` (default: the player's signature), `expression`, plus the usual
 `x`, `y`, `scale` (negative `scaleX` faces left). `createMbappePortrait({ scale: 0.4 })` gives the
 head and shoulders alone, pivoted at the chin.
 
@@ -294,7 +301,7 @@ head and shoulders alone, pivoted at the chin.
 | Moving | `idle`, `walk`, `run`, `hop`, `flop` + `getUp`, `face` |
 | Gestures | `wave`, `cheer`, `celebrate`, `crossArms`, `handsOnHips`, `handsOnHead`, `shrug`, `point`, `think`, `clap`, `dance` |
 | Ball | `kick(m, ball, { toX, peak })`, `juggle(m, ball)` |
-| Dictator | `salute`, `handInCoat`, `command` (best in a costume) |
+| Signatures | `salute`, `handInCoat`, `command` (the dictator), `hitchShorts`, `flapShorts`, `flutter` (baggy shorts) |
 | Building blocks | `pose(m, { rightArm: -90, rightForearm: -20 })`, `rest(m)` |
 
 Expressions: `neutral` (the traced portrait), `happy`, `laugh`, `smug`, `angry`, `sad`, `shocked`,
@@ -311,8 +318,10 @@ is negative and a bent knee is positive.
 3. Copy `figures/players/mbappe.ts` to `players/<name>.ts`. Set the eye corners, brow ends, skin
    colors, kit, eyelids, talking mouth, and a mouth per expression, all in portrait coordinates.
    Eyes and brows are generated from the landmarks; tune them with `face.shapes` if needed.
+   Give him a signature (a build, `costume`, `shorts`, or a new action) – what fans joke about.
 4. Export it from `src/components/index.ts` and add `scenes: figureShowcase(<NAME>)` to
-   `src/episodes/index.ts` to check every action, then compare the head with the photo.
+   `src/episodes/index.ts` (with his signature chapters first) to check every action, then compare
+   the head with the photo.
 
 ## Vertical videos (Shorts, TikTok, Reels)
 

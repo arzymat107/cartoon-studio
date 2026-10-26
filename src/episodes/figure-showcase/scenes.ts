@@ -1,12 +1,14 @@
 /**
  * Showcase of every portrait-figure action, costume, build and expression, one chapter each,
  * so they can be picked from the player. Not a Short – a reference sheet for building episodes.
- * Register one per player in src/episodes/index.ts: `scenes: figureShowcase(MBAPPE)`.
+ * Register one per player in src/episodes/index.ts, with his signature chapters first:
+ *   scenes: figureShowcase(MBAPPE, { signature: DICTATOR_CHAPTERS })
  */
 import { gsap } from 'gsap';
 import { figureActions as act } from '@/animations';
 import {
   Ball, FIGURE_EXPRESSIONS, PortraitFigure, SpeechBubble, TextLabel, type CostumeName, type FigureBuildName, type FigureSpec,
+  type ShortsStyle,
 } from '@/components';
 import { Scene, type SceneClass, type Timeline } from '@/engine';
 import { animateStadium, createStadium, GROUND_Y, type Stadium } from '../football/stadium';
@@ -35,7 +37,9 @@ interface Action {
   bubble?: string;
   /** Show these builds side by side instead of one athletic figure. */
   builds?: FigureBuildName[];
-  costume?: CostumeName;
+  /** Show these shorts styles side by side. */
+  shortsStyles?: ShortsStyle[];
+  costume?: CostumeName | 'kit';
 }
 
 /** The "Kylian the dictator" routine, for either costume. */
@@ -46,9 +50,40 @@ const dictator = ({ m, bubble }: Props) => gsap.timeline()
   .add(act.say(m, bubble, { duration: 1.2 }), '<0.2')
   .add(act.crossArms(m, { hold: 1.2 }), '+=0.3');
 
-const ACTIONS: Action[] = [
+/** Mbappé's signature: the dictator. */
+export const DICTATOR_CHAPTERS: Action[] = [
   { title: 'Dictator: Generalissimo', code: "{ costume: 'generalissimo' }", costume: 'generalissimo', bubble: 'I decide\nwho plays!', play: dictator },
   { title: 'Dictator: Emperor', code: "{ costume: 'emperor' }", costume: 'emperor', bubble: 'I decide\nwho plays!', play: dictator },
+  { title: 'Salute', code: 'salute(m)', costume: 'generalissimo', play: ({ m }) => act.salute(m) },
+  { title: 'Hand in coat', code: 'handInCoat(m)', costume: 'emperor', play: ({ m }) => act.handInCoat(m) },
+  { title: 'Command', code: 'command(m)', costume: 'generalissimo', play: ({ m }) => act.command(m) },
+];
+
+/** Yamal's signature: shorts pulled down, hitched up, sliding down again. */
+export const SHORTS_CHAPTERS: Action[] = [
+  {
+    title: 'Pulled-down shorts', code: 'hitchShorts(m)', bubble: 'They fit\nperfectly.', x: 300,
+    play: ({ m, bubble }) => gsap.timeline()
+      .add(act.idle(m, 1.2))
+      .add(act.hitchShorts(m, { hold: 0.2 }))
+      .add(act.walk(m, { to: 760, duration: 1.6 }), '-=0.9')
+      .add(act.say(m, bubble, { duration: 1.2 }), '+=0.1')
+      .add(act.hitchShorts(m, { hold: 0.6 }), '+=0.2')
+      .add(act.shrug(m), '+=0.2'),
+  },
+  { title: 'Gust of wind', code: 'flapShorts(m)', play: ({ m }) => act.flapShorts(m) },
+  {
+    title: 'Shorts styles', code: "{ shorts: 'normal' | 'low' | 'baggy' }", shortsStyles: ['normal', 'low', 'baggy'],
+    play: ({ all }) => {
+      const tl = gsap.timeline();
+      all.forEach((f) => tl.add(act.idle(f, 1.4), 0).add(act.dance(f, { beats: 6 }), 1.4).add(act.hitchShorts(f, { hold: 0.3 }), 3.2));
+      return tl;
+    },
+  },
+];
+
+const ACTIONS: Action[] = [
+  { title: 'In the kit', code: "{ costume: 'kit' }", costume: 'kit', play: ({ m }) => gsap.timeline().add(act.idle(m, 1.4)).add(act.wave(m)) },
   {
     title: 'Expressions', code: "emote(m, 'happy')",
     play: ({ m }) => act.expressions(m, [...FIGURE_EXPRESSIONS.filter((e) => e !== 'neutral'), 'neutral'], { each: 1.1 }),
@@ -83,19 +118,16 @@ const ACTIONS: Action[] = [
   { title: 'Surprised', code: 'surprised(m)', play: ({ m }) => act.surprised(m) },
   { title: 'Sulk', code: 'sulk(m)', play: ({ m }) => act.sulk(m) },
   { title: 'Rage', code: 'rage(m)', play: ({ m }) => act.rage(m) },
-  { title: 'Salute', code: 'salute(m)', costume: 'generalissimo', play: ({ m }) => act.salute(m) },
-  { title: 'Hand in coat', code: 'handInCoat(m)', costume: 'emperor', play: ({ m }) => act.handInCoat(m) },
-  { title: 'Command', code: 'command(m)', costume: 'generalissimo', play: ({ m }) => act.command(m) },
   { title: 'Nod & shake head', code: 'nod(m) · shakeHead(m)', play: ({ m }) => gsap.timeline().add(act.nod(m)).add(act.shakeHead(m), '+=0.4') },
   {
     title: 'Kick', code: 'kick(m, ball, { toX: 1200, peak: 300 })', ball: 70, x: 400,
     play: ({ m, ball }) => act.kick(m, ball, { toX: 1250, peak: 320, duration: 0.8, power: 1.2 }),
   },
-  { title: 'Juggle', code: 'juggle(m, ball)', ball: 110 * SCALE, x: 440, play: ({ m, ball }) => act.juggle(m, ball) },
+  { title: 'Juggle', code: 'juggle(m, ball)', ball: 0, x: 440, play: ({ m, ball }) => act.juggle(m, ball) },
   { title: 'Flop & get up', code: 'flop(m) · getUp(m)', play: ({ m }) => gsap.timeline().add(act.flop(m)).add(act.getUp(m), '+=0.6') },
 ];
 
-function actionScene(spec: FigureSpec, action: Action, index: number): SceneClass {
+function actionScene(spec: FigureSpec, action: Action, index: number, total: number): SceneClass {
   const { kit } = spec;
   return class extends Scene {
     readonly title = `${index + 1}. ${action.title}`;
@@ -108,6 +140,8 @@ function actionScene(spec: FigureSpec, action: Action, index: number): SceneClas
       const x = action.x ?? CENTER;
       const all = action.builds
         ? action.builds.map((build, i) => new PortraitFigure(spec, { build, x: 190 + i * 350, y: GROUND_Y, scale: 1.15 }))
+        : action.shortsStyles
+        ? action.shortsStyles.map((shorts, i) => new PortraitFigure(spec, { shorts, x: 190 + i * 350, y: GROUND_Y, scale: 1.15 }))
         : [new PortraitFigure(spec, { x, y: GROUND_Y, scale: SCALE, costume: action.costume })];
       const m = all[0];
       const ball = new Ball({ x: x + (action.ball ?? 0), y: GROUND_Y, radius: 24, opacity: action.ball === undefined ? 0 : 1 });
@@ -115,7 +149,7 @@ function actionScene(spec: FigureSpec, action: Action, index: number): SceneClas
       this.props = { m, all, ball, bubble };
 
       const label = new TextLabel({
-        text: `${index + 1}/${ACTIONS.length} · ${action.title.toUpperCase()}`, x: width / 2, y: 250,
+        text: `${index + 1}/${total} · ${action.title.toUpperCase()}`, x: width / 2, y: 250,
         fontSize: 64, font: FONT, weight: 400, color: '#ffffff', background: 'rgba(27,42,89,0.92)',
       });
       const code = new TextLabel({
@@ -135,5 +169,11 @@ function actionScene(spec: FigureSpec, action: Action, index: number): SceneClas
   };
 }
 
-/** One chapter per action for this player. */
-export const figureShowcase = (spec: FigureSpec): SceneClass[] => ACTIONS.map((action, i) => actionScene(spec, action, i));
+/**
+ * One chapter per action for this player: his `signature` chapters first, then every generic one.
+ * `greeting` is what he says in the "Say" chapter.
+ */
+export function figureShowcase(spec: FigureSpec, { greeting = 'Bonjour\nMadrid!', signature = [] as Action[] } = {}): SceneClass[] {
+  const chapters = [...signature, ...ACTIONS].map((action) => (action.title === 'Say' ? { ...action, bubble: greeting } : action));
+  return chapters.map((action, i) => actionScene(spec, action, i, chapters.length));
+}

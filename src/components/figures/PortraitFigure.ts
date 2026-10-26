@@ -24,10 +24,24 @@ export interface FigureSpec {
   /** Bottom of the chin in portrait coordinates: the pivot of the portrait. */
   chin: Point;
   skin: SkinPalette;
-  /** Default kit. */
+  /** Default kit and build. */
   kit: Kit;
+  build?: FigureBuildName | FigureBuild;
+  /**
+   * Signature look, used unless the options say otherwise – what makes the player recognizable
+   * in the cartoons: a costume (Mbappé the dictator) or how he wears his shorts (Yamal).
+   */
+  costume?: CostumeName;
+  shorts?: ShortsStyle;
   face: FaceSpec;
 }
+
+/**
+ * 'low' = pulled down: sagging off the hips to the knees, the undershorts' waistband showing.
+ * 'baggy' = the caricature: huge basketball-style shorts in one piece, hanging off the hips past the
+ *   knees and flapping as he moves.
+ */
+export type ShortsStyle = 'normal' | 'low' | 'baggy';
 
 /** Scale of the 680 × 880 portrait on the body. */
 const HEAD_SCALE = 0.2;
@@ -41,12 +55,14 @@ export function createPortrait(spec: FigureSpec, options: Omit<SvgArtOptions, 'm
 }
 
 export interface PortraitFigureOptions extends ActorOptions {
-  /** Defaults to the player's kit. */
+  /** Default: the player's kit and build. */
   kit?: Kit;
   build?: FigureBuildName | FigureBuild;
   expression?: FigureExpression;
-  /** Dress up instead of the kit: 'generalissimo' or 'emperor'. */
-  costume?: CostumeName;
+  /** Dress up: 'generalissimo' or 'emperor'; 'kit' = the football kit even if the player's signature is a costume. */
+  costume?: CostumeName | 'kit';
+  /** Default: the player's signature. */
+  shorts?: ShortsStyle;
 }
 
 /**
@@ -79,6 +95,11 @@ export class PortraitFigure extends Actor {
   readonly height: number;
 
   readonly torso: Actor;
+  /** The shorts (or a costume's coat skirt) on the hips: move `y` to hitch them up. */
+  readonly shorts: Actor;
+  readonly shortsStyle: ShortsStyle;
+  /** The baggy shorts (empty for other styles), pivot at the waistband: tween `rotation` / `scaleX` to flap them. */
+  readonly shortsFlaps: Actor[] = [];
   readonly chest: Actor;
   readonly head: Actor;
   readonly eyes: Actor;
@@ -101,11 +122,12 @@ export class PortraitFigure extends Actor {
   private numberGroup?: SVGGElement;
   private readonly softId = uid('figure-soft');
 
-  constructor(spec: FigureSpec, { kit = spec.kit, build = 'athletic', expression = 'neutral', costume, ...options }: PortraitFigureOptions = {}) {
+  constructor(spec: FigureSpec, { kit = spec.kit, build = spec.build ?? 'athletic', expression = 'neutral', costume = spec.costume, shorts = spec.shorts ?? 'normal', ...options }: PortraitFigureOptions = {}) {
     super({ name: spec.name, ...options });
     this.spec = spec;
     this.kit = kit;
-    this.costume = costume ? COSTUMES[costume] : null;
+    this.costume = costume && costume !== 'kit' ? COSTUMES[costume] : null;
+    this.shortsStyle = shorts;
     const b = (this.build = typeof build === 'string' ? FIGURE_BUILDS[build] : build);
     this.hipY = -(b.thigh + b.shin + 12);
     this.height = -this.hipY - WAIST - this.headY + 168 + (this.costume?.hatHeight ?? 0);
@@ -118,9 +140,11 @@ export class PortraitFigure extends Actor {
 
     this.torso = new Actor({ name: 'torso', y: this.hipY, rotation: FIGURE_REST.torso });
     this.chest = new Actor({ name: 'chest', y: WAIST, rotation: FIGURE_REST.chest });
+    this.shorts = new Actor({ name: 'shorts' });
     this.drawNeck();
     if (this.costume) {
-      this.costume.hips(this.torso.draw('g'), this.painter);
+      this.torso.add(this.shorts);
+      this.costume.hips(this.shorts.draw('g'), this.painter);
       this.costume.chest(this.chest.draw('g', { transform: `translate(0 ${-WAIST})` }), this.painter);
     } else {
       this.drawShorts();
@@ -207,11 +231,52 @@ export class PortraitFigure extends Actor {
 
   // ── Torso ─────────────────────────────────────────────────────────────
 
-  /** Shorts, in torso space (hip at 0, 0). */
+  /** Shorts, in torso space (hip at 0, 0). Pulled-down shorts also get leg covers to the knees (see `leg()`). */
   private drawShorts(): void {
     const { kit } = this;
     const fabric = shade(kit.shorts, 0.17);
-    const g = this.torso.draw('g', { transform: `scale(${this.build.torsoWidth} 1)` });
+    const scale = `scale(${this.build.torsoWidth} 1)`;
+    if (this.shortsStyle !== 'normal') {
+      // Black undershorts with a white waistband, showing between the shirt and the sagging shorts.
+      const under = this.torso.draw('g', { transform: scale });
+      new Shape(under, '#1d1d1f', '#0e0e10', 6, this.softId).set(smoothPath([[-47, -28], [-49, 0], [-50, 30], [0, 36], [50, 30], [49, 0], [47, -28], [0, -30]]));
+      new Shape(under, '#f2f2f2', '#c9c9c9', 2, this.softId).set('M -47 -26 Q 0 -32 47 -26 L 48 -12 Q 0 -18 -48 -12 Z');
+    }
+    this.torso.add(this.shorts);
+    const g = this.shorts.draw('g', { transform: scale });
+    if (this.shortsStyle === 'low') {
+      // The waistband sags lower in the middle; the drawstrings dangle.
+      new Shape(g, kit.shorts, fabric, 9, this.softId)
+        .set(smoothPath([[-52, 0], [-26, 8], [0, 14], [26, 8], [52, 0], [58, 22], [62, 44], [10, 46], [0, 36], [-10, 46], [-62, 44], [-58, 22]]));
+      g.appendChild(svg('path', { d: 'M -52 6 Q 0 22 52 6', stroke: kit.trim ?? fabric, 'stroke-width': 3, fill: 'none' }));
+      g.appendChild(svg('path', { d: 'M -4 16 Q -8 30 -5 40 M 4 16 Q 9 28 7 38', stroke: '#f2f2f2', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round' }));
+      return;
+    }
+    if (this.shortsStyle === 'baggy') {
+      // One piece hanging off the hips like oversized basketball shorts: the waistband dips low in
+      // the middle, two wide legs flare out past the knees. Pivot at the waistband, so it can flap.
+      const L = this.build.thigh;
+      const flap = new Actor({ name: 'shortsFlap', y: 20 });
+      const d = flap.draw('g', { transform: 'translate(0 -20)' });
+      const crotch = L * 0.52;
+      new Shape(d, kit.shorts, fabric, 12, this.softId).set(smoothPath([
+        [-58, 12], [-28, 22], [0, 30], [28, 22], [58, 12], [68, 40], [76, L * 0.55], [84, L],
+        [58, L + 7], [32, L + 3], [12, L + 6], [4, crotch + 14], [0, crotch], [-4, crotch + 14], [-12, L + 6], [-32, L + 3], [-58, L + 7],
+        [-84, L], [-76, L * 0.55], [-68, 40],
+      ]));
+      // Side stripes, folds and hems.
+      for (const side of [-1, 1]) {
+        d.appendChild(svg('path', { d: `M ${side * 64} 30 Q ${side * 74} ${L * 0.55} ${side * 80} ${L - 2}`, stroke: kit.trim ?? shade(kit.shorts, 0.3), 'stroke-width': 5, fill: 'none', 'stroke-linecap': 'round' }));
+        d.appendChild(svg('path', { d: `M ${side * 30} ${L * 0.5} Q ${side * 36} ${L * 0.8} ${side * 34} ${L - 2}`, stroke: fabric, 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round' }));
+        d.appendChild(svg('path', { d: `M ${side * 82} ${L - 2} Q ${side * 46} ${L + 6} ${side * 12} ${L + 3}`, stroke: shade(kit.shorts, 0.3), 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' }));
+      }
+      d.appendChild(svg('path', { d: `M 0 ${crotch} L 0 ${crotch - 22}`, stroke: fabric, 'stroke-width': 2, fill: 'none' }));
+      d.appendChild(svg('path', { d: 'M -58 18 Q 0 40 58 18', stroke: kit.trim ?? fabric, 'stroke-width': 3.5, fill: 'none' }));
+      d.appendChild(svg('path', { d: 'M -4 32 Q -12 52 -6 70 M 4 32 Q 12 50 9 66', stroke: '#f2f2f2', 'stroke-width': 2.4, fill: 'none', 'stroke-linecap': 'round' }));
+      this.shorts.el.appendChild(flap.el);
+      this.shortsFlaps.push(flap);
+      return;
+    }
     new Shape(g, kit.shorts, fabric, 9, this.softId)
       .set(smoothPath([[-44, -38], [-49, -6], [-54, 30], [-30, 36], [-7, 30], [0, 16], [7, 30], [30, 36], [54, 30], [49, -6], [44, -38], [0, -40]]));
     g.appendChild(svg('path', { d: 'M 0 -18 L 0 16', stroke: fabric, 'stroke-width': 1.5, fill: 'none' }));
@@ -290,7 +355,11 @@ export class PortraitFigure extends Actor {
       covers: costume
         // Trousers or breeches, then tall riding boots.
         ? [{ from: 0, to: 0.66, extra: 3, color: costume.trousers }, { from: 0.56, to: 1, extra: 2.5, color: costume.boots }]
-        : [{ from: 0.58, to: 1, extra: 1, color: kit.socks, band: kit.trim, bandAt: 0.06 }],
+        : [
+          { from: 0.58, to: 1, extra: 1, color: kit.socks, band: kit.trim, bandAt: 0.06 },
+          // Pulled-down shorts: baggy legs down to the knees.
+          ...(this.shortsStyle === 'low' ? [{ from: 0.06, to: 0.5, extra: 9, color: kit.shorts, band: kit.trim ?? shade(kit.shorts, 0.3) }] : []),
+        ],
       end: boot(side, b.foot, costume?.boots ?? kit.boots ?? '#1b1b1b'), endTurn: 0.7, endOnTop: true,
     }).joints;
   }

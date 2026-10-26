@@ -234,6 +234,20 @@ interface Gait {
   twist: number;
 }
 
+/**
+ * Baggy shorts flapping for `duration` seconds: they swing from the waistband and puff out.
+ * Does nothing for other shorts. `period` = seconds per flap.
+ */
+export function flutter(m: PortraitFigure, duration: number, { amount = 8, period = 0.3 } = {}): Timeline {
+  const tl = gsap.timeline();
+  const flaps = Math.max(1, Math.round(duration / period));
+  m.shortsFlaps.forEach((flap, i) => {
+    const swing = { duration: period / 2, repeat: flaps * 2 - 1, yoyo: true, ease: 'sine.inOut', immediateRender: false };
+    tl.fromTo(flap, { rotation: -amount * 0.5, scaleX: 0.92 }, { rotation: amount * 0.5, scaleX: 1.1, ...swing }, i * period * 0.25);
+  });
+  return tl.to(m.shortsFlaps, { rotation: 0, scaleX: 1, duration: 0.2 }, duration);
+}
+
 function stride(m: PortraitFigure, { to, duration, stepDuration, ease, footsteps }: Required<MoveOptions>, g: Gait): Timeline {
   const steps = Math.max(2, Math.round(duration / stepDuration));
   const step = duration / steps;
@@ -242,6 +256,7 @@ function stride(m: PortraitFigure, { to, duration, stepDuration, ease, footsteps
   const late = { ...swing, delay: step * 0.15 };
   const tl = gsap.timeline();
   if (footsteps) for (let i = 1; i <= steps; i++) tl.add(sfx(synth.step), i * step);
+  tl.add(flutter(m, duration, { amount: g.leg * 0.3, period: step }), 0);
   return tl
     .set(m, { scaleX: () => (to >= m.x ? 1 : -1) * Math.abs(m.scaleX), immediateRender: false }, 0)
     .to(m, { x: to, duration, ease }, 0)
@@ -282,6 +297,7 @@ export function idle(m: PortraitFigure, duration: number): Timeline {
   const each = duration / breaths;
   const breathe = { duration: each / 2, repeat: breaths * 2 - 1, yoyo: true, ease: 'sine.inOut' };
   return gsap.timeline()
+    .add(flutter(m, duration, { amount: 3, period: 1.1 }), 0)
     .to(m.torso, { y: m.hipY - 3, ...breathe }, 0)
     .to(m.chest, { rotation: FIGURE_REST.chest - 2, ...breathe }, 0)
     .to(m.leftArm, { rotation: FIGURE_REST.leftArm + 4, ...breathe }, 0.15)
@@ -450,7 +466,7 @@ export function clap(m: PortraitFigure, { times = 5, speed = 0.16 } = {}): Timel
 
 /** Hips and arms to the beat. */
 export function dance(m: PortraitFigure, { beats = 8, beat = 0.25 } = {}): Timeline {
-  const tl = gsap.timeline().add(emote(m, 'happy'), 0);
+  const tl = gsap.timeline().add(emote(m, 'happy'), 0).add(flutter(m, beats * beat, { amount: 12, period: beat * 2 }), 0);
   for (let i = 0; i < beats; i++) {
     const s = i % 2 ? 1 : -1;
     tl.add(pose(m, {
@@ -487,16 +503,18 @@ export function kick(m: PortraitFigure, ball?: Ball, { power = 1, ...path }: Par
 }
 
 /**
- * Keepy-uppies on the right knee. Put the ball over his raised knee: ball.x ≈ m.x + 110 × his scale
- * (facing right, athletic build). `touch` = height of the knee top above the ground, in the ball's space.
- * With `drop: true` the last touch lets the ball fall to the ground.
+ * Keepy-uppies on the right knee. The ball starts over his raised knee (any build); `touch` = height
+ * of the knee top above the ground, in the ball's space. With `drop: true` the ball falls at the end.
  */
-export function juggle(
-  m: PortraitFigure, ball: Ball, { touches = 5, step = 0.55, height = 170, touch = 150 * Math.abs(m.scaleY), drop = true } = {},
-): Timeline {
+export function juggle(m: PortraitFigure, ball: Ball, { touches = 5, step = 0.55, height = 170, touch = 0, drop = true } = {}): Timeline {
+  const knee = (55 * Math.PI) / 180;
+  const { thigh, torsoWidth } = m.build;
+  const scale = Math.abs(m.scaleY);
+  const top = touch || (-m.hipY - thigh * Math.cos(knee) + 8) * scale;
   const tl = gsap.timeline()
+    .set(ball, { x: () => m.x + Math.sign(m.scaleX) * (25 * torsoWidth + thigh * Math.sin(knee)) * scale, immediateRender: false }, 0)
     .add(emote(m, 'determined'), 0)
-    .add(flight(ball, { dx: 0, peak: height + touch, land: touch, duration: step }), 0)
+    .add(flight(ball, { dx: 0, peak: height + top, land: top, duration: step }), 0)
     .add(pose(m, { leftArm: 40, rightArm: -30, leftForearm: 20, rightForearm: -20 }, { duration: 0.2 }), 0);
   for (let i = 0; i < touches; i++) {
     const t = step + i * step;
@@ -505,7 +523,7 @@ export function juggle(
       .to(m.rightShin, { rotation: 55, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.out' }, t - 0.12)
       .to(m.chest, { rotation: 4, duration: 0.12, yoyo: true, repeat: 1 }, t - 0.12)
       .add(sfx(() => synth.kick(0.3)), t)
-      .add(flight(ball, { dx: 0, from: touch, peak: touch + height, land: last && drop ? 0 : touch, duration: step - 0.02, spin: 0.6 }), t);
+      .add(flight(ball, { dx: 0, from: top, peak: top + height, land: last && drop ? 0 : top, duration: step - 0.02, spin: 0.6 }), t);
   }
   const end = step * (touches + 1);
   return tl.add(rest(m), end).add(emote(m, 'happy'), end).add(emote(m, 'neutral'), end + step);
@@ -544,4 +562,36 @@ export function command(m: PortraitFigure, { duration = 1.6 } = {}): Timeline {
     .add(talk(m, { duration, speed: 0.08 }), 0.15)
     .add(rest(m), duration + 0.3)
     .add(emote(m, 'neutral'), duration + 0.5);
+}
+
+// ── Pulled-down shorts (Yamal's signature) ───────────────────────────
+
+/** Grab the waistband, hitch the shorts up with a little hop – and watch them slowly slide back down. */
+export function hitchShorts(m: PortraitFigure, { hold = 0.5 } = {}): Timeline {
+  const slide = 0.75 + hold;
+  return gsap.timeline()
+    .add(emote(m, 'determined'), 0)
+    .add(pose(m, { leftArm: 16, leftForearm: -26, rightArm: -16, rightForearm: 26, chest: 5, head: 6 }, { duration: 0.25 }), 0)
+    .add(sfx(synth.swish), 0.3)
+    .to(m.shorts, { y: -26, duration: 0.18, ease: 'back.out(2)' }, 0.3)
+    .add(pose(m, { leftForearm: -58, rightForearm: 58, chest: -3 }, { duration: 0.18 }), 0.3)
+    .to(m.torso, { y: m.hipY - 10, duration: 0.15, yoyo: true, repeat: 1, ease: 'power2.out' }, 0.3)
+    .add(emote(m, 'smug'), 0.5)
+    .add(rest(m), 0.6)
+    .to(m.shorts, { y: 0, duration: 1.2, ease: 'power2.in' }, slide)
+    .add(flutter(m, 1.2, { amount: 6, period: 0.4 }), slide)
+    .add(emote(m, 'shocked'), slide + 1.1)
+    .add(emote(m, 'neutral'), slide + 1.7);
+}
+
+/** A gust of wind: the baggy shorts billow and flap wildly while he tries to hold them down. */
+export function flapShorts(m: PortraitFigure, { duration = 1.6 } = {}): Timeline {
+  return gsap.timeline()
+    .add(emote(m, 'shocked'), 0)
+    .add(sfx(synth.whoosh), 0)
+    .add(pose(m, { leftArm: 20, leftForearm: -40, rightArm: -20, rightForearm: 40, chest: 6, leftLeg: 6, rightLeg: -6 }, { duration: 0.2 }), 0)
+    .add(flutter(m, duration, { amount: 18, period: 0.16 }), 0)
+    .to(m.shortsFlaps, { scaleY: 1.06, duration: 0.2, yoyo: true, repeat: Math.round(duration / 0.2) - 1 }, 0)
+    .add(rest(m), duration)
+    .add(emote(m, 'neutral'), duration + 0.2);
 }

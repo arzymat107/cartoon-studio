@@ -1,9 +1,9 @@
-import { MBAPPE } from '@/components';
+import { MBAPPE, YAMAL } from '@/components';
 import type { Episode } from '@/engine';
 import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FinedScene } from './fined/scenes/FinedScene';
-import { figureShowcase } from './figure-showcase/scenes';
+import { DICTATOR_CHAPTERS, figureShowcase, SHORTS_CHAPTERS } from './figure-showcase/scenes';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
 import { DressingRoomScene } from './madrid-laughs/scenes/DressingRoomScene';
 import { FullTimeScene } from './madrid-laughs/scenes/FullTimeScene';
@@ -61,7 +61,13 @@ export const episodes: Record<string, Episode> = {
     title: 'Mbappé – All Actions (reference)',
     width: 1080,
     height: 1920,
-    scenes: figureShowcase(MBAPPE),
+    scenes: figureShowcase(MBAPPE, { signature: DICTATOR_CHAPTERS }),
+  },
+  'yamal-actions': {
+    title: 'Yamal – All Actions (reference)',
+    width: 1080,
+    height: 1920,
+    scenes: figureShowcase(YAMAL, { greeting: 'Hola\nculers!', signature: SHORTS_CHAPTERS }),
   },
 };
 

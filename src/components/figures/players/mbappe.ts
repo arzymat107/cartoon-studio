@@ -1,9 +1,11 @@
 /**
  * Kylian Mbappé: portrait "M1", traced from a reference photo with his natural asymmetry kept
- * (head tilt, the right brow higher, a lopsided smile). Real Madrid #10 kit, no crest.
+ * (head tilt, the right brow higher, a lopsided smile). Signature: "Kylian the dictator" – he wears
+ * the generalissimo uniform unless you ask for the kit. Real Madrid #10 kit, no crest.
  *
- *   new MbappeFigure({ x: 540, y: 1600, scale: 1.6 })            full body, animate with figureActions
- *   new MbappeFigure({ costume: 'emperor', expression: 'smug' }) "Kylian the dictator"
+ *   new MbappeFigure({ x: 540, y: 1600, scale: 1.6 })            the dictator; animate with figureActions
+ *   new MbappeFigure({ costume: 'kit' })                         in the Madrid kit, for match scenes
+ *   new MbappeFigure({ costume: 'emperor', expression: 'smug' }) Emperor Kylian
  *   createMbappePortrait({ x, y, scale: 0.4 })                   head and shoulders only
  */
 import portrait from '@/assets/portraits/mbappe-m1.svg?raw';
@@ -115,6 +117,7 @@ export const MBAPPE: FigureSpec = {
   chin: [352, 842],
   skin: SKIN,
   kit: { shirt: '#f7f7f2', trim: '#c9a227', number: 10, numberColor: '#1b2a59', shorts: '#f7f7f2', socks: '#f7f7f2', boots: '#2a2a2a' },
+  costume: 'generalissimo',
   face: FACE,
 };
 
