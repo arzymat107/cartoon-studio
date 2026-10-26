@@ -1,10 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 880">
   <!-- Kylian Mbappé, portrait "M1": traced from a reference photo, natural asymmetry kept. Origin of the artwork: top-left of a 680 × 880 frame; chin bottom ≈ (352, 842). -->
+<g data-part="neck">
 <path d="M218 760 C214 800 206 840 196 880 L524 880 C512 840 506 800 504 750 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M220 770 C280 840 440 840 504 760 L506 812 C440 870 280 870 214 806 Z" fill="#8a5638" opacity=".55"/>
+</g>
+<g data-part="shirt">
 <path d="M-20 900 C-10 860 60 836 170 826 C230 860 470 860 540 820 C640 830 700 860 710 900 Z" fill="#f7f6f2" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M170 826 C240 868 470 866 540 820" stroke="#1f5a5a" stroke-width="22" fill="none" stroke-linecap="round"/>
 <path d="M20 872 C60 846 110 834 160 830 M560 826 C610 832 650 846 680 866" stroke="#d2486a" stroke-width="16" fill="none"/>
+</g>
 <path d="M104 462 C70 444 40 470 44 526 C48 580 76 620 116 614 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 <path d="M92 486 C70 482 62 512 70 546 C76 572 90 590 104 590" stroke="#8a5638" stroke-width="7" fill="none" stroke-linecap="round"/>
 <path d="M596 424 C622 408 644 434 640 482 C636 532 616 568 588 576 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
@@ -51,8 +55,11 @@
     <path d="M170 90 C240 46 400 40 500 84" stroke="#ffffff" stroke-width="10" fill="none" opacity=".12" stroke-linecap="round"/>
   </g>
 <path d="M128 230 L220 214 L340 202 L450 196 L556 214" stroke="#141010" stroke-width="4" fill="none"/>
+<g data-part="brows">
 <path d="M150 392 C190 368 250 356 298 364 L296 386 C252 380 198 386 154 404 Z" fill="#141010"/>
 <path d="M396 368 C440 348 492 334 534 344 L530 362 C490 355 440 364 399 386 Z" fill="#141010"/>
+</g>
+<g data-part="eyes">
 <clipPath id="mbappe-m1-e0">
 <path d="M 160 442 C 182 418 238 416 264 438 C 236 452 184 452 160 442 Z"/>
 </clipPath>
@@ -79,6 +86,7 @@
 <path d="M 390 430 C 419 400 475 398 508 412" stroke="#2b1a12" stroke-width="8" fill="none" stroke-linecap="round"/>
 <path d="M 404 402 C 425 382 471 380 498 400" stroke="#8a5638" stroke-width="4" fill="none" stroke-linecap="round"/>
 <path d="M 408 442 C 433 456 465 454 492 436" stroke="#8a5638" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g>
 <path d="M300 446 C296 486 286 506 260 528 C246 546 254 570 282 570 C300 584 380 584 400 568 C428 570 438 546 424 526 C400 504 390 486 384 446 Z" fill="#8a5638" opacity=".35"/>
 <path d="M300 540 C304 520 324 506 344 506 C366 506 384 520 388 540 C380 556 310 558 300 540 Z" fill="#e8bb93" opacity=".7"/>
 <path d="M318 520 C328 512 352 510 364 518" stroke="#fff" stroke-width="5" fill="none" opacity=".3" stroke-linecap="round"/>
@@ -87,6 +95,7 @@
 <path d="M296 568 C320 580 364 580 386 566" stroke="#64381f" stroke-width="4" fill="none" stroke-linecap="round"/>
 <ellipse cx="304" cy="560" rx="15" ry="8" fill="#64381f" transform="rotate(12 304 560)"/>
 <ellipse cx="380" cy="558" rx="15" ry="8" fill="#64381f" transform="rotate(-12 380 558)"/>
+<g data-part="mouth">
 <path clip-path="url(#mbappe-m1-face)" d="M260 548 C230 574 214 610 220 652" stroke="#8a5638" stroke-width="7" fill="none" stroke-linecap="round"/>
 <path clip-path="url(#mbappe-m1-face)" d="M420 532 C462 556 484 594 480 640" stroke="#64381f" stroke-width="9" fill="none" stroke-linecap="round" opacity=".85"/>
 <clipPath id="mbappe-m1-m">
@@ -109,4 +118,5 @@
 <path d="M244 650 C296 644 400 636 472 620 C452 652 410 678 352 680 C298 680 264 670 244 650 Z" fill="none" stroke="#2b1a12" stroke-width="4" stroke-linejoin="round"/>
 <path d="M476 610 C490 614 494 628 486 642" stroke="#64381f" stroke-width="5" fill="none" stroke-linecap="round"/>
 <path d="M240 646 C232 650 230 658 236 666" stroke="#8a5638" stroke-width="4" fill="none" stroke-linecap="round"/>
+</g>
 </svg>

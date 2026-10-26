@@ -3,6 +3,7 @@ import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FinedScene } from './fined/scenes/FinedScene';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
+import { MBAPPE_ACTION_SCENES } from './mbappe-actions/scenes';
 import { DressingRoomScene } from './madrid-laughs/scenes/DressingRoomScene';
 import { FullTimeScene } from './madrid-laughs/scenes/FullTimeScene';
 import { TableScene as MadridTableScene } from './madrid-laughs/scenes/TableScene';
@@ -54,6 +55,12 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: [FullTimeScene, DressingRoomScene, VideoCallScene, MadridTableScene],
+  },
+  'mbappe-actions': {
+    title: 'Mbappé – All Actions (reference)',
+    width: 1080,
+    height: 1920,
+    scenes: MBAPPE_ACTION_SCENES,
   },
 };
 
