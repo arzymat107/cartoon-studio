@@ -4,7 +4,7 @@
  */
 import { gsap } from 'gsap';
 import { mbappeActions as act } from '@/animations';
-import { Ball, MBAPPE_EXPRESSIONS, MbappeFigure, SpeechBubble, TextLabel, type MBAPPE_BUILDS } from '@/components';
+import { Ball, MBAPPE_EXPRESSIONS, MbappeFigure, SpeechBubble, TextLabel, type MBAPPE_BUILDS, type MbappeCostume } from '@/components';
 import { Scene, type SceneClass, type Timeline } from '@/engine';
 import { animateStadium, createStadium, GROUND_Y, type Stadium } from '../football/stadium';
 
@@ -32,9 +32,20 @@ interface Action {
   bubble?: string;
   /** Show these builds side by side instead of one athletic figure. */
   builds?: (keyof typeof MBAPPE_BUILDS)[];
+  costume?: MbappeCostume;
 }
 
+/** The "Kylian the dictator" routine, for either costume. */
+const dictator = ({ m, bubble }: Props) => gsap.timeline()
+  .add(act.handInCoat(m, { hold: 1.2 }))
+  .add(act.salute(m, { hold: 0.9 }), '+=0.2')
+  .add(act.command(m, { duration: 1.4 }), '+=0.2')
+  .add(act.say(m, bubble, { duration: 1.2 }), '<0.2')
+  .add(act.crossArms(m, { hold: 1.2 }), '+=0.3');
+
 const ACTIONS: Action[] = [
+  { title: 'Dictator: Generalissimo', code: "new MbappeFigure({ costume: 'generalissimo' })", costume: 'generalissimo', bubble: 'I decide\nwho plays!', play: dictator },
+  { title: 'Dictator: Emperor', code: "new MbappeFigure({ costume: 'emperor' })", costume: 'emperor', bubble: 'I decide\nwho plays!', play: dictator },
   {
     title: 'Expressions', code: "emote(m, 'happy')",
     play: ({ m }) => act.expressions(m, [...MBAPPE_EXPRESSIONS.filter((e) => e !== 'neutral'), 'neutral'], { each: 1.1 }),
@@ -69,6 +80,9 @@ const ACTIONS: Action[] = [
   { title: 'Surprised', code: 'surprised(m)', play: ({ m }) => act.surprised(m) },
   { title: 'Sulk', code: 'sulk(m)', play: ({ m }) => act.sulk(m) },
   { title: 'Rage', code: 'rage(m)', play: ({ m }) => act.rage(m) },
+  { title: 'Salute', code: 'salute(m)', costume: 'generalissimo', play: ({ m }) => act.salute(m) },
+  { title: 'Hand in coat', code: 'handInCoat(m)', costume: 'emperor', play: ({ m }) => act.handInCoat(m) },
+  { title: 'Command', code: 'command(m)', costume: 'generalissimo', play: ({ m }) => act.command(m) },
   { title: 'Nod & shake head', code: 'nod(m) · shakeHead(m)', play: ({ m }) => gsap.timeline().add(act.nod(m)).add(act.shakeHead(m), '+=0.4') },
   {
     title: 'Kick', code: 'kick(m, ball, { toX: 1200, peak: 300 })', ball: 70, x: 400,
@@ -90,7 +104,7 @@ function actionScene(action: Action, index: number): SceneClass {
       const x = action.x ?? CENTER;
       const all = action.builds
         ? action.builds.map((build, i) => new MbappeFigure({ build, x: 190 + i * 350, y: GROUND_Y, scale: 1.15 }))
-        : [new MbappeFigure({ x, y: GROUND_Y, scale: SCALE })];
+        : [new MbappeFigure({ x, y: GROUND_Y, scale: SCALE, costume: action.costume })];
       const m = all[0];
       const ball = new Ball({ x: x + (action.ball ?? 0), y: GROUND_Y, radius: 24, opacity: action.ball === undefined ? 0 : 1 });
       const bubble = new SpeechBubble({ text: action.bubble ?? '', fontSize: 46 });

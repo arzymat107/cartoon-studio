@@ -2,6 +2,7 @@ import { Actor, svg, uid, SVG_NS, type ActorOptions } from '@/engine';
 import { smoothPath } from '../characters/face';
 import type { Kit } from '../sport/Footballer';
 import { createMbappePortrait } from './mbappe';
+import { MBAPPE_COSTUMES, type Costume, type MbappeCostume, type Painter } from './mbappeCostumes';
 import { expressionMarkup, MBAPPE_EXPRESSIONS, type MbappeExpression } from './mbappeFace';
 
 type Point = [number, number];
@@ -57,6 +58,8 @@ export interface MbappeFigureOptions extends ActorOptions {
   kit?: Kit;
   build?: keyof typeof MBAPPE_BUILDS | MbappeBuild;
   expression?: MbappeExpression;
+  /** Dress him up instead of the kit: 'generalissimo' or 'emperor' ("Kylian the dictator"). */
+  costume?: MbappeCostume;
 }
 
 /**
@@ -77,6 +80,7 @@ export interface MbappeFigureOptions extends ActorOptions {
  */
 export class MbappeFigure extends Actor {
   readonly kit: Kit;
+  readonly costume: Costume | null;
   readonly build: MbappeBuild;
   /** Hip height (negative): the torso's resting y. */
   readonly hipY: number;
@@ -108,12 +112,13 @@ export class MbappeFigure extends Actor {
   private numberGroup?: SVGGElement;
   private readonly softId = uid('mbappe-soft');
 
-  constructor({ kit = MADRID_KIT, build = 'athletic', expression = 'neutral', ...options }: MbappeFigureOptions = {}) {
+  constructor({ kit = MADRID_KIT, build = 'athletic', expression = 'neutral', costume, ...options }: MbappeFigureOptions = {}) {
     super({ name: 'MbappeFigure', ...options });
     this.kit = kit;
+    this.costume = costume ? MBAPPE_COSTUMES[costume] : null;
     const b = (this.build = typeof build === 'string' ? MBAPPE_BUILDS[build] : build);
     this.hipY = -(b.thigh + b.shin + 12);
-    this.height = -this.hipY - WAIST - this.headY + 168;
+    this.height = -this.hipY - WAIST - this.headY + 168 + (this.costume?.hatHeight ?? 0);
     const filter = this.draw('filter', { id: this.softId, x: '-50%', y: '-50%', width: '200%', height: '200%' });
     filter.appendChild(svg('feGaussianBlur', { stdDeviation: 2.5 }));
 
@@ -123,8 +128,14 @@ export class MbappeFigure extends Actor {
 
     this.torso = new Actor({ name: 'torso', y: this.hipY, rotation: MBAPPE_REST.torso });
     this.chest = new Actor({ name: 'chest', y: WAIST, rotation: MBAPPE_REST.chest });
-    this.drawShorts();
-    this.drawShirt();
+    this.drawNeck();
+    if (this.costume) {
+      this.costume.hips(this.torso.draw('g'), this.painter);
+      this.costume.chest(this.chest.draw('g', { transform: `translate(0 ${-WAIST})` }), this.painter);
+    } else {
+      this.drawShorts();
+      this.drawShirt();
+    }
 
     this.head = new Actor({ name: 'head', y: this.headY, rotation: MBAPPE_REST.head });
     this.head.add(createMbappePortrait({ y: -12, scale: 0.2 }));
@@ -137,6 +148,10 @@ export class MbappeFigure extends Actor {
     [this.rightArm, this.rightForearm] = this.arm(arms, 1);
 
     this.chest.add(this.head, arms);
+    if (this.costume) {
+      this.costume.shoulders(this.chest.draw('g', { transform: `translate(0 ${-WAIST})` }), this.painter, 47 * b.torsoWidth);
+      this.costume.hat(this.head.draw('g'), this.painter);
+    }
     this.torso.add(this.chest);
     this.add(legs, this.torso);
     this.setExpression(expression);
@@ -218,13 +233,21 @@ export class MbappeFigure extends Actor {
     g.appendChild(svg('path', { d: 'M 0 -18 L 0 16', stroke: fabric, 'stroke-width': 1.5, fill: 'none' }));
   }
 
-  /** Neck and shirt, in chest space but drawn in torso coordinates (shifted by the waist). */
-  private drawShirt(): void {
-    const { kit } = this;
+  /** Draws costume parts with the figure's shading. */
+  private get painter(): Painter {
+    return { shape: (parent, d, color, depth = 6) => new Shape(parent, color, shade(color, 0.2), depth, this.softId).set(d) };
+  }
+
+  /** Neck, in chest space but drawn in torso coordinates (shifted by the waist). */
+  private drawNeck(): void {
     const neck = this.chest.draw('g', { transform: `translate(0 ${-WAIST})` });
     new Shape(neck, SKIN, SKIN_SHADE, 5, this.softId).set('M -14 -172 L 14 -172 Q 16 -150 20 -132 L -20 -132 Q -16 -150 -14 -172 Z');
     neck.appendChild(svg('path', { d: 'M -14 -156 Q 0 -146 14 -158', stroke: SKIN_DEEP, 'stroke-width': 4, fill: 'none', opacity: 0.45, 'stroke-linecap': 'round' }));
+  }
 
+  /** Shirt, in chest space but drawn in torso coordinates (shifted by the waist). */
+  private drawShirt(): void {
+    const { kit } = this;
     const g = this.chest.draw('g', { transform: `translate(0 ${-WAIST}) scale(${this.build.torsoWidth} 1)` });
     const shirt = smoothPath([
       [-17, -142], [-46, -138], [-57, -124], [-53, -96], [-48, -62], [-49, -28], [-24, -18], [0, -16],
@@ -265,7 +288,9 @@ export class MbappeFigure extends Actor {
       root: [side * 47 * b.torsoWidth, -124], lengths: [b.upperArm, b.forearm],
       rest: [MBAPPE_REST[`${prefix}Arm`], MBAPPE_REST[`${prefix}Forearm`]],
       widths: [[0, 11.5 * w], [0.22, 12 * w], [0.5, 8.5 * w], [0.66, 9.5 * w], [1, 6 * w]],
-      covers: [{ from: 0, to: 0.36, extra: 4, color: kit.shirt, band: kit.trim, shoulder: true }],
+      covers: this.costume
+        ? [{ from: 0, to: 0.97, extra: 3.5, color: this.costume.sleeve, band: this.costume.cuff, shoulder: true }]
+        : [{ from: 0, to: 0.36, extra: 4, color: kit.shirt, band: kit.trim, shoulder: true }],
       end: hand(side, b.hand), endTurn: 1, endOnTop: false,
     }).joints;
   }
@@ -280,8 +305,11 @@ export class MbappeFigure extends Actor {
       root: [side * 25 * b.torsoWidth, this.hipY], lengths: [b.thigh, b.shin],
       rest: [MBAPPE_REST[`${prefix}Leg`], MBAPPE_REST[`${prefix}Shin`]],
       widths: [[0, 22 * w], [0.2, 22.5 * w], [0.5, 12.5 * w], [0.66, 14.5 * w], [1, 7.5 * w]],
-      covers: [{ from: 0.58, to: 1, extra: 1, color: kit.socks, band: kit.trim, bandAt: 0.06 }],
-      end: boot(side, b.foot, kit.boots ?? '#1b1b1b'), endTurn: 0.7, endOnTop: true,
+      covers: this.costume
+        // Trousers or breeches, then tall riding boots.
+        ? [{ from: 0, to: 0.66, extra: 3, color: this.costume.trousers }, { from: 0.56, to: 1, extra: 2.5, color: this.costume.boots }]
+        : [{ from: 0.58, to: 1, extra: 1, color: kit.socks, band: kit.trim, bandAt: 0.06 }],
+      end: boot(side, b.foot, this.costume?.boots ?? kit.boots ?? '#1b1b1b'), endTurn: 0.7, endOnTop: true,
     }).joints;
   }
 }

@@ -510,3 +510,38 @@ export function juggle(
   const end = step * (touches + 1);
   return tl.add(rest(m), end).add(emote(m, 'happy'), end).add(emote(m, 'neutral'), end + step);
 }
+
+// ── "Kylian the dictator" (best in a costume) ─────────────────────────
+
+/** Snap a military salute to the temple, chin up. */
+export function salute(m: MbappeFigure, { hold = 1.2 } = {}): Timeline {
+  return gsap.timeline()
+    .add(emote(m, 'determined'), 0)
+    .add(sfx(synth.whoosh), 0)
+    .add(pose(m, { rightArm: -125, rightForearm: -86, chest: -4, head: -4, leftArm: 4, leftForearm: 0, rightLeg: 0, rightShin: 0, leftLeg: 0 }, { duration: 0.22, ease: 'back.out(2.5)' }), 0)
+    .to(m.head, { y: m.headY - 4, duration: 0.22 }, 0)
+    .add(rest(m), 0.22 + hold)
+    .add(emote(m, 'neutral'), 0.42 + hold);
+}
+
+/** Napoleon's pose: hand tucked into the coat, chest out, chin up, smug. */
+export function handInCoat(m: MbappeFigure, { hold = 1.6, release = true } = {}): Timeline {
+  const tl = gsap.timeline()
+    .add(emote(m, 'smug'), 0)
+    .add(pose(m, { rightArm: 18, rightForearm: 120, leftArm: 4, leftForearm: -30, chest: -6, head: -7, rightLeg: -12, rightShin: 4 }, { duration: 0.4, ease: 'power2.inOut' }), 0)
+    .to(m.head, { y: m.headY - 4, duration: 0.4 }, 0);
+  return release ? tl.add(rest(m), 0.4 + hold).add(emote(m, 'neutral'), 0.6 + hold) : tl;
+}
+
+/** Bark orders: angry face, finger jabbing forward, shouting. */
+export function command(m: MbappeFigure, { duration = 1.6 } = {}): Timeline {
+  const jabs = Math.round(duration / 0.3);
+  return gsap.timeline()
+    .add(emote(m, 'angry'), 0)
+    .add(pose(m, { rightArm: -95, rightForearm: -4, leftArm: 30, leftForearm: -95, chest: 6, head: 3 }, { duration: 0.18, ease: 'back.out(2)' }), 0)
+    .to(m.rightForearm, { rotation: 10, duration: 0.15, yoyo: true, repeat: jabs * 2 - 1, ease: 'power2.inOut' }, 0.2)
+    .to(m.chest, { rotation: 9, duration: 0.15, yoyo: true, repeat: jabs * 2 - 1, ease: 'sine.inOut' }, 0.2)
+    .add(talk(m, { duration, speed: 0.08 }), 0.15)
+    .add(rest(m), duration + 0.3)
+    .add(emote(m, 'neutral'), duration + 0.5);
+}
