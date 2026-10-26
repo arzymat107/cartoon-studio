@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 880">
+  <!-- Kylian Mbappé, portrait "M1": traced from a reference photo, natural asymmetry kept. Origin of the artwork: top-left of a 680 × 880 frame; chin bottom ≈ (352, 842). -->
+<path d="M218 760 C214 800 206 840 196 880 L524 880 C512 840 506 800 504 750 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M220 770 C280 840 440 840 504 760 L506 812 C440 870 280 870 214 806 Z" fill="#8a5638" opacity=".55"/>
+<path d="M-20 900 C-10 860 60 836 170 826 C230 860 470 860 540 820 C640 830 700 860 710 900 Z" fill="#f7f6f2" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M170 826 C240 868 470 866 540 820" stroke="#1f5a5a" stroke-width="22" fill="none" stroke-linecap="round"/>
+<path d="M20 872 C60 846 110 834 160 830 M560 826 C610 832 650 846 680 866" stroke="#d2486a" stroke-width="16" fill="none"/>
+<path d="M104 462 C70 444 40 470 44 526 C48 580 76 620 116 614 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M92 486 C70 482 62 512 70 546 C76 572 90 590 104 590" stroke="#8a5638" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M596 424 C622 408 644 434 640 482 C636 532 616 568 588 576 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M604 448 C622 446 628 476 622 506 C618 528 608 544 598 548" stroke="#8a5638" stroke-width="6" fill="none" stroke-linecap="round"/>
+<clipPath id="mbappe-m1-face">
+<path d="M 100 200 C 58.7 220 93.7 261.7 92 300 C 90.3 338.3 87.3 386.7 90 430 C 92.7 473.3 98 519.7 108 560 C 118 600.3 132.7 638 150 672 C 167.3 706 190 739 212 764 C 234 789 258.7 809 282 822 C 305.3 835 327 842 352 842 C 377 842 407 835.7 432 822 C 457 808.3 481.3 785.7 502 760 C 522.7 734.3 541.3 701.3 556 668 C 570.7 634.7 582 599.7 590 560 C 598 520.3 602.3 471.7 604 430 C 605.7 388.3 603.3 349 600 310 C 596.7 271 627.3 217.7 584 196 C 540.7 174.3 420.7 179.3 340 180 C 259.3 180.7 141.3 180 100 200 Z"/>
+</clipPath>
+<path d="M 100 200 C 58.7 220 93.7 261.7 92 300 C 90.3 338.3 87.3 386.7 90 430 C 92.7 473.3 98 519.7 108 560 C 118 600.3 132.7 638 150 672 C 167.3 706 190 739 212 764 C 234 789 258.7 809 282 822 C 305.3 835 327 842 352 842 C 377 842 407 835.7 432 822 C 457 808.3 481.3 785.7 502 760 C 522.7 734.3 541.3 701.3 556 668 C 570.7 634.7 582 599.7 590 560 C 598 520.3 602.3 471.7 604 430 C 605.7 388.3 603.3 349 600 310 C 596.7 271 627.3 217.7 584 196 C 540.7 174.3 420.7 179.3 340 180 C 259.3 180.7 141.3 180 100 200 Z" fill="#b27a54" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<filter id="mbappe-m1-soft" x="-20%" y="-20%" width="140%" height="140%">
+<feGaussianBlur stdDeviation="16"/>
+</filter>
+<g clip-path="url(#mbappe-m1-face)">
+<g filter="url(#mbappe-m1-soft)">
+    <path d="M 80 300 C 91.7 205 118.3 301.7 130 330 C 141.7 358.3 143.3 425 150 470 C 156.7 515 155 555 170 600 C 185 645 213.3 706.7 240 740 C 266.7 773.3 300 791.7 330 800 C 360 808.3 388.3 806.7 420 790 C 451.7 773.3 496.7 738.3 520 700 C 543.3 661.7 556.7 606.7 560 560 C 563.3 513.3 536.7 463.3 540 420 C 543.3 376.7 563.3 320 580 300 C 596.7 280 628.3 200 640 300 C 651.7 400 746.7 800 650 900 C 553.3 1000 155 1000 60 900 C -35 800 68.3 395 80 300 Z" fill="#8a5638" opacity=".5"/>
+    <ellipse cx="335" cy="292" rx="150" ry="50" fill="#e8bb93" opacity=".7" transform="rotate(-4 335 292)"/>
+    <ellipse cx="320" cy="282" rx="80" ry="20" fill="#fff" opacity=".3" transform="rotate(-4 320 282)"/>
+    <ellipse cx="190" cy="540" rx="62" ry="40" fill="#e8bb93" opacity=".7"/>
+    <ellipse cx="500" cy="524" rx="60" ry="42" fill="#e8bb93" opacity=".75"/>
+    <ellipse cx="356" cy="790" rx="44" ry="18" fill="#e8bb93" opacity=".45"/>
+    <path d="M250 612 C300 596 420 590 470 604 L476 626 C420 616 300 622 246 640 Z" fill="#3a2418" opacity=".14"/>
+    <ellipse cx="356" cy="770" rx="88" ry="54" fill="#3a2418" opacity=".1"/>
+    <ellipse cx="358" cy="722" rx="80" ry="20" fill="#64381f" opacity=".5"/>
+    <path d="M300 432 C292 476 282 506 268 528" stroke="#8a5638" stroke-width="18" fill="none" opacity=".55" stroke-linecap="round"/>
+    <path d="M150 456 C190 476 240 478 276 466" stroke="#8a5638" stroke-width="10" fill="none" opacity=".35" stroke-linecap="round"/>
+    <path d="M386 446 C420 460 470 460 504 440" stroke="#8a5638" stroke-width="10" fill="none" opacity=".35" stroke-linecap="round"/>
+    <path d="M250 560 C300 590 400 590 440 556" stroke="#8a5638" stroke-width="22" fill="none" opacity=".5"/>
+    <path d="M 96 500 C 92.7 526.7 112.7 596.7 130 640 C 147.3 683.3 178 733.3 200 760 C 222 786.7 259.7 811.7 262 800 C 264.3 788.3 229.3 730 214 690 C 198.7 650 180.7 595 170 560 C 159.3 525 162.3 490 150 480 C 137.7 470 99.3 473.3 96 500 Z" fill="#64381f" opacity=".55"/>
+    <path d="M 600 470 C 603.7 498.3 586.7 590 570 640 C 553.3 690 521.7 741.7 500 770 C 478.3 798.3 442.3 821.7 440 810 C 437.7 798.3 471 740 486 700 C 501 660 519.7 608.3 530 570 C 540.3 531.7 536.3 486.7 548 470 C 559.7 453.3 596.3 441.7 600 470 Z" fill="#64381f" opacity=".55"/>
+  </g>
+</g>
+<pattern id="mbappe-m1-curl" width="26" height="22" patternUnits="userSpaceOnUse">
+<rect width="26" height="22" fill="#141010"/>
+<path d="M2 14 a6 6 0 0 1 11 -2" stroke="#2a201b" stroke-width="3" fill="none"/>
+<path d="M14 6 a5 5 0 0 1 10 1" stroke="#2a201b" stroke-width="2.6" fill="none"/>
+<path d="M15 20 a4 4 0 0 1 8 -1" stroke="#2a201b" stroke-width="2.2" fill="none"/>
+</pattern>
+<clipPath id="mbappe-m1-hair">
+<path d="M 60 432 C 52.7 423.7 50.7 397 48 380 C 45.3 363 43 346.3 44 330 C 45 313.7 53.3 297 54 282 C 54.7 267 45.7 253.7 48 240 C 50.3 226.3 64 212.7 68 200 C 72 187.3 67 174 72 164 C 77 154 92.3 149.3 98 140 C 103.7 130.7 99 115.7 106 108 C 113 100.3 132.7 101 140 94 C 147.3 87 142.3 72 150 66 C 157.7 60 177.3 63 186 58 C 194.7 53 192.7 40 202 36 C 211.3 32 230.7 37.3 242 34 C 253.3 30.7 258.7 17.7 270 16 C 281.3 14.3 298.3 24.7 310 24 C 321.7 23.3 328.3 12 340 12 C 351.7 12 368 23.3 380 24 C 392 24.7 401.7 13.7 412 16 C 422.3 18.3 432 34 442 38 C 452 42 462.7 35 472 40 C 481.3 45 488.7 62 498 68 C 507.3 74 519.7 69.3 528 76 C 536.3 82.7 540.7 99.7 548 108 C 555.3 116.3 567 116.7 572 126 C 577 135.3 573.7 153.7 578 164 C 582.3 174.3 595.7 177 598 188 C 600.3 199 590.3 216.3 592 230 C 593.7 243.7 606.3 255 608 270 C 609.7 285 601.7 301.7 602 320 C 602.3 338.3 610.3 365.7 610 380 C 609.7 394.3 602.7 419.3 600 406 C 597.3 392.7 597.7 329 594 300 C 590.3 271 584.3 246.3 578 232 C 571.7 217.7 577.3 220 556 214 C 534.7 208 486 198 450 196 C 414 194 378.3 199 340 202 C 301.7 205 255.3 209.3 220 214 C 184.7 218.7 147 224 128 230 C 109 236 111 235 106 250 C 101 265 100.3 290 98 320 C 95.7 350 98.3 411.3 92 430 C 85.7 448.7 67.3 440.3 60 432 Z"/>
+</clipPath>
+<path d="M 60 432 C 52.7 423.7 50.7 397 48 380 C 45.3 363 43 346.3 44 330 C 45 313.7 53.3 297 54 282 C 54.7 267 45.7 253.7 48 240 C 50.3 226.3 64 212.7 68 200 C 72 187.3 67 174 72 164 C 77 154 92.3 149.3 98 140 C 103.7 130.7 99 115.7 106 108 C 113 100.3 132.7 101 140 94 C 147.3 87 142.3 72 150 66 C 157.7 60 177.3 63 186 58 C 194.7 53 192.7 40 202 36 C 211.3 32 230.7 37.3 242 34 C 253.3 30.7 258.7 17.7 270 16 C 281.3 14.3 298.3 24.7 310 24 C 321.7 23.3 328.3 12 340 12 C 351.7 12 368 23.3 380 24 C 392 24.7 401.7 13.7 412 16 C 422.3 18.3 432 34 442 38 C 452 42 462.7 35 472 40 C 481.3 45 488.7 62 498 68 C 507.3 74 519.7 69.3 528 76 C 536.3 82.7 540.7 99.7 548 108 C 555.3 116.3 567 116.7 572 126 C 577 135.3 573.7 153.7 578 164 C 582.3 174.3 595.7 177 598 188 C 600.3 199 590.3 216.3 592 230 C 593.7 243.7 606.3 255 608 270 C 609.7 285 601.7 301.7 602 320 C 602.3 338.3 610.3 365.7 610 380 C 609.7 394.3 602.7 419.3 600 406 C 597.3 392.7 597.7 329 594 300 C 590.3 271 584.3 246.3 578 232 C 571.7 217.7 577.3 220 556 214 C 534.7 208 486 198 450 196 C 414 194 378.3 199 340 202 C 301.7 205 255.3 209.3 220 214 C 184.7 218.7 147 224 128 230 C 109 236 111 235 106 250 C 101 265 100.3 290 98 320 C 95.7 350 98.3 411.3 92 430 C 85.7 448.7 67.3 440.3 60 432 Z" fill="url(#mbappe-m1-curl)" stroke="#2b1a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<g clip-path="url(#mbappe-m1-hair)">
+    <path d="M40 250 L120 250 L118 460 L40 460 Z" fill="#b27a54" opacity=".45"/>
+    <path d="M580 240 L640 240 L640 420 L580 420 Z" fill="#b27a54" opacity=".45"/>
+    <path d="M170 90 C240 46 400 40 500 84" stroke="#ffffff" stroke-width="10" fill="none" opacity=".12" stroke-linecap="round"/>
+  </g>
+<path d="M128 230 L220 214 L340 202 L450 196 L556 214" stroke="#141010" stroke-width="4" fill="none"/>
+<path d="M150 392 C190 368 250 356 298 364 L296 386 C252 380 198 386 154 404 Z" fill="#141010"/>
+<path d="M396 368 C440 348 492 334 534 344 L530 362 C490 355 440 364 399 386 Z" fill="#141010"/>
+<clipPath id="mbappe-m1-e0">
+<path d="M 160 442 C 182 418 238 416 264 438 C 236 452 184 452 160 442 Z"/>
+</clipPath>
+<path d="M 160 442 C 182 418 238 416 264 438 C 236 452 184 452 160 442 Z" fill="#f3ece3"/>
+<g clip-path="url(#mbappe-m1-e0)">
+<circle cx="210" cy="436" r="17" fill="#2e1a10"/>
+<circle cx="210" cy="436" r="8.5" fill="#090504"/>
+<circle cx="216" cy="430" r="5" fill="#fff"/>
+      <path d="M 150 388 L 274 388 L 274 426 L 150 426 Z" fill="#000" opacity=".22"/>
+</g>
+<path d="M 154 444 C 182 414 238 412 270 436" stroke="#2b1a12" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M 168 416 C 188 396 234 394 260 424" stroke="#8a5638" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M 172 460 C 196 474 228 472 254 454" stroke="#8a5638" stroke-width="5" fill="none" stroke-linecap="round"/>
+<clipPath id="mbappe-m1-e1">
+<path d="M 396 428 C 419 404 475 402 502 414 C 473 434 421 434 396 428 Z"/>
+</clipPath>
+<path d="M 396 428 C 419 404 475 402 502 414 C 473 434 421 434 396 428 Z" fill="#f3ece3"/>
+<g clip-path="url(#mbappe-m1-e1)">
+<circle cx="452" cy="421" r="15" fill="#2e1a10"/>
+<circle cx="452" cy="421" r="7.5" fill="#090504"/>
+<circle cx="458" cy="415" r="5" fill="#fff"/>
+      <path d="M 386 374 L 512 374 L 512 412 L 386 412 Z" fill="#000" opacity=".22"/>
+</g>
+<path d="M 390 430 C 419 400 475 398 508 412" stroke="#2b1a12" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M 404 402 C 425 382 471 380 498 400" stroke="#8a5638" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M 408 442 C 433 456 465 454 492 436" stroke="#8a5638" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M300 446 C296 486 286 506 260 528 C246 546 254 570 282 570 C300 584 380 584 400 568 C428 570 438 546 424 526 C400 504 390 486 384 446 Z" fill="#8a5638" opacity=".35"/>
+<path d="M300 540 C304 520 324 506 344 506 C366 506 384 520 388 540 C380 556 310 558 300 540 Z" fill="#e8bb93" opacity=".7"/>
+<path d="M318 520 C328 512 352 510 364 518" stroke="#fff" stroke-width="5" fill="none" opacity=".3" stroke-linecap="round"/>
+<path d="M286 500 C262 512 248 530 252 548 C256 566 276 576 296 568" stroke="#2b1a12" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M402 494 C426 508 438 526 432 546 C426 564 406 574 386 566" stroke="#2b1a12" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M296 568 C320 580 364 580 386 566" stroke="#64381f" stroke-width="4" fill="none" stroke-linecap="round"/>
+<ellipse cx="304" cy="560" rx="15" ry="8" fill="#64381f" transform="rotate(12 304 560)"/>
+<ellipse cx="380" cy="558" rx="15" ry="8" fill="#64381f" transform="rotate(-12 380 558)"/>
+<path clip-path="url(#mbappe-m1-face)" d="M260 548 C230 574 214 610 220 652" stroke="#8a5638" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path clip-path="url(#mbappe-m1-face)" d="M420 532 C462 556 484 594 480 640" stroke="#64381f" stroke-width="9" fill="none" stroke-linecap="round" opacity=".85"/>
+<clipPath id="mbappe-m1-m">
+<path d="M244 650 C296 644 400 636 472 620 C452 652 410 678 352 680 C298 680 264 670 244 650 Z"/>
+</clipPath>
+<path d="M244 650 C296 644 400 636 472 620 C452 652 410 678 352 680 C298 680 264 670 244 650 Z" fill="#3a0e0b"/>
+<g clip-path="url(#mbappe-m1-m)">
+<path d="M230 600 L490 600 L490 632 C430 660 330 672 230 668 Z" fill="#fbf8f1"/>
+    <line x1="278" y1="640" x2="279" y2="662" stroke="#dcd2c4" stroke-width="2.5"/>
+<line x1="306" y1="638" x2="307" y2="660" stroke="#dcd2c4" stroke-width="2.5"/>
+<line x1="332" y1="636" x2="333" y2="658" stroke="#dcd2c4" stroke-width="2.5"/>
+<line x1="356" y1="634" x2="357" y2="656" stroke="#dcd2c4" stroke-width="2.5"/>
+<line x1="380" y1="632" x2="381" y2="654" stroke="#dcd2c4" stroke-width="2.5"/>
+<line x1="404" y1="630" x2="405" y2="652" stroke="#dcd2c4" stroke-width="2.5"/>
+<line x1="428" y1="628" x2="429" y2="650" stroke="#dcd2c4" stroke-width="2.5"/>
+</g>
+<path d="M236 654 C290 628 330 630 356 633 C392 628 436 620 478 618 C440 626 400 632 352 638 C300 640 270 646 236 654 Z" fill="#7d4434"/>
+<path d="M250 664 C296 700 416 700 468 638 C446 668 408 684 352 686 C300 686 272 678 250 664 Z" fill="#a5604c"/>
+<path d="M296 692 C334 702 392 700 428 684" stroke="#fff" stroke-width="5" fill="none" opacity=".25" stroke-linecap="round"/>
+<path d="M244 650 C296 644 400 636 472 620 C452 652 410 678 352 680 C298 680 264 670 244 650 Z" fill="none" stroke="#2b1a12" stroke-width="4" stroke-linejoin="round"/>
+<path d="M476 610 C490 614 494 628 486 642" stroke="#64381f" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M240 646 C232 650 230 658 236 666" stroke="#8a5638" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

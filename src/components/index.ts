@@ -6,6 +6,7 @@ export { Ground, type GroundOptions } from './environment/Ground';
 export { Sky, type SkyOptions } from './environment/Sky';
 export { Sun, type SunOptions } from './environment/Sun';
 export { Tree, type TreeOptions } from './environment/Tree';
+export { createMbappePortrait } from './portraits/mbappe';
 export { Ball, type BallOptions } from './sport/Ball';
 export { Footballer, type FootballerOptions, type Kit } from './sport/Footballer';
 export { Goal, type GoalOptions } from './sport/Goal';
