@@ -47,11 +47,13 @@ src/
 ├─ assets/sounds/       Your audio files (voices, music, effects)
 ├─ components/          Reusable "puppets" (all extend Actor)
 │  ├─ characters/       Character (rigged: legs, torso, arms, head, eyes, mouth)
+│  ├─ figures/          Portrait figures of real players (see "Portrait figures" below)
 │  ├─ environment/      Sky, Sun, Cloud, Ground, Tree
 │  ├─ ui/               SpeechBubble
 │  └─ SvgArt.ts         Wrap any hand-drawn .svg file as an Actor
 ├─ animations/          Reusable acting, each returns a timeline
 │  ├─ character.ts      walk, wave, cheer, blink, blinkRandomly, talk, say, face, standStill
+│  ├─ figure.ts         figureActions: acting for portrait figures (run, kick, crossArms, emote…)
 │  ├─ motion.ts         fadeIn/Out, popIn/Out, drift, sway, bob, spin, jump
 │  └─ sound.ts          sfx, clip, melody, birdsong
 └─ episodes/            Your cartoons
@@ -245,6 +247,73 @@ players. The cast is in `src/episodes/football/cast.ts` and the night stadium se
 them generic voices (never clone a real voice), keep the "animated parody" notice on screen, and keep
 the jokes about football, never about private life, injuries or origin.
 
+## Portrait figures (real players)
+
+A `PortraitFigure` is a real player as a full-body cartoon: a head traced from a photo on a
+shaded, big-head body. Arms and legs bend smoothly at the elbows and knees, the spine bends at the
+waist, and the face has eyelids, a talking mouth and eight expressions. Mbappé is the first one.
+
+```
+src/components/figures/
+├─ PortraitFigure.ts    The figure: rig, kit, face layers; FigureSpec = what a player file provides
+├─ players/mbappe.ts    MBAPPE spec, MbappeFigure, createMbappePortrait (one file per player)
+├─ expressions.ts       Expression list, eye and brow generator, FaceSpec
+├─ costumes.ts          'generalissimo', 'emperor' ("Kylian the dictator")
+├─ body.ts              Builds ('athletic', 'lanky', 'stocky') and the relaxed rest pose
+├─ limbs.ts             Smooth two-segment limbs, hands, boots
+└─ paint.ts             Shaded shapes in the portrait style
+src/assets/portraits/   Traced portrait SVGs (mbappe-m1.svg)
+src/animations/figure.ts           figureActions
+src/episodes/figure-showcase/      One chapter per action, for any player (?episode=mbappe-actions)
+```
+
+**Use it in a scene:**
+
+```ts
+import { figureActions as act } from '@/animations';
+import { MbappeFigure, SpeechBubble } from '@/components';
+
+const mbappe = new MbappeFigure({ x: 300, y: GROUND_Y, scale: 1.6 });   // feet at (x, y), ~830 px tall
+const kylian = new MbappeFigure({ costume: 'emperor', expression: 'smug' });
+
+tl.add(act.run(mbappe, { to: 800 }))
+  .add(act.crossArms(mbappe), '+=0.2')
+  .add(act.say(mbappe, bubble, { duration: 1.5 }))
+  .add(act.blinkRandomly(mbappe, tl.duration()), 0);
+```
+
+Options: `kit` (defaults to the player's), `build`, `costume`, `expression`, plus the usual
+`x`, `y`, `scale` (negative `scaleX` faces left). `createMbappePortrait({ scale: 0.4 })` gives the
+head and shoulders alone, pivoted at the chin.
+
+**Actions** (`figureActions`, each returns a timeline):
+
+| Group | Actions |
+| --- | --- |
+| Face | `emote(m, 'angry')`, `expressions`, `blink`, `blinkRandomly`, `talk`, `say`, `surprised`, `sulk`, `rage`, `laugh`, `nod`, `shakeHead` |
+| Moving | `idle`, `walk`, `run`, `hop`, `flop` + `getUp`, `face` |
+| Gestures | `wave`, `cheer`, `celebrate`, `crossArms`, `handsOnHips`, `handsOnHead`, `shrug`, `point`, `think`, `clap`, `dance` |
+| Ball | `kick(m, ball, { toX, peak })`, `juggle(m, ball)` |
+| Dictator | `salute`, `handInCoat`, `command` (best in a costume) |
+| Building blocks | `pose(m, { rightArm: -90, rightForearm: -20 })`, `rest(m)` |
+
+Expressions: `neutral` (the traced portrait), `happy`, `laugh`, `smug`, `angry`, `sad`, `shocked`,
+`determined`. Rotations: positive swings a limb towards the screen left; facing right, "forward"
+is negative and a bent knee is positive.
+
+**Add another player:**
+
+1. Put a clear, front-facing photo in `~/projects/cartoon-images/`.
+2. Trace a head-and-shoulders portrait into `src/assets/portraits/<name>.svg` in a 680 × 880 frame,
+   chin near (350, 840). Measure the proportions from the photo and keep the face's natural asymmetry.
+   Prefix every id with the file name (`<name>-…`). Wrap the neutral features in groups with
+   `data-part="neck"`, `"shirt"`, `"eyes"`, `"brows"` and `"mouth"`.
+3. Copy `figures/players/mbappe.ts` to `players/<name>.ts`. Set the eye corners, brow ends, skin
+   colors, kit, eyelids, talking mouth, and a mouth per expression, all in portrait coordinates.
+   Eyes and brows are generated from the landmarks; tune them with `face.shapes` if needed.
+4. Export it from `src/components/index.ts` and add `scenes: figureShowcase(<NAME>)` to
+   `src/episodes/index.ts` to check every action, then compare the head with the photo.
+
 ## Vertical videos (Shorts, TikTok, Reels)
 
 Give an episode a size in `src/episodes/index.ts`:
@@ -288,5 +357,5 @@ not committed to git.
 
 - **Lip-sync:** generate real mouth shapes from recorded voices with [Rhubarb Lip Sync](https://github.com/DanielSWolf/rhubarb-lip-sync) instead of simple open/close flapping.
 - **Shape morphing and paths:** GSAP MorphSVGPlugin for facial expressions, MotionPathPlugin for flying objects.
-- **More rigs:** animals, vehicles, and a Character with elbows and knees (two-segment limbs).
+- **More rigs:** animals and vehicles. (Two-segment limbs exist in portrait figures, `src/components/figures/limbs.ts`.)
 - **Heavy scenes** (thousands of particles): add a PixiJS (WebGL) layer behind the SVG.

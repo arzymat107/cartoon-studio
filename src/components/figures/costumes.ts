@@ -1,17 +1,11 @@
 /**
- * Comedy costumes for MbappeFigure: "Kylian the dictator". Over-the-top and clearly fictional –
+ * Comedy costumes for portrait figures, made for "Kylian the dictator". Over-the-top and clearly fictional –
  * football medals, club colors and a French cockade, no real regime insignia.
  * Torso parts are drawn in torso coordinates (hip at 0, 0); hats in head coordinates (neck at 0, 0).
  */
 import { svg } from '@/engine';
 import { smoothPath } from '../characters/face';
-
-type Point = [number, number];
-
-export interface Painter {
-  /** Shaded filled shape with an outline. */
-  shape(parent: Element, d: string, color: string, depth?: number): void;
-}
+import { LINE, type Painter, type Point } from './paint';
 
 export interface Costume {
   sleeve: string;
@@ -30,7 +24,6 @@ export interface Costume {
   hatHeight: number;
 }
 
-const LINE = '#2b1a12';
 const GOLD = '#c9a227';
 const GOLD_DARK = '#8a6d12';
 
@@ -164,5 +157,5 @@ export const EMPEROR: Costume = {
   },
 };
 
-export const MBAPPE_COSTUMES = { generalissimo: GENERALISSIMO, emperor: EMPEROR };
-export type MbappeCostume = keyof typeof MBAPPE_COSTUMES;
+export const COSTUMES = { generalissimo: GENERALISSIMO, emperor: EMPEROR };
+export type CostumeName = keyof typeof COSTUMES;

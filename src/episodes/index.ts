@@ -1,9 +1,10 @@
+import { MBAPPE } from '@/components';
 import type { Episode } from '@/engine';
 import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FinedScene } from './fined/scenes/FinedScene';
+import { figureShowcase } from './figure-showcase/scenes';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
-import { MBAPPE_ACTION_SCENES } from './mbappe-actions/scenes';
 import { DressingRoomScene } from './madrid-laughs/scenes/DressingRoomScene';
 import { FullTimeScene } from './madrid-laughs/scenes/FullTimeScene';
 import { TableScene as MadridTableScene } from './madrid-laughs/scenes/TableScene';
@@ -60,7 +61,7 @@ export const episodes: Record<string, Episode> = {
     title: 'Mbappé – All Actions (reference)',
     width: 1080,
     height: 1920,
-    scenes: MBAPPE_ACTION_SCENES,
+    scenes: figureShowcase(MBAPPE),
   },
 };
 

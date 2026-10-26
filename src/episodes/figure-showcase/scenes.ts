@@ -1,10 +1,13 @@
 /**
- * Showcase of every MbappeFigure action, one chapter each, so they can be picked from the player.
- * Not a Short – a reference sheet for building episodes.
+ * Showcase of every portrait-figure action, costume, build and expression, one chapter each,
+ * so they can be picked from the player. Not a Short – a reference sheet for building episodes.
+ * Register one per player in src/episodes/index.ts: `scenes: figureShowcase(MBAPPE)`.
  */
 import { gsap } from 'gsap';
-import { mbappeActions as act } from '@/animations';
-import { Ball, MBAPPE_EXPRESSIONS, MbappeFigure, SpeechBubble, TextLabel, type MBAPPE_BUILDS, type MbappeCostume } from '@/components';
+import { figureActions as act } from '@/animations';
+import {
+  Ball, FIGURE_EXPRESSIONS, PortraitFigure, SpeechBubble, TextLabel, type CostumeName, type FigureBuildName, type FigureSpec,
+} from '@/components';
 import { Scene, type SceneClass, type Timeline } from '@/engine';
 import { animateStadium, createStadium, GROUND_Y, type Stadium } from '../football/stadium';
 
@@ -13,26 +16,26 @@ const SCALE = 1.6;
 const CENTER = 540;
 
 interface Props {
-  m: MbappeFigure;
+  m: PortraitFigure;
   /** Every figure in the chapter (more than one for the build comparison). */
-  all: MbappeFigure[];
+  all: PortraitFigure[];
   ball: Ball;
   bubble: SpeechBubble;
 }
 
 interface Action {
   title: string;
-  /** The call to copy into a scene. */
+  /** The call to copy into a scene (`act.` is added unless it is figure options). */
   code: string;
   play: (props: Props) => Timeline;
-  /** Ball start, relative to Mbappé (omit to hide the ball). */
+  /** Ball start, relative to the figure (omit to hide the ball). */
   ball?: number;
-  /** Mbappé's start x. */
+  /** The figure's start x. */
   x?: number;
   bubble?: string;
   /** Show these builds side by side instead of one athletic figure. */
-  builds?: (keyof typeof MBAPPE_BUILDS)[];
-  costume?: MbappeCostume;
+  builds?: FigureBuildName[];
+  costume?: CostumeName;
 }
 
 /** The "Kylian the dictator" routine, for either costume. */
@@ -44,14 +47,14 @@ const dictator = ({ m, bubble }: Props) => gsap.timeline()
   .add(act.crossArms(m, { hold: 1.2 }), '+=0.3');
 
 const ACTIONS: Action[] = [
-  { title: 'Dictator: Generalissimo', code: "new MbappeFigure({ costume: 'generalissimo' })", costume: 'generalissimo', bubble: 'I decide\nwho plays!', play: dictator },
-  { title: 'Dictator: Emperor', code: "new MbappeFigure({ costume: 'emperor' })", costume: 'emperor', bubble: 'I decide\nwho plays!', play: dictator },
+  { title: 'Dictator: Generalissimo', code: "{ costume: 'generalissimo' }", costume: 'generalissimo', bubble: 'I decide\nwho plays!', play: dictator },
+  { title: 'Dictator: Emperor', code: "{ costume: 'emperor' }", costume: 'emperor', bubble: 'I decide\nwho plays!', play: dictator },
   {
     title: 'Expressions', code: "emote(m, 'happy')",
-    play: ({ m }) => act.expressions(m, [...MBAPPE_EXPRESSIONS.filter((e) => e !== 'neutral'), 'neutral'], { each: 1.1 }),
+    play: ({ m }) => act.expressions(m, [...FIGURE_EXPRESSIONS.filter((e) => e !== 'neutral'), 'neutral'], { each: 1.1 }),
   },
   {
-    title: 'Body builds', code: "new MbappeFigure({ build: 'lanky' })", builds: ['athletic', 'lanky', 'stocky'],
+    title: 'Body builds', code: "{ build: 'lanky' }", builds: ['athletic', 'lanky', 'stocky'],
     play: ({ all }) => {
       const tl = gsap.timeline();
       all.forEach((f) => tl.add(act.idle(f, 1.6), 0).add(act.dance(f, { beats: 6 }), 1.6).add(act.crossArms(f, { hold: 1 }), 3.4));
@@ -92,7 +95,8 @@ const ACTIONS: Action[] = [
   { title: 'Flop & get up', code: 'flop(m) · getUp(m)', play: ({ m }) => gsap.timeline().add(act.flop(m)).add(act.getUp(m), '+=0.6') },
 ];
 
-function actionScene(action: Action, index: number): SceneClass {
+function actionScene(spec: FigureSpec, action: Action, index: number): SceneClass {
+  const { kit } = spec;
   return class extends Scene {
     readonly title = `${index + 1}. ${action.title}`;
     private stadium!: Stadium;
@@ -100,11 +104,11 @@ function actionScene(action: Action, index: number): SceneClass {
 
     build(): void {
       const { width, height } = this.stage;
-      this.stadium = createStadium(width, height, { shirts: ['#f7f7f2', '#f7f7f2', '#c9a227', '#1b2a59'] });
+      this.stadium = createStadium(width, height, { shirts: [kit.shirt, kit.shirt, kit.trim ?? kit.shorts, kit.numberColor ?? kit.socks] });
       const x = action.x ?? CENTER;
       const all = action.builds
-        ? action.builds.map((build, i) => new MbappeFigure({ build, x: 190 + i * 350, y: GROUND_Y, scale: 1.15 }))
-        : [new MbappeFigure({ x, y: GROUND_Y, scale: SCALE, costume: action.costume })];
+        ? action.builds.map((build, i) => new PortraitFigure(spec, { build, x: 190 + i * 350, y: GROUND_Y, scale: 1.15 }))
+        : [new PortraitFigure(spec, { x, y: GROUND_Y, scale: SCALE, costume: action.costume })];
       const m = all[0];
       const ball = new Ball({ x: x + (action.ball ?? 0), y: GROUND_Y, radius: 24, opacity: action.ball === undefined ? 0 : 1 });
       const bubble = new SpeechBubble({ text: action.bubble ?? '', fontSize: 46 });
@@ -115,7 +119,7 @@ function actionScene(action: Action, index: number): SceneClass {
         fontSize: 64, font: FONT, weight: 400, color: '#ffffff', background: 'rgba(27,42,89,0.92)',
       });
       const code = new TextLabel({
-        text: `act.${action.code}`, x: width / 2, y: 360, fontSize: 34,
+        text: action.code.startsWith('{') ? action.code : `act.${action.code}`, x: width / 2, y: 360, fontSize: 34,
         font: 'ui-monospace, Menlo, Consolas, monospace', color: '#ffd60a', background: 'rgba(0,0,0,0.6)',
       });
       this.add(...this.stadium.background, ball, ...all, bubble);
@@ -131,4 +135,5 @@ function actionScene(action: Action, index: number): SceneClass {
   };
 }
 
-export const MBAPPE_ACTION_SCENES = ACTIONS.map(actionScene);
+/** One chapter per action for this player. */
+export const figureShowcase = (spec: FigureSpec): SceneClass[] => ACTIONS.map((action, i) => actionScene(spec, action, i));

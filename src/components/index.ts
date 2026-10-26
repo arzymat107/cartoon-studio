@@ -6,12 +6,11 @@ export { Ground, type GroundOptions } from './environment/Ground';
 export { Sky, type SkyOptions } from './environment/Sky';
 export { Sun, type SunOptions } from './environment/Sun';
 export { Tree, type TreeOptions } from './environment/Tree';
-export { createMbappePortrait } from './portraits/mbappe';
-export {
-  MBAPPE_BUILDS, MBAPPE_REST, MbappeFigure, type MbappeBuild, type MbappeFigureOptions, type MbappePart,
-} from './portraits/MbappeFigure';
-export { MBAPPE_COSTUMES, type MbappeCostume } from './portraits/mbappeCostumes';
-export { MBAPPE_EXPRESSIONS, type MbappeExpression } from './portraits/mbappeFace';
+export { FIGURE_BUILDS, FIGURE_REST, type FigureBuild, type FigureBuildName, type FigurePart } from './figures/body';
+export { COSTUMES, type Costume, type CostumeName } from './figures/costumes';
+export { FIGURE_EXPRESSIONS, type FaceSpec, type FigureExpression } from './figures/expressions';
+export { createMbappePortrait, MBAPPE, MbappeFigure } from './figures/players/mbappe';
+export { createPortrait, PortraitFigure, type FigureSpec, type PortraitFigureOptions } from './figures/PortraitFigure';
 export { Ball, type BallOptions } from './sport/Ball';
 export { Footballer, type FootballerOptions, type Kit } from './sport/Footballer';
 export { Goal, type GoalOptions } from './sport/Goal';
