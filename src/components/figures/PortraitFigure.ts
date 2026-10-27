@@ -5,8 +5,8 @@ import { SvgArt, type SvgArtOptions } from '../SvgArt';
 import { FIGURE_BUILDS, FIGURE_REST, type FigureBuild, type FigureBuildName } from './body';
 import { COSTUMES, type Costume, type CostumeName } from './costumes';
 import { FIGURE_EXPRESSIONS, expressionMarkup, type FigureExpression, type FaceSpec } from './expressions';
-import { boot, hand, Limb } from './limbs';
-import { fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
+import { boot, Curve, hand, Joint, Limb } from './limbs';
+import { f, fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
 
 /**
  * Everything that makes a player: a portrait traced from a photo plus the data to animate it.
@@ -111,10 +111,10 @@ export class PortraitFigure extends Actor {
   readonly rightArm: Actor;
   readonly leftForearm: Actor;
   readonly rightForearm: Actor;
-  readonly leftLeg: Actor;
-  readonly rightLeg: Actor;
-  readonly leftShin: Actor;
-  readonly rightShin: Actor;
+  readonly leftLeg: Joint;
+  readonly rightLeg: Joint;
+  readonly leftShin: Joint;
+  readonly rightShin: Joint;
   /** Layers of each expression, shown by `setExpression()` / the `emote()` action. */
   readonly expressions = {} as Record<FigureExpression, SVGElement[]>;
 
@@ -138,7 +138,7 @@ export class PortraitFigure extends Actor {
     [this.leftLeg, this.leftShin] = this.leg(legs, -1);
     [this.rightLeg, this.rightShin] = this.leg(legs, 1);
 
-    this.torso = new Actor({ name: 'torso', y: this.hipY, rotation: FIGURE_REST.torso });
+    this.torso = new Joint({ name: 'torso', y: this.hipY, rotation: FIGURE_REST.torso });
     this.chest = new Actor({ name: 'chest', y: WAIST, rotation: FIGURE_REST.chest });
     this.shorts = new Actor({ name: 'shorts' });
     this.drawNeck();
@@ -278,8 +278,46 @@ export class PortraitFigure extends Actor {
       return;
     }
     new Shape(g, kit.shorts, fabric, 9, this.softId)
-      .set(smoothPath([[-44, -38], [-49, -6], [-54, 30], [-30, 36], [-7, 30], [0, 16], [7, 30], [30, 36], [54, 30], [49, -6], [44, -38], [0, -40]]));
+      .set(smoothPath([[-44, -38], [-49, -6], [-50, 18], [-30, 26], [-7, 24], [0, 16], [7, 24], [30, 26], [50, 18], [49, -6], [44, -38], [0, -40]]));
     g.appendChild(svg('path', { d: 'M 0 -18 L 0 16', stroke: fabric, 'stroke-width': 1.5, fill: 'none' }));
+    this.drawShortsLegs(fabric);
+  }
+
+  /**
+   * The legs of normal shorts, a little way down the thighs and moving with them. Drawn over the hip
+   * piece and clipped just below the waistband, so the shorts read as one piece, not two.
+   */
+  private drawShortsLegs(fabric: string): void {
+    const { kit, build: b } = this;
+    const clipId = uid('figure-shorts');
+    this.shorts.draw('clipPath', { id: clipId }).appendChild(svg('rect', { x: -300, y: 2, width: 600, height: 600 }));
+    // Leg geometry is in figure space: undo the torso's transform.
+    const layer = this.shorts.draw('g', { 'clip-path': `url(#${clipId})` }).appendChild(svg('g'));
+    const legs = ([[-1, this.leftLeg, this.leftShin], [1, this.rightLeg, this.rightShin]] as const).map(([side, thigh, shin]) => ({
+      side, thigh, shin,
+      shape: new Shape(layer, kit.shorts, fabric, 9, this.softId),
+      hem: layer.appendChild(svg('path', { stroke: shade(kit.shorts, 0.3), 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' })),
+    }));
+    const LENGTH = 0.29;
+    const width = (u: number) => (27 + u * 6) * b.legWidth;
+    const update = () => {
+      const t = this.torso;
+      layer.setAttribute('transform', `scale(${1 / t.scaleX} ${1 / t.scaleY}) rotate(${-t.rotation}) translate(${-t.x} ${-t.y})`);
+      for (const { side, thigh, shin, shape, hem } of legs) {
+        const S: Point = [side * 25 * b.torsoWidth, this.hipY];
+        const a1 = (thigh.rotation * Math.PI) / 180;
+        const a2 = a1 + (shin.rotation * Math.PI) / 180;
+        const E: Point = [S[0] - Math.sin(a1) * b.thigh, S[1] + Math.cos(a1) * b.thigh];
+        const W: Point = [E[0] - Math.sin(a2) * b.shin, E[1] + Math.cos(a2) * b.shin];
+        const curve = new Curve(S, E, W, b.thigh / (b.thigh + b.shin));
+        shape.set(curve.outline(0, LENGTH, width));
+        const { p, n } = curve.at(LENGTH - 0.02);
+        const w = width(LENGTH) - 2;
+        hem.setAttribute('d', `M ${f(p[0] + n[0] * w)} ${f(p[1] + n[1] * w)} L ${f(p[0] - n[0] * w)} ${f(p[1] - n[1] * w)}`);
+      }
+    };
+    for (const joint of [this.torso as Joint, this.leftLeg, this.leftShin, this.rightLeg, this.rightShin]) joint.listeners.push(update);
+    update();
   }
 
   /** Neck, in chest space but drawn in torso coordinates (shifted by the waist). */
@@ -342,7 +380,7 @@ export class PortraitFigure extends Actor {
   }
 
   /** Leg from the hip, in figure coordinates. */
-  private leg(parent: Actor, side: -1 | 1): [Actor, Actor] {
+  private leg(parent: Actor, side: -1 | 1): [Joint, Joint] {
     const { kit, build: b, costume } = this;
     const w = b.legWidth;
     const prefix = side < 0 ? 'left' : 'right';

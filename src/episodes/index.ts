@@ -1,4 +1,4 @@
-import { MBAPPE, YAMAL } from '@/components';
+import { KANE, MBAPPE, YAMAL } from '@/components';
 import type { Episode } from '@/engine';
 import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
@@ -68,6 +68,12 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: figureShowcase(YAMAL, { greeting: 'Hola\nculers!', signature: SHORTS_CHAPTERS }),
+  },
+  'kane-actions': {
+    title: 'Kane – All Actions (reference)',
+    width: 1080,
+    height: 1920,
+    scenes: figureShowcase(KANE, { greeting: 'Servus\nMünchen!' }),
   },
 };
 

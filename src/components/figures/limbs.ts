@@ -97,7 +97,7 @@ export class Limb {
 }
 
 /** Smooth curve root → joint → tip (Hermite segments meeting at the joint), parameterized 0–1 by length. */
-class Curve {
+export class Curve {
   constructor(private readonly S: Point, private readonly E: Point, private readonly W: Point, private readonly split: number) {}
 
   /** Point and unit normal at `u`. */
