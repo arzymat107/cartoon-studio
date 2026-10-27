@@ -20,6 +20,7 @@ export { AdBoards, Pitch, type AdBoardsOptions, type PitchOptions } from './spor
 export { Referee } from './sport/Referee';
 export { Scoreboard, type ScoreboardOptions, type ScoreboardTeam } from './sport/Scoreboard';
 export { Stands, type StandsOptions } from './sport/Stands';
+export { Trophy, type TrophyOptions } from './sport/Trophy';
 export { SpeechBubble, type SpeechBubbleOptions } from './ui/SpeechBubble';
 export { StatCounter, type StatCounterOptions } from './ui/StatCounter';
 export { TextLabel, type TextLabelOptions } from './ui/TextLabel';

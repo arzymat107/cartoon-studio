@@ -259,6 +259,7 @@ Every player has a **signature** that makes him unique in the cartoons, set in h
 | --- | --- |
 | `MbappeFigure` | "Kylian the dictator": wears the generalissimo uniform by default (`costume: 'kit'` for match scenes); `salute`, `handInCoat`, `command` |
 | `YamalFigure` | Huge baggy shorts hanging off his hips and flapping as he moves (`shorts: 'baggy'`; also `'low'`, `'normal'`), lanky build, braces; `hitchShorts` pulls them up – briefly; `flapShorts` = gust of wind |
+| `KaneFigure` | The trophy curse: it always gets away. `reachForTrophy(m, trophy)` – it slides off every time his hands get close, then zooms away; `trophyVanishes(m, trophy)` – it pops into his arms and vanishes with a poof. Uses the `Trophy` prop (generic gold cup, optional `stand`) |
 
 ```
 src/components/figures/
@@ -301,7 +302,7 @@ head and shoulders alone, pivoted at the chin.
 | Moving | `idle`, `walk`, `run`, `hop`, `flop` + `getUp`, `face` |
 | Gestures | `wave`, `cheer`, `celebrate`, `crossArms`, `handsOnHips`, `handsOnHead`, `shrug`, `point`, `think`, `clap`, `dance` |
 | Ball | `kick(m, ball, { toX, peak })`, `juggle(m, ball)` |
-| Signatures | `salute`, `handInCoat`, `command` (the dictator), `hitchShorts`, `flapShorts`, `flutter` (baggy shorts) |
+| Signatures | `salute`, `handInCoat`, `command` (the dictator), `hitchShorts`, `flapShorts`, `flutter` (baggy shorts), `reachForTrophy`, `trophyVanishes` (the trophy curse) |
 | Building blocks | `pose(m, { rightArm: -90, rightForearm: -20 })`, `rest(m)` |
 
 Expressions: `neutral` (the traced portrait), `happy`, `laugh`, `smug`, `angry`, `sad`, `shocked`,

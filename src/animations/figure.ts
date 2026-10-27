@@ -11,7 +11,7 @@
  */
 import { gsap } from 'gsap';
 import { synth } from '@/audio';
-import { FIGURE_REST, type Ball, type FigureExpression, type PortraitFigure, type FigurePart, type SpeechBubble } from '@/components';
+import { FIGURE_REST, type Ball, type FigureExpression, type PortraitFigure, type FigurePart, type SpeechBubble, type Trophy } from '@/components';
 import type { Timeline } from '@/engine';
 import { flight } from './football';
 import { jump, popIn, popOut } from './motion';
@@ -594,4 +594,69 @@ export function flapShorts(m: PortraitFigure, { duration = 1.6 } = {}): Timeline
     .to(m.shortsFlaps, { scaleY: 1.06, duration: 0.2, yoyo: true, repeat: Math.round(duration / 0.2) - 1 }, 0)
     .add(rest(m), duration)
     .add(emote(m, 'neutral'), duration + 0.2);
+}
+
+// ── The trophy curse (Kane's signature) ──────────────────────────────
+
+/**
+ * Reach for a trophy in front of him (put it on a stand, about an arm's length away): each time his
+ * hands get close it slides away, and on the last try it zooms off for good. Faces the trophy first.
+ */
+export function reachForTrophy(m: PortraitFigure, trophy: Trophy, { tries = 3, step = 110 } = {}): Timeline {
+  const dir = Math.sign(trophy.x - m.x) || 1;
+  const tl = gsap.timeline().add(face(m, dir as 1 | -1), 0);
+  for (let i = 0; i < tries; i++) {
+    const t = i * 1.05;
+    const last = i === tries - 1;
+    tl.add(emote(m, i === 0 ? 'happy' : 'determined'), t)
+      .add(pose(m, { leftArm: -58, rightArm: -78, leftForearm: -14, rightForearm: -10, chest: -12, head: -5, rightLeg: -24, rightShin: 10, leftLeg: 16, leftShin: 6 }, { duration: 0.35, ease: 'power2.out' }), t)
+      .to(m, { x: `+=${dir * step}`, duration: 0.35, ease: 'power2.out' }, t)
+      .add(sfx(synth.whoosh), t + 0.18)
+      .add(emote(m, 'shocked'), t + 0.35);
+    if (last) {
+      tl.to(trophy, { x: `+=${dir * 1400}`, duration: 0.6, ease: 'power2.in' }, t + 0.18)
+        .to(trophy, { rotation: dir * 8, duration: 0.15, ease: 'power1.out' }, t + 0.18)
+        .add(rest(m, { duration: 0.5 }), t + 0.7)
+        .add(emote(m, 'sad'), t + 1)
+        .to(m.torso, { y: m.hipY + 8, duration: 0.6, ease: 'power2.inOut' }, t + 1)
+        .to(m.head, { rotation: 14, duration: 0.6, ease: 'power2.inOut' }, t + 1)
+        .add(rest(m, { duration: 0.4 }), t + 2.2)
+        .add(emote(m, 'neutral'), t + 2.4);
+    } else {
+      tl.to(trophy, { x: `+=${dir * step * 1.3}`, duration: 0.25, ease: 'power3.out' }, t + 0.18)
+        .to(trophy, { rotation: dir * 6, duration: 0.12, yoyo: true, repeat: 1 }, t + 0.18)
+        .add(rest(m, { duration: 0.3 }), t + 0.7);
+    }
+  }
+  return tl;
+}
+
+/**
+ * Finally holding a trophy: it pops into his arms, he hugs it, beaming – and it vanishes with a poof,
+ * leaving him hugging thin air. Use a trophy without a stand; it is placed in front of his chest.
+ */
+export function trophyVanishes(m: PortraitFigure, trophy: Trophy, { hold = 1.2 } = {}): Timeline {
+  const poof = 0.45 + hold;
+  return gsap.timeline()
+    .set(trophy, {
+      x: () => m.x + 4 * m.scaleX, y: () => m.y + (m.hipY - 10) * Math.abs(m.scaleY), rotation: 0, scale: 0, opacity: 0, immediateRender: false,
+    }, 0)
+    .add(emote(m, 'laugh'), 0)
+    .add(sfx(synth.chirp), 0)
+    .add(popIn(trophy, { scale: 1.4 }), 0)
+    .add(pose(m, { leftArm: -18, leftForearm: -78, rightArm: 18, rightForearm: 78, chest: -6, head: -6 }, { duration: 0.35, ease: 'back.out(1.6)' }), 0.05)
+    .add(flutter(m, hold, { amount: 6, period: 0.35 }), 0.4)
+    .add(emote(m, 'happy'), 0.4 + hold * 0.4)
+    .to(m.head, { rotation: 6, duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 0.4 + hold * 0.4)
+    // Poof.
+    .add(sfx(synth.pop), poof)
+    .to(trophy, { scale: 1.9, opacity: 0, duration: 0.18, ease: 'power2.out' }, poof)
+    .add(emote(m, 'shocked'), poof + 0.05)
+    .to(m.brows, { y: -10, duration: 0.15 }, poof + 0.05)
+    .to(m.head, { rotation: 10, duration: 0.3 }, poof + 0.4)
+    .add(emote(m, 'sad'), poof + 0.9)
+    .add(rest(m, { duration: 0.9 }), poof + 0.9)
+    .to(m.torso, { y: m.hipY + 8, duration: 0.6, ease: 'power2.inOut' }, poof + 1)
+    .add(rest(m, { duration: 0.4 }), poof + 2)
+    .add(emote(m, 'neutral'), poof + 2.2);
 }

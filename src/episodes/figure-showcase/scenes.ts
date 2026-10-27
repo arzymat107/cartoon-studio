@@ -7,7 +7,7 @@
 import { gsap } from 'gsap';
 import { figureActions as act } from '@/animations';
 import {
-  Ball, FIGURE_EXPRESSIONS, PortraitFigure, SpeechBubble, TextLabel, type CostumeName, type FigureBuildName, type FigureSpec,
+  Ball, FIGURE_EXPRESSIONS, PortraitFigure, SpeechBubble, TextLabel, Trophy, type CostumeName, type FigureBuildName, type FigureSpec,
   type ShortsStyle,
 } from '@/components';
 import { Scene, type SceneClass, type Timeline } from '@/engine';
@@ -23,6 +23,7 @@ interface Props {
   all: PortraitFigure[];
   ball: Ball;
   bubble: SpeechBubble;
+  trophy: Trophy;
 }
 
 interface Action {
@@ -32,6 +33,8 @@ interface Action {
   play: (props: Props) => Timeline;
   /** Ball start, relative to the figure (omit to hide the ball). */
   ball?: number;
+  /** Trophy start, relative to the figure, and the height of its stand (omit to hide it). */
+  trophy?: { x: number; stand: number };
   /** The figure's start x. */
   x?: number;
   bubble?: string;
@@ -79,6 +82,22 @@ export const SHORTS_CHAPTERS: Action[] = [
       all.forEach((f) => tl.add(act.idle(f, 1.4), 0).add(act.dance(f, { beats: 6 }), 1.4).add(act.hitchShorts(f, { hold: 0.3 }), 3.2));
       return tl;
     },
+  },
+];
+
+/** Kane's signature: the trophy curse – it always gets away. */
+export const TROPHY_CHAPTERS: Action[] = [
+  {
+    title: 'Trophy curse: so close', code: 'reachForTrophy(m, trophy)', x: 200, trophy: { x: 320, stand: 330 },
+    play: ({ m, trophy }) => act.reachForTrophy(m, trophy),
+  },
+  { title: 'Trophy curse: poof', code: 'trophyVanishes(m, trophy)', play: ({ m, trophy }) => act.trophyVanishes(m, trophy) },
+  {
+    title: 'This year, for sure', code: 'say(m, bubble) · reachForTrophy(m, trophy)', bubble: 'This year\nfor sure!', x: 200, trophy: { x: 320, stand: 330 },
+    play: ({ m, bubble, trophy }) => gsap.timeline()
+      .add(act.emote(m, 'determined'))
+      .add(act.say(m, bubble, { duration: 1.2 }))
+      .add(act.reachForTrophy(m, trophy, { tries: 2 }), '+=0.2'),
   },
 ];
 
@@ -144,9 +163,12 @@ function actionScene(spec: FigureSpec, action: Action, index: number, total: num
         ? action.shortsStyles.map((shorts, i) => new PortraitFigure(spec, { shorts, x: 190 + i * 350, y: GROUND_Y, scale: 1.15 }))
         : [new PortraitFigure(spec, { x, y: GROUND_Y, scale: SCALE, costume: action.costume })];
       const m = all[0];
+      const trophy = new Trophy({
+        x: x + (action.trophy?.x ?? 0), y: GROUND_Y, stand: action.trophy?.stand ?? 0, opacity: action.trophy ? 1 : 0,
+      });
       const ball = new Ball({ x: x + (action.ball ?? 0), y: GROUND_Y, radius: 24, opacity: action.ball === undefined ? 0 : 1 });
       const bubble = new SpeechBubble({ text: action.bubble ?? '', fontSize: 46 });
-      this.props = { m, all, ball, bubble };
+      this.props = { m, all, ball, bubble, trophy };
 
       const label = new TextLabel({
         text: `${index + 1}/${total} · ${action.title.toUpperCase()}`, x: width / 2, y: 250,
@@ -156,7 +178,7 @@ function actionScene(spec: FigureSpec, action: Action, index: number, total: num
         text: action.code.startsWith('{') ? action.code : `act.${action.code}`, x: width / 2, y: 360, fontSize: 34,
         font: 'ui-monospace, Menlo, Consolas, monospace', color: '#ffd60a', background: 'rgba(0,0,0,0.6)',
       });
-      this.add(...this.stadium.background, ball, ...all, bubble);
+      this.add(...this.stadium.background, ball, ...all, trophy, bubble);
       this.overlay.add(label, code);
     }
 

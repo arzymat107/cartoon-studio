@@ -3,7 +3,7 @@ import type { Episode } from '@/engine';
 import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
 import { FinedScene } from './fined/scenes/FinedScene';
-import { DICTATOR_CHAPTERS, figureShowcase, SHORTS_CHAPTERS } from './figure-showcase/scenes';
+import { DICTATOR_CHAPTERS, figureShowcase, SHORTS_CHAPTERS, TROPHY_CHAPTERS } from './figure-showcase/scenes';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
 import { DressingRoomScene } from './madrid-laughs/scenes/DressingRoomScene';
 import { FullTimeScene } from './madrid-laughs/scenes/FullTimeScene';
@@ -73,7 +73,7 @@ export const episodes: Record<string, Episode> = {
     title: 'Kane – All Actions (reference)',
     width: 1080,
     height: 1920,
-    scenes: figureShowcase(KANE, { greeting: 'Servus\nMünchen!' }),
+    scenes: figureShowcase(KANE, { greeting: 'Servus\nMünchen!', signature: TROPHY_CHAPTERS }),
   },
 };
 
