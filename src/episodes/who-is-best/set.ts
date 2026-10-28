@@ -3,7 +3,7 @@
  * dust cloud a player leaves behind when he goes poof.
  */
 import { gsap } from 'gsap';
-import { sfx } from '@/animations';
+import { sfx, sound } from '@/animations';
 import { synth } from '@/audio';
 import type { PortraitFigure } from '@/components';
 import { Actor, seededRandom, svg, uid, type Timeline } from '@/engine';
@@ -187,7 +187,7 @@ function middle(m: PortraitFigure): [number, number] {
 export function poof(m: PortraitFigure, dust: Dust): Timeline {
   const [x, y] = middle(m);
   return gsap.timeline()
-    .add(sfx(synth.poof), 0)
+    .add(sound('sfx/poof', () => sfx(synth.poof)), 0)
     .set(dust, { x, y, opacity: 1, immediateRender: false }, 0)
     .set(m, { opacity: 0, immediateRender: false }, 0.03)
     .fromTo(dust.puff, { scale: 0.45, opacity: 1 }, { scale: 1, duration: 0.12, ease: 'back.out(2)', immediateRender: false }, 0)

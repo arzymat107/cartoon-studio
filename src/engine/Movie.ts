@@ -38,6 +38,7 @@ export class Movie {
 
   constructor(stage: Stage, episode: Episode, { transition = episode.transition ?? 0.5 }: MovieOptions = {}) {
     this.timeline = gsap.timeline({ paused: true });
+    let cursor = 0;
 
     for (const SceneType of episode.scenes) {
       const scene = new SceneType(stage);
@@ -47,8 +48,9 @@ export class Movie {
       const sceneTimeline = gsap.timeline();
       scene.animate(sceneTimeline);
 
-      const start = this.timeline.duration();
-      const end = start + Math.max(sceneTimeline.duration(), transition);
+      const start = cursor;
+      const end = start + Math.max(scene.cut ?? sceneTimeline.duration(), transition);
+      cursor = end + transition;
       this.timeline
         .to(scene.root, { opacity: 1, duration: transition }, start)
         .add(sceneTimeline, start)

@@ -39,6 +39,18 @@ export function clip(name: string, { volume = 1, offset = 0, duration, loop = fa
   return marker;
 }
 
+/**
+ * A recorded sound if the file exists, otherwise the `fallback` (usually a synthesized one), so a
+ * scene works before its recordings are added:
+ *   tl.add(sound('sfx/poof', () => sfx(synth.poof)), 2)
+ */
+export function sound(name: string, fallback?: () => Timeline | Tween, options?: ClipOptions): Timeline {
+  const tl = gsap.timeline();
+  if (soundInfo(name)) tl.add(clip(name, options), 0);
+  else if (fallback) tl.add(fallback(), 0);
+  return tl;
+}
+
 /** Length of a sound file in seconds, or undefined if it doesn't exist. */
 export const soundDuration = (name: string): number | undefined => soundInfo(name)?.duration;
 

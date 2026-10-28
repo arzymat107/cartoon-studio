@@ -13,6 +13,11 @@ import type { Timeline } from './types';
 export abstract class Scene {
   /** Shown in the player's chapter list. */
   abstract readonly title: string;
+  /**
+   * Cut to the next scene at this time (set it in animate()) instead of when the timeline ends;
+   * sounds still playing ring on over the cut.
+   */
+  cut?: number;
 
   readonly stage: Stage;
   /** Whole scene; the movie fades it in and out. */
