@@ -1,5 +1,5 @@
 /**
- * Lamine Yamal as a full caricature, "Y2": a head drawn (not traced) from a reference photo – a huge
+ * Lamine Yamal – the "Caricature" version (Y2): a head drawn (not traced) from a reference photo – a huge
  * curly mop with blond tips and faded sides, a long slim face, low thick brows, sleepy heavy-lidded
  * eyes and the braces grin – on the 'cartoon' body with a bigger head. Same signature as Y1: the
  * huge baggy shorts. Barça #10 kit by default (no crest), Spain #19 as `SPAIN_KIT`.

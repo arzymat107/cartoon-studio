@@ -1,5 +1,5 @@
 /**
- * Kylian Mbappé: portrait "M1", traced from a reference photo with his natural asymmetry kept
+ * Kylian Mbappé: the "Portrait" version (M1), traced from a reference photo with his natural asymmetry kept
  * (head tilt, the right brow higher, a lopsided smile). Signature: "Kylian the dictator" – he wears
  * the generalissimo uniform unless you ask for the kit. Real Madrid #10 kit, no crest.
  *

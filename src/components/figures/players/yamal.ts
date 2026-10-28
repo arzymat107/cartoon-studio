@@ -1,5 +1,5 @@
 /**
- * Lamine Yamal: portrait "Y1", traced from a reference photo in a three-quarter view – curly mop
+ * Lamine Yamal: the "Portrait" version (Y1), traced from a reference photo in a three-quarter view – curly mop
  * with blond tips, faded sides, low thick brows, heavy-lidded smiling eyes and the braces.
  * Signature: huge baggy shorts hanging off his hips, flapping as he moves (`hitchShorts()` pulls
  * them up – briefly; `flapShorts()` is a gust of wind).

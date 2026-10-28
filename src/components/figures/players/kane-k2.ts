@@ -1,5 +1,5 @@
 /**
- * Harry Kane as a full caricature, "K2": a head drawn (not traced) from a reference photo – a
+ * Harry Kane – the "Caricature" version (K2): a head drawn (not traced) from a reference photo – a
  * towering forehead under a receding M-shaped hairline, light-brown hair combed back with one loose
  * strand, small deep-set blue-grey eyes, a long straight nose, a short full beard and ears that
  * stick out – on the 'cartoon' body with a bigger head. Same signature as K1: the trophy curse.

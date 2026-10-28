@@ -1,5 +1,5 @@
 /**
- * Kylian Mbappé as a full caricature, "M2": a head drawn (not traced) from a reference photo – domed
+ * Kylian Mbappé – the "Caricature" version (M2): a head drawn (not traced) from a reference photo – domed
  * head with a sharp shaped-up hairline, big ears, small almond eyes, broad round nose and his wide
  * toothy grin as the resting face – on the 'cartoon' body (hard cel shadows, bold outlines) with a
  * bigger head. Same signature as M1: "Kylian the dictator" unless you ask for the kit.

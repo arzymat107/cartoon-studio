@@ -1,5 +1,5 @@
 /**
- * Harry Kane: portrait "K1", traced from a reference photo, nearly frontal – light-brown hair
+ * Harry Kane: the "Portrait" version (K1), traced from a reference photo, nearly frontal – light-brown hair
  * combed back from a high, receding hairline, small deep-set blue-grey eyes, a long nose, a short
  * full beard and ears that stick out a little.
  * Bayern #9 kit by default (no crest), England #9 as `ENGLAND_KIT`.

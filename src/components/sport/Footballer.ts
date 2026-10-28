@@ -19,7 +19,7 @@ export interface FootballerOptions extends Omit<CharacterOptions, 'shirt' | 'pan
 }
 
 /**
- * A Character in a football kit: short sleeves, shorts, socks, optional stripes and a number.
+ * The "Classic" version of the players: a Character in a football kit, short sleeves, shorts, socks, optional stripes and a number.
  * No crests or logos – use colors and numbers, which are enough for fans to recognize a team.
  */
 export class Footballer extends Character {
