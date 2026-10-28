@@ -15,7 +15,10 @@
     "courtois": { "engine": "kokoro", "voice": "bm_george", "speed": 0.9 },
     "bellingham": { "engine": "kokoro", "voice": "bm_lewis", "speed": 0.95 },
     "madrid": { "engine": "kokoro", "voice": "am_fenrir", "speed": 0.95 },
-    "mbappe": { "engine": "kokoro", "voice": "am_onyx", "speed": 0.9 }
+    "mbappe": { "engine": "kokoro", "voice": "am_onyx", "speed": 0.9 },
+    "kane": { "engine": "chatterbox", "voice": "bm_fable", "speed": 1.05, "exaggeration": 0.6, "cfg": 0.4 },
+    "host": { "engine": "chatterbox", "voice": "am_michael", "speed": 1, "exaggeration": 0.7, "cfg": 0.4 },
+    "narrator": { "engine": "chatterbox", "voice": "bm_george", "speed": 0.9, "exaggeration": 0.6, "cfg": 0.3, "pitch": 0.95 }
   },
   "lines": [
     { "id": "bob-good-morning", "character": "bob", "text": "Good morning, world!" },
@@ -56,6 +59,29 @@
     { "id": "cancelo-tea", "character": "cancelo", "text": "Who brings tea to a football match?!" },
     { "id": "yamal-banger", "character": "yamal", "text": "I scored a banger, you know." },
     { "id": "madrid-we-know", "character": "madrid", "text": "We know, Lamine. We know." },
-    { "id": "mbappe-merci", "character": "mbappe", "text": "Merci, mes amis." }
+    { "id": "mbappe-merci", "character": "mbappe", "text": "Merci, mes amis." },
+    { "id": "host-winner", "character": "host", "parts": [
+      { "text": "And the Ballon dor goes to...", "exaggeration": 0.6, "cfg": 0.3, "pause": 0.5 },
+      { "text": "Harry Kane!", "exaggeration": 1.2, "cfg": 0.3 } ] },
+    { "id": "kane-thanks-mum", "character": "kane", "parts": [
+      { "text": "Wow!", "exaggeration": 1.0, "cfg": 0.3, "pause": 0.1 },
+      { "text": "First, thanks to my mum and dad!", "exaggeration": 0.85 } ] },
+    { "id": "kane-thanks-vet", "character": "kane", "parts": [
+      { "text": "And my dog!", "exaggeration": 0.8, "seed": 2, "pause": 0.1 },
+      { "text": "And my dog's vet!", "exaggeration": 0.9, "seed": 2 } ] },
+    { "id": "narrator-hours-later", "character": "narrator", "text": "Three hours later..." },
+    { "id": "kane-thanks-kit-man", "character": "kane", "parts": [
+      { "text": "...the kit man...", "exaggeration": 0.35, "cfg": 0.3, "pause": 0.3 },
+      { "text": "and, erm... the kit man's nan...", "exaggeration": 0.35, "cfg": 0.3 } ] },
+    { "id": "narrator-days-later", "character": "narrator", "text": "Two days later..." },
+    { "id": "kane-thanks-goldfish", "character": "kane", "parts": [
+      { "text": "...my cousin's goldfish...", "exaggeration": 0.3, "cfg": 0.25, "pause": 0.4 },
+      { "text": "Gary.", "exaggeration": 0.3, "cfg": 0.25 } ] },
+    { "id": "kane-thanks-trophy", "character": "kane", "parts": [
+      { "text": "And finally...", "exaggeration": 0.5, "cfg": 0.3, "pause": 0.5 },
+      { "text": "this beautiful trophy!", "exaggeration": 1.0, "cfg": 0.3 } ] },
+    { "id": "kane-not-again", "character": "kane", "parts": [
+      { "text": "Nooooo!", "exaggeration": 2.0, "cfg": 0.2, "temperature": 0.95, "seed": 5, "pause": 0.1 },
+      { "text": "NOT AGAIN!", "exaggeration": 2.0, "cfg": 0.2, "temperature": 0.95, "seed": 5 } ] }
   ]
 }

@@ -1,6 +1,7 @@
 /**
- * Comedy costumes for portrait figures, made for "Kylian the dictator". Over-the-top and clearly fictional –
- * football medals, club colors and a French cockade, no real regime insignia.
+ * Costumes for portrait figures: the comedy uniforms of "Kylian the dictator" – over-the-top and clearly
+ * fictional: football medals, club colors and a French cockade, no real regime insignia – and a tuxedo
+ * for award nights.
  * Torso parts are drawn in torso coordinates (hip at 0, 0); hats in head coordinates (neck at 0, 0).
  */
 import { svg } from '@/engine';
@@ -157,5 +158,41 @@ export const EMPEROR: Costume = {
   },
 };
 
-export const COSTUMES = { generalissimo: GENERALISSIMO, emperor: EMPEROR };
+// ── Tuxedo ─────────────────────────────────────────────────────────────
+
+const BLACK = '#17171c';
+const SATIN = '#2c2c36';
+const SHIRT = '#f7f6f2';
+
+/** Black tie for award nights: tuxedo with satin lapels, white shirt, bow tie and pocket square. */
+export const TUXEDO: Costume = {
+  sleeve: BLACK, cuff: SHIRT, trousers: BLACK, boots: '#0c0c0e', hatHeight: 0,
+  hips(g, p) {
+    p.shape(g, smoothPath(mirror([[0, 10], [10, 24], [50, 28], [50, 0], [47, -36], [0, -38]])), BLACK, 7);
+    line(g, 'M 0 -30 L 0 12', '#000', 1.5);
+  },
+  chest(g, p) {
+    p.shape(g, COAT, BLACK, 12);
+    // Shirt front in the V of the jacket, with studs.
+    p.shape(g, 'M -17 -140 L 17 -140 L 4 -64 L -4 -64 Z', SHIRT, 3);
+    for (const y of [-118, -102, -86]) dot(g, 0, y, 1.8, '#222');
+    // Satin lapels down to the single button.
+    for (const side of [-1, 1]) {
+      p.shape(g, `M ${side * 17} -142 L ${side * 30} -138 L ${side * 24} -112 L ${side * 6} -62 L ${side * 4} -66 Z`, SATIN, 2);
+    }
+    dot(g, 0, -56, 2.6, '#222');
+    // Pocket square over the heart (the screen right).
+    p.shape(g, 'M 24 -100 L 40 -100 L 37 -94 L 33 -98 L 29 -93 L 26 -98 Z', SHIRT, 1);
+    line(g, 'M 22 -100 L 42 -100', '#000', 1.2);
+    // White collar and black bow tie.
+    p.shape(g, 'M -17 -150 L 17 -150 L 16 -140 Q 0 -134 -16 -140 Z', SHIRT, 2);
+    p.shape(g, 'M -16 -147 L -3 -142 L -3 -137 L -16 -132 Z', BLACK, 1);
+    p.shape(g, 'M 16 -147 L 3 -142 L 3 -137 L 16 -132 Z', BLACK, 1);
+    dot(g, 0, -139.5, 3.2, BLACK);
+  },
+  shoulders() {},
+  hat() {},
+};
+
+export const COSTUMES = { generalissimo: GENERALISSIMO, emperor: EMPEROR, tuxedo: TUXEDO };
 export type CostumeName = keyof typeof COSTUMES;

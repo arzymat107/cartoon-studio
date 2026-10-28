@@ -4,6 +4,7 @@
  *   npm run voices              generate missing lines
  *   npm run voices -- --force   regenerate all lines
  *   npm run voices -- bob       only lines of character "bob" (combine with --force)
+ *   npm run voices -- --force kane-not-again   just that line
  *
  * Edit scripts/voices.json to add lines or change a character's voice.
  *
@@ -17,20 +18,42 @@
  *   voice – installed voice name, e.g. "Microsoft Zira Desktop"
  *   rate  – speaking speed, -10 … 10 (0 = normal)
  *
- * Both engines:
+ * engine "chatterbox" – expressive acting (Resemble AI's Chatterbox, ~2 GB model, best on an NVIDIA
+ *   graphics card). It speaks with the character's Kokoro voice (a sample is made once), so set
+ *   "voice" and "speed" as for Kokoro, plus:
+ *   exaggeration – 0.25 flat … 0.5 normal … 1+ over the top
+ *   cfg          – pacing: lower = slower, more deliberate (pair low cfg with high exaggeration)
+ *   temperature, seed – variation; change the seed to get a different take
+ *   Setup, once (Python environment outside the project; uv: https://docs.astral.sh/uv/):
+ *     uv venv --python 3.11 ~/.local/share/cartoon-studio/tts-venv
+ *     uv pip install --python ~/.local/share/cartoon-studio/tts-venv chatterbox-tts "setuptools<81"
+ *   (setuptools: Chatterbox's audio watermarker fails to load without it.)
+ *   (or point TTS_PYTHON at another Python with chatterbox-tts installed)
+ *
+ * All engines:
  *   pitch – 1 = unchanged, < 1 deeper (and slower), > 1 higher (and faster)
+ *
+ * Acting: a line can override its character's delivery (speed, rate, pitch, exaggeration, cfg, …), and
+ * instead of "text" it can be built from "parts", each with its own delivery and a "pause" (seconds)
+ * after it – an excited burst, a beat of silence, a tired mumble:
+ *   { "id": "kane-finally", "character": "kane", "parts": [
+ *     { "text": "And finally...", "speed": 0.8, "pause": 0.6 },
+ *     { "text": "this beautiful trophy!", "speed": 1.1, "pitch": 1.05 } ] }
  *
  * Output: src/assets/sounds/voices/<id>.wav → use as say(char, bubble, { voice: 'voices/<id>' })
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(join(root, 'scripts/voices.json'), 'utf8'));
 const outDir = join(root, 'src/assets/sounds/voices');
+/** Voice samples and Chatterbox takes – generated files that don't belong in the project. */
+const cacheDir = join(homedir(), '.cache/cartoon-studio/voices');
+const ttsPython = process.env.TTS_PYTHON ?? join(homedir(), '.local/share/cartoon-studio/tts-venv/bin/python');
 const args = process.argv.slice(2);
 const force = args.includes('--force');
 const only = args.filter((a) => !a.startsWith('--'));
@@ -39,22 +62,91 @@ let kokoro = null;
 
 mkdirSync(outDir, { recursive: true });
 
-for (const line of config.lines) {
-  if (only.length && !only.includes(line.character)) continue;
-  const target = join(outDir, `${line.id}.wav`);
-  if (existsSync(target) && !force) {
+const pending = config.lines.filter((line) => {
+  if (only.length && !only.includes(line.character) && !only.includes(line.id)) return false;
+  if (!config.characters[line.character]) throw new Error(`Unknown character "${line.character}" in line "${line.id}"`);
+  if (existsSync(join(outDir, `${line.id}.wav`)) && !force) {
     console.log(`skip     ${line.id} (exists, use --force to regenerate)`);
-    continue;
+    return false;
   }
-  const character = config.characters[line.character];
-  if (!character) throw new Error(`Unknown character "${line.character}" in line "${line.id}"`);
+  return true;
+});
 
+const partsOf = (line) => line.parts ?? [{ text: line.text }];
+/** Delivery: the character's, overridden by the line's, overridden by the part's. */
+const settingsOf = (line, part) => ({ ...config.characters[line.character], ...delivery(line), ...delivery(part) });
+const takeFile = (line, i) => join(cacheDir, 'takes', `${line.id}-${i}.wav`);
+
+// Chatterbox loads a big model, so all its lines are spoken in one go, before the rest.
+await chatterboxSpeakAll(pending.filter((line) => (config.characters[line.character].engine ?? 'kokoro') === 'chatterbox'));
+
+for (const line of pending) {
+  const character = config.characters[line.character];
   const engine = character.engine ?? 'kokoro';
-  const wav = engine === 'windows' ? await windowsSpeak(line.text, character) : await kokoroSpeak(line.text, character);
-  const shifted = resample(wav.samples, character.pitch ?? 1);
-  const trimmed = normalize(trimSilence(shifted, wav.sampleRate));
-  writeFileSync(target, writeWav(trimmed, wav.sampleRate));
-  console.log(`created  ${line.id}.wav  ${(trimmed.length / wav.sampleRate).toFixed(2)}s  [${engine} ${character.voice}]  "${line.text}"`);
+  const parts = partsOf(line);
+  const pieces = [];
+  let sampleRate = 24000;
+  for (const [i, part] of parts.entries()) {
+    const settings = settingsOf(line, part);
+    const wav = engine === 'windows' ? await windowsSpeak(part.text, settings)
+      : engine === 'chatterbox' ? readWav(readFileSync(takeFile(line, i)))
+      : await kokoroSpeak(part.text, settings);
+    sampleRate = wav.sampleRate;
+    pieces.push(trimSilence(resample(wav.samples, settings.pitch ?? 1), sampleRate));
+    if (part.pause) pieces.push(new Int16Array(Math.round(part.pause * sampleRate)));
+  }
+  const joined = normalize(concat(pieces));
+  writeFileSync(join(outDir, `${line.id}.wav`), writeWav(joined, sampleRate));
+  const text = parts.map((p) => p.text).join(' ');
+  console.log(`created  ${line.id}.wav  ${(joined.length / sampleRate).toFixed(2)}s  [${engine} ${character.voice}]  "${text}"`);
+}
+
+/** The delivery settings set on a line or part. */
+function delivery({ speed, rate, pitch, exaggeration, cfg, temperature, seed }) {
+  return Object.fromEntries(
+    Object.entries({ speed, rate, pitch, exaggeration, cfg, temperature, seed }).filter(([, v]) => v !== undefined),
+  );
+}
+
+/** Speak every part of these lines with Chatterbox, into the takes folder. */
+async function chatterboxSpeakAll(lines) {
+  if (!lines.length) return;
+  if (!existsSync(ttsPython)) throw new Error(`Chatterbox needs its Python environment (${ttsPython}) – see the setup at the top of this script`);
+  mkdirSync(join(cacheDir, 'takes'), { recursive: true });
+  const jobs = [];
+  for (const line of lines) {
+    for (const [i, part] of partsOf(line).entries()) {
+      const s = settingsOf(line, part);
+      jobs.push({
+        text: part.text, reference: await voiceSample(s), out: takeFile(line, i),
+        exaggeration: s.exaggeration, cfg: s.cfg, temperature: s.temperature, seed: s.seed,
+      });
+    }
+  }
+  execFileSync(ttsPython, [join(root, 'scripts/chatterbox_tts.py')], { input: JSON.stringify(jobs), stdio: ['pipe', 'inherit', 'inherit'] });
+}
+
+/** A ~10 s sample of a Kokoro voice for Chatterbox to speak with (made once, then cached). */
+async function voiceSample({ voice = 'af_heart', speed = 1 }) {
+  const file = join(cacheDir, `sample-${voice}-${speed}.wav`);
+  if (!existsSync(file)) {
+    const text = "I've been playing football since I was a little kid, and honestly, every single match still feels special to me. "
+      + 'The noise, the lights, the fans singing – there is nothing else like it in the world.';
+    const wav = await kokoroSpeak(text, { voice, speed });
+    mkdirSync(cacheDir, { recursive: true });
+    writeFileSync(file, writeWav(normalize(trimSilence(wav.samples, wav.sampleRate)), wav.sampleRate));
+  }
+  return file;
+}
+
+function concat(pieces) {
+  const out = new Int16Array(pieces.reduce((n, p) => n + p.length, 0));
+  let offset = 0;
+  for (const piece of pieces) {
+    out.set(piece, offset);
+    offset += piece.length;
+  }
+  return out;
 }
 
 /** Kokoro-82M neural TTS (24 kHz). Loaded once; the model is cached after the first download. */

@@ -59,7 +59,7 @@ export interface PortraitFigureOptions extends ActorOptions {
   kit?: Kit;
   build?: FigureBuildName | FigureBuild;
   expression?: FigureExpression;
-  /** Dress up: 'generalissimo' or 'emperor'; 'kit' = the football kit even if the player's signature is a costume. */
+  /** Dress up: 'generalissimo', 'emperor' or 'tuxedo'; 'kit' = the football kit even if the player's signature is a costume. */
   costume?: CostumeName | 'kit';
   /** Default: the player's signature. */
   shorts?: ShortsStyle;

@@ -5,6 +5,8 @@ export interface TrophyOptions extends ActorOptions {
   size?: number;
   /** Height of the display stand under it (0 = no stand, the cup stands on the ground). */
   stand?: number;
+  /** 'cup' = two-handled cup; 'ball' = a golden football on a base, the player-of-the-year award. */
+  shape?: 'cup' | 'ball';
 }
 
 const GOLD = '#f2c230';
@@ -13,7 +15,7 @@ const GOLD_LIGHT = '#fff1a8';
 const LINE = '#5a3a06';
 
 /**
- * A generic gold cup with two handles on a dark base – no real competition's trophy. Origin is the
+ * A generic gold cup with two handles (or a golden ball) on a dark base – no real competition's trophy. Origin is the
  * ground point under it (under the stand if it has one):
  *   cup   – the trophy itself, sitting on top of the stand; move it to lift it off
  *   stand – the white display stand (empty when `stand` is 0)
@@ -23,7 +25,7 @@ export class Trophy extends Actor {
   readonly cup: Actor;
   readonly stand: Actor;
 
-  constructor({ size = 150, stand = 0, ...options }: TrophyOptions = {}) {
+  constructor({ size = 150, stand = 0, shape = 'cup', ...options }: TrophyOptions = {}) {
     super({ name: 'Trophy', ...options });
     this.size = size;
 
@@ -48,6 +50,11 @@ export class Trophy extends Actor {
     }
     const fill = `url(#${shine})`;
     const p = (pts: number[][]) => pts.map(([x, y]) => `${x * s} ${y * s}`).join(' ');
+    if (shape === 'ball') {
+      this.drawBall(fill, s, p);
+      this.add(this.stand, this.cup);
+      return;
+    }
     // Base: two dark steps with a gold plate.
     this.cup.draw('path', { d: `M ${p([[-30, 0]])} L ${p([[30, 0], [26, -14], [-26, -14]])} Z`, fill: '#3b2a1e', stroke: '#1d140d', 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
     this.cup.draw('path', { d: `M ${p([[-22, -14]])} L ${p([[22, -14], [19, -26], [-19, -26]])} Z`, fill: '#4a3626', stroke: '#1d140d', 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
@@ -76,6 +83,26 @@ export class Trophy extends Actor {
     this.cup.draw('path', { d: `M ${p([[-22, -92]])} C ${p([[-22, -76], [-16, -64], [-10, -58]])}`, fill: 'none', stroke: '#fff', 'stroke-width': 4 * s, 'stroke-linecap': 'round', opacity: 0.75 });
 
     this.add(this.stand, this.cup);
+  }
+
+  /** A golden football with its seams, held by a dark tapered base. */
+  private drawBall(fill: string, s: number, p: (pts: number[][]) => string): void {
+    this.cup.draw('path', { d: `M ${p([[-26, 0]])} L ${p([[26, 0], [18, -34], [-18, -34]])} Z`, fill: '#2a2320', stroke: '#110d0b', 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
+    this.cup.draw('rect', { x: -14 * s, y: -20 * s, width: 28 * s, height: 6 * s, fill: GOLD, rx: 1.5 });
+    this.cup.draw('path', { d: `M ${p([[-12, -34]])} L ${p([[12, -34], [8, -42], [-8, -42]])} Z`, fill, stroke: LINE, 'stroke-width': 2.5 });
+    const r = 34 * s;
+    const cy = -74 * s;
+    this.cup.draw('circle', { cy, r, fill, stroke: LINE, 'stroke-width': 3 });
+    // Seams: a pentagon in the middle with lines out to the edge.
+    const pentagon = Array.from({ length: 5 }, (_, i) => {
+      const a = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+      return [Math.cos(a) * r * 0.36, cy + Math.sin(a) * r * 0.36];
+    });
+    this.cup.draw('path', { d: `M ${pentagon.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L ')} Z`, fill: GOLD_DARK, stroke: LINE, 'stroke-width': 1.5, opacity: 0.8 });
+    for (const [x, y] of pentagon) {
+      this.cup.draw('path', { d: `M ${x.toFixed(1)} ${y.toFixed(1)} L ${(x * 2.5).toFixed(1)} ${(cy + (y - cy) * 2.5).toFixed(1)}`, stroke: GOLD_DARK, 'stroke-width': 2, opacity: 0.8 });
+    }
+    this.cup.draw('ellipse', { cx: -12 * s, cy: cy - 14 * s, rx: 9 * s, ry: 5 * s, fill: '#fff', opacity: 0.7, transform: `rotate(-30 ${-12 * s} ${cy - 14 * s})` });
   }
 }
 

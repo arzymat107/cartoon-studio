@@ -266,7 +266,7 @@ src/components/figures/
 ├─ PortraitFigure.ts    The figure: rig, kit, face layers; FigureSpec = what a player file provides
 ├─ players/            One file per player: mbappe.ts, yamal.ts, kane.ts (spec, Figure class, portrait)
 ├─ expressions.ts       Expression list, eye and brow generator, FaceSpec
-├─ costumes.ts          'generalissimo', 'emperor' ("Kylian the dictator")
+├─ costumes.ts          'generalissimo', 'emperor' ("Kylian the dictator"), 'tuxedo' (award nights)
 ├─ body.ts              Builds ('athletic', 'lanky', 'stocky') and the relaxed rest pose
 ├─ limbs.ts             Smooth two-segment limbs, hands, boots
 └─ paint.ts             Shaded shapes in the portrait style
