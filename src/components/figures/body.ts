@@ -11,6 +11,11 @@ export interface FigureBuild {
   torsoWidth: number;
   hand: number;
   foot: number;
+  /** Torso height (default 1): shorter or longer from the hips to the shoulders. */
+  torso?: number;
+  /** Extra neck length (default 0) and neck width (default 1). */
+  neck?: number;
+  neckWidth?: number;
 }
 
 /** Body types. The head stays the same, so the builds read as different caricature styles. */

@@ -4,7 +4,7 @@
  */
 import { Actor, svg } from '@/engine';
 import { smoothPath } from '../characters/face';
-import { f, Shape, shade, type Point, type SkinPalette } from './paint';
+import { f, Shape, shade, type Look, type Point, type SkinPalette } from './paint';
 
 /** An invisible rig joint: tweening it redraws the limb it belongs to (and anything else listening). */
 export class Joint extends Actor {
@@ -39,7 +39,7 @@ export interface LimbSpec {
   widths: [number, number][];
   covers: Cover[];
   /** Draws the hand / boot into a group, pointing down from the wrist / ankle. */
-  end: (g: SVGGElement, softId: string) => void;
+  end: (g: SVGGElement, look: Look) => void;
   /** How much the hand / boot turns with the lower segment (1 = fully). */
   endTurn: number;
   /** Boots go over the sock; hands go under the arm. */
@@ -53,18 +53,18 @@ export class Limb {
   private readonly covers: { cover: Cover; shape: Shape; band?: SVGPathElement }[];
   private readonly endGroup: SVGGElement;
 
-  constructor(parent: Actor, softId: string, private readonly spec: LimbSpec) {
+  constructor(parent: Actor, look: Look, private readonly spec: LimbSpec) {
     const upper = new Joint({ name: spec.names[0], rotation: spec.rest[0] });
     const lower = new Joint({ name: spec.names[1], rotation: spec.rest[1] });
     this.joints = [upper, lower];
     const layer = parent.draw('g');
     this.endGroup = svg('g');
-    spec.end(this.endGroup, softId);
+    spec.end(this.endGroup, look);
     if (!spec.endOnTop) layer.appendChild(this.endGroup);
-    this.skin = new Shape(layer, spec.skin.base, spec.skin.shade, 5, softId);
+    this.skin = new Shape(layer, spec.skin.base, spec.skin.shade, 5, look);
     this.covers = spec.covers.map((cover) => ({
       cover,
-      shape: new Shape(layer, cover.color, shade(cover.color, 0.17), 7, softId),
+      shape: new Shape(layer, cover.color, shade(cover.color, 0.17), 7, look),
       band: cover.band ? layer.appendChild(svg('path', { stroke: cover.band, 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round' })) : undefined,
     }));
     if (spec.endOnTop) layer.appendChild(this.endGroup);
@@ -154,11 +154,11 @@ function interpolate(table: [number, number][], u: number): number {
 
 /** Relaxed open hand pointing down from the wrist, the thumb on the body side. */
 export function hand(side: -1 | 1, size: number, skin: SkinPalette) {
-  return (g: SVGGElement, softId: string) => {
+  return (g: SVGGElement, look: Look) => {
     const s = -side;
     const inner = g.appendChild(svg('g', { transform: `scale(${size})` }));
-    new Shape(inner, skin.base, skin.shade, 3, softId).set(smoothPath([[s * 4, -2], [s * 11, 6], [s * 12, 13], [s * 8, 14], [s * 4, 8]]));
-    new Shape(inner, skin.base, skin.shade, 3, softId)
+    new Shape(inner, skin.base, skin.shade, 3, look).set(smoothPath([[s * 4, -2], [s * 11, 6], [s * 12, 13], [s * 8, 14], [s * 4, 8]]));
+    new Shape(inner, skin.base, skin.shade, 3, look)
       .set(smoothPath([[-6, -3], [-8.5, 6], [-8.5, 15], [-7, 22], [-3.5, 25], [0.5, 25.5], [4.5, 24], [7.5, 19], [8.5, 11], [8, 3], [6, -3]]));
     for (const x of [-3.5, 0.5, 4.5]) {
       inner.appendChild(svg('path', { d: `M ${x} 17 L ${x + 0.3} 24`, stroke: skin.deep, 'stroke-width': 1, 'stroke-linecap': 'round', opacity: 0.7 }));
@@ -168,9 +168,9 @@ export function hand(side: -1 | 1, size: number, skin: SkinPalette) {
 
 /** Football (or riding) boot under the ankle, toes pointing outwards. */
 export function boot(side: -1 | 1, size: number, color: string) {
-  return (g: SVGGElement, softId: string) => {
+  return (g: SVGGElement, look: Look) => {
     const inner = g.appendChild(svg('g', { transform: `scale(${size})` }));
-    new Shape(inner, color, shade(color, 0.5), 5, softId).set(smoothPath([[-10, -8], [-14, 6], [side * 7 - 16, 13], [side * 7 + 16, 13], [14, 6], [10, -8]]));
+    new Shape(inner, color, shade(color, 0.5), 5, look).set(smoothPath([[-10, -8], [-14, 6], [side * 7 - 16, 13], [side * 7 + 16, 13], [14, 6], [10, -8]]));
     inner.appendChild(svg('path', { d: `M ${side * 3 - 8} 4 L ${side * 3 + 8} 4`, stroke: 'rgba(255,255,255,0.35)', 'stroke-width': 2, 'stroke-linecap': 'round' }));
   };
 }

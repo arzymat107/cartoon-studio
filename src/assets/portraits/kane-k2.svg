@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 880">
+  <!-- Harry Kane, caricature "K2": drawn from a reference photo (not traced) – towering forehead, receding
+       M-shaped hairline, hair combed back, small deep-set blue-grey eyes, long straight nose, short full beard,
+       ears that stick out. 680 × 880 frame; chin bottom ≈ (340, 858). -->
+<g data-part="neck"><path d="M 272 790 C 270 830 264 860 256 880 L 424 880 C 416 860 410 830 408 790 Z" fill="#b77c5d" stroke="#2a170d" stroke-width="9"/></g>
+<g data-part="shirt"><path d="M -20 900 C 0 860 100 846 210 840 C 260 868 420 868 470 840 C 580 846 680 860 700 900 Z" fill="#dc052d" stroke="#2a170d" stroke-width="9" stroke-linejoin="round"/></g>
+<path d="M 190 500 C 136 470 104 506 112 566 C 120 630 154 654 194 630 Z" fill="#dba383" stroke="#2a170d" stroke-width="9" stroke-linejoin="round"/><path d="M 176 524 C 146 514 132 540 138 572 C 142 600 156 616 176 614" stroke="#b77c5d" stroke-width="9" fill="none" stroke-linecap="round"/>
+<path d="M 490 496 C 546 466 578 504 570 566 C 562 630 528 654 486 628 Z" fill="#dba383" stroke="#2a170d" stroke-width="9" stroke-linejoin="round"/><path d="M 504 520 C 536 510 550 538 544 570 C 540 598 526 614 506 612" stroke="#8c5640" stroke-width="9" fill="none" stroke-linecap="round"/>
+<clipPath id="kane-k2-face-shape"><path d="M 340 858 C 286 858 248 834 230 792 C 206 738 184 668 180 590 C 176 480 184 350 208 280 C 236 194 444 194 472 280 C 496 350 504 480 500 590 C 496 668 474 738 450 792 C 432 834 394 858 340 858 Z"/></clipPath>
+<clipPath id="kane-k2-face"><path d="M 340 858 C 286 858 248 834 230 792 C 206 738 184 668 180 590 C 176 480 184 350 208 280 C 236 194 444 194 472 280 C 496 350 504 480 500 590 C 496 668 474 738 450 792 C 432 834 394 858 340 858 Z"/></clipPath>
+<path d="M 340 858 C 286 858 248 834 230 792 C 206 738 184 668 180 590 C 176 480 184 350 208 280 C 236 194 444 194 472 280 C 496 350 504 480 500 590 C 496 668 474 738 450 792 C 432 834 394 858 340 858 Z" fill="#b77c5d"/>
+<g clip-path="url(#kane-k2-face)">
+  <path d="M 340 858 C 286 858 248 834 230 792 C 206 738 184 668 180 590 C 176 480 184 350 208 280 C 236 194 444 194 472 280 C 496 350 504 480 500 590 C 496 668 474 738 450 792 C 432 834 394 858 340 858 Z" fill="#dba383" transform="translate(-24 -8)"/>
+  <ellipse cx="300" cy="300" rx="80" ry="40" fill="#efc1a2" opacity=".5"/>
+</g>
+<!-- deep-set eyes: shadow under the brow ridge -->
+<path d="M 214 486 C 240 470 290 468 322 484 C 296 478 250 480 214 492 Z" fill="#b77c5d" opacity=".8"/>
+<path d="M 360 482 C 392 466 444 468 466 486 C 440 478 394 476 360 488 Z" fill="#8c5640" opacity=".6"/>
+<clipPath id="kane-k2-beard"><path d="M 150 590 C 196 610 224 640 252 652 C 280 662 300 664 320 662 C 336 660 356 660 372 662 C 392 664 412 662 440 652 C 468 640 494 610 540 590 L 560 900 L 120 900 Z"/></clipPath>
+<g clip-path="url(#kane-k2-face-shape)">
+  <path d="M 150 590 C 196 610 224 640 252 652 C 280 662 300 664 320 662 C 336 660 356 660 372 662 C 392 664 412 662 440 652 C 468 640 494 610 540 590 L 560 900 L 120 900 Z" fill="#8a5a34"/>
+  <g clip-path="url(#kane-k2-beard)"><path d="M 150 590 C 196 610 224 640 252 652 C 280 662 300 664 320 662 C 336 660 356 660 372 662 C 392 664 412 662 440 652 C 468 640 494 610 540 590 L 560 900 L 120 900 Z" fill="#6e4425" transform="translate(30 10)" opacity=".55"/></g>
+  <path d="M 264 661 l -1 7 M 241 654 l -1 7 M 462 805 l 2 7 M 260 751 l -1 7 M 246 662 l -2 7 M 465 811 l 2 7 M 428 680 l -1 7 M 378 791 l 2 7 M 451 658 l 1 7 M 391 744 l -2 7 M 333 658 l 3 7 M 447 753 l -1 7 M 460 758 l 2 7 M 442 745 l -1 7 M 370 729 l -2 7 M 284 807 l -3 7 M 209 769 l -1 7 M 351 737 l -1 7 M 485 680 l -1 7 M 255 770 l -1 7 M 299 794 l -1 7 M 358 826 l -2 7 M 214 687 l 2 7 M 374 689 l -1 7 M 247 735 l -3 7 M 398 825 l 3 7 M 409 838 l -3 7 M 280 839 l 2 7 M 315 834 l 1 7 M 433 700 l -2 7 M 325 668 l -1 7 M 475 708 l -3 7 M 209 675 l 2 7 M 301 700 l -2 7 M 481 727 l -2 7 M 213 651 l -2 7 M 392 671 l -3 7 M 338 691 l 3 7 M 231 749 l 2 7 M 315 843 l -0 7 M 266 725 l -3 7 M 318 691 l 2 7 M 437 743 l -3 7 M 270 690 l -2 7 M 263 819 l -2 7 M 211 831 l 0 7 M 483 723 l 2 7 M 386 803 l 1 7 M 339 659 l -2 7 M 449 825 l 3 7 M 294 775 l 2 7 M 382 808 l 0 7 M 386 781 l -1 7 M 464 837 l -3 7 M 478 838 l 1 7 M 209 825 l -2 7 M 477 777 l -3 7 M 245 771 l 0 7 M 412 831 l -2 7 M 197 830 l -3 7 M 450 664 l 2 7 M 423 821 l 0 7 M 451 682 l 1 7 M 292 824 l 2 7 M 333 748 l -3 7 M 206 762 l -0 7 M 447 765 l -2 7 M 301 798 l 0 7 M 199 813 l 2 7 M 221 752 l -1 7 M 424 704 l -2 7 M 337 839 l -2 7 M 229 768 l 2 7 M 345 729 l 2 7 M 421 654 l 2 7 M 253 702 l 2 7 M 319 804 l -2 7 M 450 676 l -2 7 M 339 710 l 0 7 M 458 786 l -3 7 M 286 752 l -0 7 M 404 740 l -3 7 M 267 815 l -1 7 M 418 843 l 1 7 M 392 766 l -1 7 M 461 736 l 2 7 M 285 819 l 2 7 M 374 731 l -2 7 M 420 715 l 1 7 M 235 657 l -2 7 M 431 677 l 2 7 M 304 759 l -1 7 M 376 659 l -1 7 M 467 677 l 1 7 M 291 702 l -3 7 M 202 836 l 2 7 M 428 806 l 3 7 M 242 760 l -0 7 M 362 833 l 2 7 M 477 664 l 1 7 M 392 794 l 1 7 M 437 702 l 3 7 M 314 763 l 2 7 M 400 704 l -2 7 M 291 769 l 3 7 M 457 722 l -1 7 M 433 698 l -1 7 M 200 678 l 0 7 M 397 767 l -1 7 M 472 768 l -2 7" stroke="#6e4425" stroke-width="3" stroke-linecap="round"/>
+</g>
+<path d="M 186 600 C 214 626 236 644 256 652" stroke="#6e4425" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M 494 600 C 466 626 444 644 424 652" stroke="#6e4425" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M 288 680 C 304 660 330 656 342 664 C 354 656 380 660 396 680 C 378 678 360 676 342 676 C 324 676 306 678 288 680 Z" fill="#6e4425" stroke="#2a170d" stroke-width="4" stroke-linejoin="round"/>
+<path d="M 340 858 C 286 858 248 834 230 792 C 206 738 184 668 180 590 C 176 480 184 350 208 280 C 236 194 444 194 472 280 C 496 350 504 480 500 590 C 496 668 474 738 450 792 C 432 834 394 858 340 858 Z" fill="none" stroke="#2a170d" stroke-width="9" stroke-linejoin="round"/>
+<path d="M 230 594 C 246 566 282 556 304 572" stroke="#b77c5d" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 380 572 C 404 556 440 564 452 592" stroke="#8c5640" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 194 372 C 172 250 216 116 340 104 C 464 116 508 250 486 372 L 476 336 C 470 300 458 262 440 234 C 412 240 386 252 364 262 L 340 280 L 316 262 C 294 252 268 240 240 234 C 222 262 210 300 204 336 Z" fill="#9c6a3c" stroke="#2a170d" stroke-width="9" stroke-linejoin="round"/>
+<clipPath id="kane-k2-hair"><path d="M 194 372 C 172 250 216 116 340 104 C 464 116 508 250 486 372 L 476 336 C 470 300 458 262 440 234 C 412 240 386 252 364 262 L 340 280 L 316 262 C 294 252 268 240 240 234 C 222 262 210 300 204 336 Z"/></clipPath><path d="M 222 251 C 204 210 163 160 145 120 M 248 258 C 234 210 202 160 188 120 M 274 266 C 264 210 241 160 231 120 M 300 274 C 294 210 280 160 274 120 M 326 282 C 324 210 319 160 317 120 M 352 282 C 354 210 358 160 360 120 M 378 275 C 384 210 397 160 403 120 M 404 267 C 414 210 436 160 446 120 M 430 259 C 444 210 475 160 488 120 M 456 251 C 473 210 514 160 531 120" stroke="#c8955c" stroke-width="7" fill="none" stroke-linecap="round" opacity=".9" clip-path="url(#kane-k2-hair)"/><path d="M 336 270 C 318 300 312 328 326 352 C 318 330 324 306 344 286" fill="#9c6a3c" stroke="#2a170d" stroke-width="5" stroke-linejoin="round"/>
+<!-- forehead lines, the long straight nose -->
+<path d="M 272 336 C 310 328 370 328 408 336 M 286 372 C 318 366 362 366 394 372" stroke="#b77c5d" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
+<path d="M 326 506 C 324 552 322 594 318 628 M 356 506 C 358 552 360 590 364 626" stroke="#b77c5d" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 318 648 C 330 660 352 660 366 648 C 352 656 330 656 318 648 Z" fill="#8c5640"/>
+<path d="M 314 626 C 296 632 296 654 316 658 C 326 666 338 668 342 666 C 348 668 360 666 368 658 C 388 654 388 632 370 626" stroke="#2a170d" stroke-width="8" fill="none" stroke-linecap="round"/>
+<ellipse cx="328" cy="654" rx="9" ry="5" fill="#8c5640"/><ellipse cx="356" cy="654" rx="9" ry="5" fill="#8c5640"/>
+<ellipse cx="342" cy="634" rx="10" ry="8" fill="#efc1a2"/>
+<g data-part="eyes">
+  <clipPath id="kane-k2-eye-l"><path d="M 236 504 C 251 492 291 490 306 502 C 291 511 251 513 236 504 Z"/></clipPath>
+  <path d="M 236 504 C 251 492 291 490 306 502 C 291 511 251 513 236 504 Z" fill="#f4ede4"/>
+  <g clip-path="url(#kane-k2-eye-l)"><circle cx="271" cy="501" r="15" fill="#6f8a96"/><circle cx="271" cy="501" r="7" fill="#080403"/><circle cx="276" cy="495" r="4" fill="#fff"/></g>
+  <path d="M 232 507 C 251 488 291 486 310 502" stroke="#2a170d" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M 242 488 C 251 476 291 474 304 488" stroke="#b77c5d" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <clipPath id="kane-k2-eye-r"><path d="M 446 502 C 431 490 391 488 376 500 C 391 509 431 511 446 502 Z"/></clipPath>
+  <path d="M 446 502 C 431 490 391 488 376 500 C 391 509 431 511 446 502 Z" fill="#f4ede4"/>
+  <g clip-path="url(#kane-k2-eye-r)"><circle cx="411" cy="499" r="15" fill="#6f8a96"/><circle cx="411" cy="499" r="7" fill="#080403"/><circle cx="416" cy="493" r="4" fill="#fff"/></g>
+  <path d="M 442 505 C 431 486 391 484 380 500" stroke="#2a170d" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M 452 486 C 431 474 391 472 374 486" stroke="#8c5640" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g>
+<g data-part="brows">
+  <path d="M 214 470 C 243 462 283 458 310 462 L 310 477 C 283 473 243 472 214 478 Z" fill="#7a5232"/>
+  <path d="M 468 466 C 439 458 399 454 372 458 L 372 473 C 399 469 439 468 468 474 Z" fill="#7a5232"/>
+</g>
+<g data-part="mouth"><g transform="translate(342 704) scale(0.78) translate(-346 -690)">
+  <path d="M 284 712 C 310 744 384 744 410 712 C 396 732 300 734 284 712 Z" fill="#b9705d"/>
+  <clipPath id="kane-k2-lips"><path d="M 276 690 C 312 682 380 682 418 690 C 404 716 380 726 346 726 C 312 726 290 716 276 690 Z"/></clipPath>
+  <path d="M 276 690 C 312 682 380 682 418 690 C 404 716 380 726 346 726 C 312 726 290 716 276 690 Z" fill="#3a0e0b"/>
+  <g clip-path="url(#kane-k2-lips)"><path d="M 260 670 L 430 670 L 430 704 C 380 712 310 712 260 704 Z" fill="#fbf8f1"/></g>
+  <path d="M 276 690 C 312 682 380 682 418 690 C 404 716 380 726 346 726 C 312 726 290 716 276 690 Z" fill="none" stroke="#2a170d" stroke-width="8" stroke-linejoin="round"/>
+</g></g>
+</svg>

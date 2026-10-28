@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 880">
+  <!-- Kylian Mbappé, caricature "M2": drawn from a reference photo (not traced) – domed head with a sharp
+       shaped-up hairline, big ears, small almond eyes, broad round nose, wide grin. Flat colours, bold
+       outlines, a hard shadow on the right. 680 × 880 frame; chin bottom ≈ (340, 848). -->
+<g data-part="neck">
+  <path d="M 254 780 C 252 826 246 858 238 880 L 442 880 C 434 858 428 826 426 780 Z" fill="#86512f" stroke="#21130b" stroke-width="9" stroke-linejoin="round"/>
+</g>
+<g data-part="shirt">
+  <path d="M -20 900 C 0 860 90 840 200 836 C 260 868 420 868 480 836 C 590 840 680 860 700 900 Z" fill="#f7f6f2" stroke="#21130b" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M 200 836 C 260 868 420 868 480 836" stroke="#c9a227" stroke-width="12" fill="none" stroke-linecap="round"/>
+</g>
+<path d="M 168 468 C 112 428 62 458 70 532 C 78 606 118 646 172 620 Z" fill="#a96f47" stroke="#21130b" stroke-width="9" stroke-linejoin="round"/><path d="M 150 494 C 114 480 96 508 102 542 C 106 574 124 594 150 592" stroke="#86512f" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M 138 516 C 122 518 120 546 134 562" stroke="#5d3219" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M 510 462 C 568 420 622 452 614 530 C 606 610 564 650 508 622 Z" fill="#a96f47" stroke="#21130b" stroke-width="9" stroke-linejoin="round"/><path d="M 530 488 C 570 472 590 504 584 540 C 580 574 560 596 532 594" stroke="#5d3219" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M 546 512 C 562 516 566 546 550 564" stroke="#5d3219" stroke-width="7" fill="none" stroke-linecap="round"/>
+<clipPath id="mbappe-m2-face"><path d="M 340 850 C 290 850 252 820 226 780 C 190 724 146 650 142 566 C 138 470 158 380 190 318 C 228 246 452 246 490 318 C 522 380 542 470 538 566 C 534 650 490 724 454 780 C 428 820 390 850 340 850 Z"/></clipPath>
+<path d="M 340 850 C 290 850 252 820 226 780 C 190 724 146 650 142 566 C 138 470 158 380 190 318 C 228 246 452 246 490 318 C 522 380 542 470 538 566 C 534 650 490 724 454 780 C 428 820 390 850 340 850 Z" fill="#86512f"/>
+<g clip-path="url(#mbappe-m2-face)">
+  <path d="M 340 850 C 290 850 252 820 226 780 C 190 724 146 650 142 566 C 138 470 158 380 190 318 C 228 246 452 246 490 318 C 522 380 542 470 538 566 C 534 650 490 724 454 780 C 428 820 390 850 340 850 Z" fill="#a96f47" transform="translate(-24 -8)"/>
+  <ellipse cx="238" cy="584" rx="46" ry="28" fill="#c4875c" opacity=".5"/>
+  <ellipse cx="436" cy="580" rx="36" ry="22" fill="#c4875c" opacity=".3"/>
+  <ellipse cx="292" cy="360" rx="70" ry="30" fill="#c4875c" opacity=".35"/>
+</g>
+<path d="M 340 850 C 290 850 252 820 226 780 C 190 724 146 650 142 566 C 138 470 158 380 190 318 C 228 246 452 246 490 318 C 522 380 542 470 538 566 C 534 650 490 724 454 780 C 428 820 390 850 340 850 Z" fill="none" stroke="#21130b" stroke-width="9" stroke-linejoin="round"/>
+<!-- cheek apples, pushed up by the smile; chin -->
+<path d="M 196 586 C 208 540 266 520 304 548" stroke="#86512f" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M 384 546 C 420 520 478 536 490 584" stroke="#5d3219" stroke-width="7" fill="none" stroke-linecap="round"/>
+<path d="M 316 806 C 332 816 350 816 366 806" stroke="#86512f" stroke-width="6" fill="none" stroke-linecap="round"/>
+<!-- hair: tight curls, cut short with a sharp shape-up -->
+<path d="M 190 356 L 180 276 A 19 19 0 0 1 190 247 A 18 18 0 0 1 202 220 A 18 18 0 0 1 219 196 A 18 18 0 0 1 238 176 A 17 17 0 0 1 260 159 A 17 17 0 0 1 283 146 A 16 16 0 0 1 308 138 A 16 16 0 0 1 334 134 A 16 16 0 0 1 360 135 A 16 16 0 0 1 386 142 A 17 17 0 0 1 410 152 A 17 17 0 0 1 433 168 A 17 17 0 0 1 453 187 A 18 18 0 0 1 471 209 A 18 18 0 0 1 485 235 A 19 19 0 0 1 496 263 L 490 356 L 478 356 L 468 322 L 456 296 C 400 284 280 284 224 296 L 212 322 L 202 356 Z" fill="#17110e" stroke="#21130b" stroke-width="9" stroke-linejoin="round"/>
+<path d="M 364 218 A 8 8 0 1 1 363 202 M 436 273 A 9 9 0 1 1 431 257 M 354 194 A 7 7 0 1 1 340 195 M 444 242 A 8 8 0 1 1 450 229 M 387 207 A 9 9 0 1 1 393 223 M 244 256 A 10 10 0 1 1 225 255 M 295 274 A 7 7 0 1 1 307 281 M 327 152 A 8 8 0 1 1 315 163 M 332 263 A 9 9 0 1 1 347 270 M 367 208 A 8 8 0 1 1 357 195 M 235 267 A 10 10 0 1 1 254 263 M 311 180 A 7 7 0 1 1 319 191 M 332 165 A 9 9 0 1 1 321 178 M 415 220 A 7 7 0 1 1 429 218 M 286 197 A 6 6 0 1 1 298 196 M 361 196 A 9 9 0 1 1 365 214 M 256 222 A 10 10 0 1 1 274 229 M 363 161 A 8 8 0 1 1 378 160 M 304 207 A 8 8 0 1 1 319 214 M 346 172 A 8 8 0 1 1 331 171 M 321 214 A 8 8 0 1 1 337 212 M 399 280 A 9 9 0 1 1 415 276 M 368 242 A 9 9 0 1 1 380 253 M 446 215 A 9 9 0 1 1 428 215 M 329 265 A 9 9 0 1 1 314 272 M 398 166 A 8 8 0 1 1 382 170 M 254 205 A 6 6 0 1 1 252 193 M 322 253 A 9 9 0 1 1 338 259 M 318 251 A 8 8 0 1 1 323 236 M 304 246 A 9 9 0 1 1 303 229 M 367 265 A 9 9 0 1 1 374 282 M 264 207 A 9 9 0 1 1 273 223 M 270 247 A 8 8 0 1 1 285 251 M 271 205 A 7 7 0 1 1 270 219 M 328 214 A 8 8 0 1 1 343 215 M 388 256 A 9 9 0 1 1 405 250 M 224 270 A 9 9 0 1 1 207 264 M 284 189 A 9 9 0 1 1 295 203 M 283 180 A 7 7 0 1 1 275 170 M 263 263 A 10 10 0 1 1 261 245 M 369 204 A 10 10 0 1 1 353 215 M 445 223 A 8 8 0 1 1 436 236 M 354 266 A 8 8 0 1 1 363 277 M 382 273 A 10 10 0 1 1 364 265 M 293 212 A 8 8 0 1 1 305 202 M 231 266 A 9 9 0 1 1 242 279 M 242 273 A 9 9 0 1 1 255 261 M 352 217 A 7 7 0 1 1 365 214 M 259 237 A 8 8 0 1 1 242 236 M 433 203 A 8 8 0 1 1 421 195 M 250 246 A 7 7 0 1 1 248 232 M 372 217 A 7 7 0 1 1 370 203 M 234 209 A 9 9 0 1 1 252 209 M 426 268 A 7 7 0 1 1 415 275 M 371 204 A 8 8 0 1 1 357 211 M 317 170 A 10 10 0 1 1 306 154 M 225 258 A 7 7 0 1 1 232 246 M 391 271 A 7 7 0 1 1 377 276 M 384 236 A 8 8 0 1 1 369 231 M 249 250 A 9 9 0 1 1 238 237 M 374 221 A 8 8 0 1 1 389 215 M 263 209 A 10 10 0 1 1 260 190 M 448 219 A 6 6 0 1 1 441 229 M 415 199 A 9 9 0 1 1 399 197 M 280 272 A 7 7 0 1 1 283 259 M 367 229 A 8 8 0 1 1 380 237 M 379 234 A 10 10 0 1 1 395 244 M 325 193 A 6 6 0 1 1 331 203 M 344 253 A 7 7 0 1 1 333 243 M 277 181 A 8 8 0 1 1 272 167 M 234 240 A 9 9 0 1 1 224 255 M 355 243 A 9 9 0 1 1 372 239 M 337 244 A 9 9 0 1 1 347 258 M 381 231 A 7 7 0 1 1 388 220 M 390 215 A 9 9 0 1 1 405 206 M 394 160 A 7 7 0 1 1 384 169 M 242 234 A 6 6 0 1 1 249 243 M 328 267 A 9 9 0 1 1 322 284 M 288 244 A 7 7 0 1 1 300 246 M 311 223 A 7 7 0 1 1 310 209 M 355 239 A 8 8 0 1 1 339 240 M 354 179 A 9 9 0 1 1 364 165 M 319 243 A 10 10 0 1 1 337 250 M 314 254 A 9 9 0 1 1 297 259 M 330 238 A 9 9 0 1 1 313 243 M 329 185 A 9 9 0 1 1 324 201" stroke="#33251f" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M 230 210 C 262 172 316 154 360 156" stroke="#33251f" stroke-width="12" fill="none" stroke-linecap="round"/>
+<!-- nose: broad, round tip -->
+<path d="M 322 490 C 318 514 312 536 304 554" stroke="#86512f" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 306 632 C 330 654 362 654 388 632 C 362 646 330 646 306 632 Z" fill="#5d3219"/>
+<path d="M 302 572 C 272 578 268 612 300 620 C 314 636 334 640 346 638 C 358 640 378 636 392 620 C 424 612 420 578 390 572" fill="#a96f47"/>
+<path d="M 302 572 C 272 578 268 612 300 620 M 300 620 C 314 636 334 640 346 638 C 358 640 378 636 392 620 M 392 620 C 424 612 420 578 390 572" stroke="#21130b" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M 308 584 C 300 594 300 606 308 614 M 384 584 C 392 594 392 606 384 614" stroke="#86512f" stroke-width="5" fill="none" stroke-linecap="round"/>
+<ellipse cx="322" cy="618" rx="13" ry="7" fill="#5d3219" transform="rotate(-15 322 618)"/>
+<ellipse cx="370" cy="618" rx="13" ry="7" fill="#5d3219" transform="rotate(15 370 618)"/>
+<ellipse cx="338" cy="598" rx="14" ry="10" fill="#c4875c"/>
+<g data-part="eyes">
+  <clipPath id="mbappe-m2-eye-l"><path d="M 222 480 C 238 460 282 456 298 476 C 282 492 240 496 222 480 Z"/></clipPath>
+  <path d="M 222 480 C 238 460 282 456 298 476 C 282 492 240 496 222 480 Z" fill="#f4ede4"/>
+  <g clip-path="url(#mbappe-m2-eye-l)"><circle cx="264" cy="478" r="15" fill="#2a160c"/><circle cx="264" cy="478" r="7" fill="#080403"/><circle cx="269" cy="472" r="4" fill="#fff"/></g>
+  <path d="M 216 484 C 234 456 286 452 304 476" stroke="#21130b" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M 228 462 C 250 446 284 446 300 460" stroke="#86512f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <clipPath id="mbappe-m2-eye-r"><path d="M 388 474 C 404 456 448 456 464 478 C 448 494 404 490 388 474 Z"/></clipPath>
+  <path d="M 388 474 C 404 456 448 456 464 478 C 448 494 404 490 388 474 Z" fill="#f4ede4"/>
+  <g clip-path="url(#mbappe-m2-eye-r)"><circle cx="424" cy="476" r="15" fill="#2a160c"/><circle cx="424" cy="476" r="7" fill="#080403"/><circle cx="429" cy="470" r="4" fill="#fff"/></g>
+  <path d="M 382 474 C 400 450 452 452 470 480" stroke="#21130b" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M 388 458 C 404 444 440 444 462 460" stroke="#86512f" stroke-width="5" fill="none" stroke-linecap="round"/>
+</g>
+<g data-part="brows">
+  <path d="M 204 452 C 234 434 272 428 304 430 L 302 444 C 272 442 238 446 208 462 Z" fill="#17110e"/>
+  <path d="M 384 428 C 414 426 452 432 484 446 L 480 458 C 450 446 414 440 386 442 Z" fill="#17110e"/>
+</g>
+<g data-part="mouth">
+  <path d="M 262 606 C 234 632 226 664 240 700" stroke="#86512f" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M 430 600 C 460 626 468 660 452 696" stroke="#5d3219" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M 252 700 C 284 754 404 756 440 690 C 426 750 390 770 344 772 C 296 772 262 748 252 700 Z" fill="#8f4f3b"/>
+  <clipPath id="mbappe-m2-grin"><path d="M 240 666 C 298 684 392 680 448 654 C 438 706 398 734 344 736 C 290 736 252 710 240 666 Z"/></clipPath>
+  <path d="M 240 666 C 298 684 392 680 448 654 C 438 706 398 734 344 736 C 290 736 252 710 240 666 Z" fill="#3a0e0b"/>
+  <g clip-path="url(#mbappe-m2-grin)">
+    <path d="M 220 640 L 470 640 L 470 690 C 410 712 300 718 220 704 Z" fill="#fbf8f1"/>
+    <path d="M 290 680 L 292 710 M 320 684 L 321 716 M 352 684 L 352 716 M 384 680 L 383 712 M 412 674 L 410 704" stroke="#d8cfc2" stroke-width="3"/>
+  </g>
+  <path d="M 240 666 C 298 684 392 680 448 654 C 438 706 398 734 344 736 C 290 736 252 710 240 666 Z" fill="none" stroke="#21130b" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M 232 656 C 236 666 240 670 246 670 M 456 644 C 454 656 450 662 444 662" stroke="#21130b" stroke-width="6" fill="none" stroke-linecap="round"/>
+</g>
+</svg>

@@ -15,18 +15,29 @@ export interface SkinPalette {
   deep: string;
 }
 
-/** A filled shape shaded like the portraits (soft shadow on the right edge), redrawable with `set()`. */
+/**
+ * How a figure's body is rendered: 'painted' (soft shadow, fine outline – matches the traced
+ * portraits) or 'cartoon' (hard cel-shaded shadow, bold outline – matches drawn caricature heads).
+ */
+export interface Look {
+  /** Blur filter for the soft shadow edge; without one the shadow has a hard edge. */
+  soft?: string;
+  /** Outline width. */
+  stroke: number;
+}
+
+/** A filled shape shaded like the portraits (shadow on the right edge), redrawable with `set()`. */
 export class Shape {
   private readonly paths: SVGPathElement[];
 
-  constructor(parent: Element, color: string, shadow: string, depth: number, softId: string) {
+  constructor(parent: Element, color: string, shadow: string, depth: number, look: Look) {
     const clipId = uid('figure-form');
     const clip = parent.appendChild(svg('clipPath', { id: clipId })).appendChild(svg('path'));
     const base = parent.appendChild(svg('path', { fill: shadow }));
     const light = parent.appendChild(svg('g', { 'clip-path': `url(#${clipId})` })).appendChild(svg('path', {
-      fill: color, transform: `translate(${-depth} ${-depth * 0.3})`, filter: `url(#${softId})`,
+      fill: color, transform: `translate(${-depth} ${-depth * 0.3})`, ...(look.soft ? { filter: `url(#${look.soft})` } : {}),
     }));
-    const line = parent.appendChild(svg('path', { fill: 'none', stroke: LINE, 'stroke-width': STROKE, 'stroke-linejoin': 'round' }));
+    const line = parent.appendChild(svg('path', { fill: 'none', stroke: LINE, 'stroke-width': look.stroke, 'stroke-linejoin': 'round' }));
     this.paths = [clip, base, light, line];
   }
 

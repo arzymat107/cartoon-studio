@@ -6,7 +6,7 @@ import { FIGURE_BUILDS, FIGURE_REST, type FigureBuild, type FigureBuildName } fr
 import { COSTUMES, type Costume, type CostumeName } from './costumes';
 import { FIGURE_EXPRESSIONS, expressionMarkup, type FigureExpression, type FaceSpec } from './expressions';
 import { boot, Curve, hand, Joint, Limb } from './limbs';
-import { f, fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
+import { f, fragment, LINE, Shape, shade, STROKE, type Look, type Painter, type Point, type SkinPalette } from './paint';
 
 /**
  * Everything that makes a player: a portrait traced from a photo plus the data to animate it.
@@ -34,6 +34,13 @@ export interface FigureSpec {
   costume?: CostumeName;
   shorts?: ShortsStyle;
   face: FaceSpec;
+  /**
+   * 'painted' (default): soft shading and fine outlines, for portraits traced from photos.
+   * 'cartoon': hard cel shadows and bold outlines, for fully drawn caricature heads.
+   */
+  style?: 'painted' | 'cartoon';
+  /** Size of the head on the body (default 0.2); caricatures go bigger. */
+  headScale?: number;
 }
 
 /**
@@ -43,8 +50,10 @@ export interface FigureSpec {
  */
 export type ShortsStyle = 'normal' | 'low' | 'baggy';
 
-/** Scale of the 680 × 880 portrait on the body. */
+/** Default scale of the 680 × 880 portrait on the body. */
 const HEAD_SCALE = 0.2;
+/** Outline width of the body in the 'cartoon' style. */
+const CARTOON_STROKE = 2.2;
 /** Chest pivot above the hip: the spine bends here. */
 const WAIST = -34;
 
@@ -90,7 +99,7 @@ export class PortraitFigure extends Actor {
   /** Hip height (negative): the torso's resting y. */
   readonly hipY: number;
   /** Head's resting y in chest space. */
-  readonly headY = -150 - WAIST;
+  readonly headY: number;
   /** Height from the feet to the top of the hair (or hat), before scale. */
   readonly height: number;
 
@@ -121,6 +130,8 @@ export class PortraitFigure extends Actor {
   /** Shirt number; un-mirrored when the figure is flipped so it stays readable. */
   private numberGroup?: SVGGElement;
   private readonly softId = uid('figure-soft');
+  /** How the body is shaded and outlined (see `FigureSpec.style`). */
+  private readonly look: Look;
 
   constructor(spec: FigureSpec, { kit = spec.kit, build = spec.build ?? 'athletic', expression = 'neutral', costume = spec.costume, shorts = spec.shorts ?? 'normal', ...options }: PortraitFigureOptions = {}) {
     super({ name: spec.name, ...options });
@@ -128,9 +139,12 @@ export class PortraitFigure extends Actor {
     this.kit = kit;
     this.costume = costume && costume !== 'kit' ? COSTUMES[costume] : null;
     this.shortsStyle = shorts;
-    const b = (this.build = typeof build === 'string' ? FIGURE_BUILDS[build] : build);
+    const b: FigureBuild = (this.build = typeof build === 'string' ? FIGURE_BUILDS[build] : build);
     this.hipY = -(b.thigh + b.shin + 12);
-    this.height = -this.hipY - WAIST - this.headY + 168 + (this.costume?.hatHeight ?? 0);
+    this.headY = -150 * (b.torso ?? 1) - (b.neck ?? 0) - WAIST;
+    const headScale = spec.headScale ?? HEAD_SCALE;
+    this.height = -this.hipY - WAIST - this.headY + 168 * (headScale / HEAD_SCALE) + (this.costume?.hatHeight ?? 0);
+    this.look = spec.style === 'cartoon' ? { stroke: CARTOON_STROKE } : { soft: this.softId, stroke: STROKE };
     const filter = this.draw('filter', { id: this.softId, x: '-50%', y: '-50%', width: '200%', height: '200%' });
     filter.appendChild(svg('feGaussianBlur', { stdDeviation: 2.5 }));
 
@@ -145,14 +159,14 @@ export class PortraitFigure extends Actor {
     if (this.costume) {
       this.torso.add(this.shorts);
       this.costume.hips(this.shorts.draw('g'), this.painter);
-      this.costume.chest(this.chest.draw('g', { transform: `translate(0 ${-WAIST})` }), this.painter);
+      this.costume.chest(this.chest.draw('g', { transform: `translate(0 ${-WAIST}) scale(1 ${b.torso ?? 1})` }), this.painter);
     } else {
       this.drawShorts();
       this.drawShirt();
     }
 
     this.head = new Actor({ name: 'head', y: this.headY, rotation: FIGURE_REST.head });
-    this.head.add(createPortrait(spec, { y: -12, scale: HEAD_SCALE }));
+    this.head.add(createPortrait(spec, { y: -12, scale: headScale }));
     // The figure draws its own neck and shirt.
     for (const part of this.head.el.querySelectorAll('[data-part="neck"], [data-part="shirt"]')) part.remove();
     [this.eyes, this.brows, this.leftLid, this.rightLid, this.mouth] = this.faceParts();
@@ -163,7 +177,7 @@ export class PortraitFigure extends Actor {
 
     this.chest.add(this.head, arms);
     if (this.costume) {
-      this.costume.shoulders(this.chest.draw('g', { transform: `translate(0 ${-WAIST})` }), this.painter, 47 * b.torsoWidth);
+      this.costume.shoulders(this.chest.draw('g', { transform: `translate(0 ${-WAIST}) scale(1 ${b.torso ?? 1})` }), this.painter, 47 * b.torsoWidth);
       this.costume.hat(this.head.draw('g'), this.painter);
     }
     this.torso.add(this.chest);
@@ -186,7 +200,7 @@ export class PortraitFigure extends Actor {
 
   /** Draws costume parts with the figure's shading. */
   private get painter(): Painter {
-    return { shape: (parent, d, color, depth = 6) => new Shape(parent, color, shade(color, 0.2), depth, this.softId).set(d) };
+    return { shape: (parent, d, color, depth = 6) => new Shape(parent, color, shade(color, 0.2), depth, this.look).set(d) };
   }
 
   // ── Face ──────────────────────────────────────────────────────────────
@@ -239,14 +253,14 @@ export class PortraitFigure extends Actor {
     if (this.shortsStyle !== 'normal') {
       // Black undershorts with a white waistband, showing between the shirt and the sagging shorts.
       const under = this.torso.draw('g', { transform: scale });
-      new Shape(under, '#1d1d1f', '#0e0e10', 6, this.softId).set(smoothPath([[-47, -28], [-49, 0], [-50, 30], [0, 36], [50, 30], [49, 0], [47, -28], [0, -30]]));
-      new Shape(under, '#f2f2f2', '#c9c9c9', 2, this.softId).set('M -47 -26 Q 0 -32 47 -26 L 48 -12 Q 0 -18 -48 -12 Z');
+      new Shape(under, '#1d1d1f', '#0e0e10', 6, this.look).set(smoothPath([[-47, -28], [-49, 0], [-50, 30], [0, 36], [50, 30], [49, 0], [47, -28], [0, -30]]));
+      new Shape(under, '#f2f2f2', '#c9c9c9', 2, this.look).set('M -47 -26 Q 0 -32 47 -26 L 48 -12 Q 0 -18 -48 -12 Z');
     }
     this.torso.add(this.shorts);
     const g = this.shorts.draw('g', { transform: scale });
     if (this.shortsStyle === 'low') {
       // The waistband sags lower in the middle; the drawstrings dangle.
-      new Shape(g, kit.shorts, fabric, 9, this.softId)
+      new Shape(g, kit.shorts, fabric, 9, this.look)
         .set(smoothPath([[-52, 0], [-26, 8], [0, 14], [26, 8], [52, 0], [58, 22], [62, 44], [10, 46], [0, 36], [-10, 46], [-62, 44], [-58, 22]]));
       g.appendChild(svg('path', { d: 'M -52 6 Q 0 22 52 6', stroke: kit.trim ?? fabric, 'stroke-width': 3, fill: 'none' }));
       g.appendChild(svg('path', { d: 'M -4 16 Q -8 30 -5 40 M 4 16 Q 9 28 7 38', stroke: '#f2f2f2', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round' }));
@@ -259,7 +273,7 @@ export class PortraitFigure extends Actor {
       const flap = new Actor({ name: 'shortsFlap', y: 20 });
       const d = flap.draw('g', { transform: 'translate(0 -20)' });
       const crotch = L * 0.52;
-      new Shape(d, kit.shorts, fabric, 12, this.softId).set(smoothPath([
+      new Shape(d, kit.shorts, fabric, 12, this.look).set(smoothPath([
         [-58, 12], [-28, 22], [0, 30], [28, 22], [58, 12], [68, 40], [76, L * 0.55], [84, L],
         [58, L + 7], [32, L + 3], [12, L + 6], [4, crotch + 14], [0, crotch], [-4, crotch + 14], [-12, L + 6], [-32, L + 3], [-58, L + 7],
         [-84, L], [-76, L * 0.55], [-68, 40],
@@ -277,7 +291,7 @@ export class PortraitFigure extends Actor {
       this.shortsFlaps.push(flap);
       return;
     }
-    new Shape(g, kit.shorts, fabric, 9, this.softId)
+    new Shape(g, kit.shorts, fabric, 9, this.look)
       .set(smoothPath([[-44, -38], [-49, -6], [-50, 18], [-30, 26], [-7, 24], [0, 16], [7, 24], [30, 26], [50, 18], [49, -6], [44, -38], [0, -40]]));
     g.appendChild(svg('path', { d: 'M 0 -18 L 0 16', stroke: fabric, 'stroke-width': 1.5, fill: 'none' }));
     this.drawShortsLegs(fabric);
@@ -295,7 +309,7 @@ export class PortraitFigure extends Actor {
     const layer = this.shorts.draw('g', { 'clip-path': `url(#${clipId})` }).appendChild(svg('g'));
     const legs = ([[-1, this.leftLeg, this.leftShin], [1, this.rightLeg, this.rightShin]] as const).map(([side, thigh, shin]) => ({
       side, thigh, shin,
-      shape: new Shape(layer, kit.shorts, fabric, 9, this.softId),
+      shape: new Shape(layer, kit.shorts, fabric, 9, this.look),
       hem: layer.appendChild(svg('path', { stroke: shade(kit.shorts, 0.3), 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' })),
     }));
     const LENGTH = 0.29;
@@ -323,20 +337,26 @@ export class PortraitFigure extends Actor {
   /** Neck, in chest space but drawn in torso coordinates (shifted by the waist). */
   private drawNeck(): void {
     const { skin } = this.spec;
+    const { torso = 1, neckWidth: w = 1 } = this.build;
     const neck = this.chest.draw('g', { transform: `translate(0 ${-WAIST})` });
-    new Shape(neck, skin.base, skin.shade, 5, this.softId).set('M -14 -172 L 14 -172 Q 16 -150 20 -132 L -20 -132 Q -16 -150 -14 -172 Z');
+    // From under the head down into the collar.
+    const top = this.headY + WAIST - 22;
+    const bottom = -132 * torso;
+    const mid = (top + bottom) / 2 + 4;
+    new Shape(neck, skin.base, skin.shade, 5, this.look)
+      .set(`M ${-14 * w} ${top} L ${14 * w} ${top} Q ${16 * w} ${mid} ${20 * w} ${bottom} L ${-20 * w} ${bottom} Q ${-16 * w} ${mid} ${-14 * w} ${top} Z`);
     neck.appendChild(svg('path', { d: 'M -14 -156 Q 0 -146 14 -158', stroke: skin.deep, 'stroke-width': 4, fill: 'none', opacity: 0.45, 'stroke-linecap': 'round' }));
   }
 
   /** Kit shirt and number, in chest space but drawn in torso coordinates (shifted by the waist). */
   private drawShirt(): void {
     const { kit } = this;
-    const g = this.chest.draw('g', { transform: `translate(0 ${-WAIST}) scale(${this.build.torsoWidth} 1)` });
+    const g = this.chest.draw('g', { transform: `translate(0 ${-WAIST}) scale(${this.build.torsoWidth} ${this.build.torso ?? 1})` });
     const shirt = smoothPath([
       [-17, -142], [-46, -138], [-57, -124], [-53, -96], [-48, -62], [-49, -28], [-24, -18], [0, -16],
       [24, -18], [49, -28], [48, -62], [53, -96], [57, -124], [46, -138], [17, -142], [0, -128],
     ]);
-    new Shape(g, kit.shirt, shade(kit.shirt, 0.17), 12, this.softId).set(shirt);
+    new Shape(g, kit.shirt, shade(kit.shirt, 0.17), 12, this.look).set(shirt);
     for (const d of ['M -36 -112 Q -30 -86 -36 -60', 'M 34 -104 Q 26 -80 30 -52', 'M -24 -30 Q -6 -38 12 -28']) {
       g.appendChild(svg('path', { d, stroke: shade(kit.shirt, 0.12), 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round' }));
     }
@@ -350,7 +370,7 @@ export class PortraitFigure extends Actor {
     if (kit.number !== undefined) {
       this.numberGroup = this.chest.draw('g');
       const label = svg('text', {
-        x: 0, y: -60 - WAIST, 'text-anchor': 'middle',
+        x: 0, y: -60 * (this.build.torso ?? 1) - WAIST, 'text-anchor': 'middle',
         'font-family': 'Impact, "Arial Black", system-ui, sans-serif', 'font-size': 34,
         fill: kit.numberColor ?? '#fff', stroke: 'rgba(0,0,0,0.25)', 'stroke-width': 1.5, 'paint-order': 'stroke',
       });
@@ -366,9 +386,9 @@ export class PortraitFigure extends Actor {
     const { kit, build: b, costume } = this;
     const w = b.armWidth;
     const prefix = side < 0 ? 'left' : 'right';
-    return new Limb(parent, this.softId, {
+    return new Limb(parent, this.look, {
       names: [`${prefix}Arm`, `${prefix}Forearm`],
-      root: [side * 47 * b.torsoWidth, -124], lengths: [b.upperArm, b.forearm],
+      root: [side * 47 * b.torsoWidth, -124 * (b.torso ?? 1)], lengths: [b.upperArm, b.forearm],
       rest: [FIGURE_REST[`${prefix}Arm`], FIGURE_REST[`${prefix}Forearm`]],
       skin: this.spec.skin,
       widths: [[0, 11.5 * w], [0.22, 12 * w], [0.5, 8.5 * w], [0.66, 9.5 * w], [1, 6 * w]],
@@ -384,7 +404,7 @@ export class PortraitFigure extends Actor {
     const { kit, build: b, costume } = this;
     const w = b.legWidth;
     const prefix = side < 0 ? 'left' : 'right';
-    return new Limb(parent, this.softId, {
+    return new Limb(parent, this.look, {
       names: [`${prefix}Leg`, `${prefix}Shin`],
       root: [side * 25 * b.torsoWidth, this.hipY], lengths: [b.thigh, b.shin],
       rest: [FIGURE_REST[`${prefix}Leg`], FIGURE_REST[`${prefix}Shin`]],
