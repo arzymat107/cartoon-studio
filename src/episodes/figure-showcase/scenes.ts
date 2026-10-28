@@ -76,7 +76,7 @@ export const SHORTS_CHAPTERS: Action[] = [
   },
   { title: 'Gust of wind', code: 'flapShorts(m)', play: ({ m }) => act.flapShorts(m) },
   {
-    title: 'Shorts styles', code: "{ shorts: 'normal' | 'low' | 'baggy' }", shortsStyles: ['normal', 'low', 'baggy'],
+    title: 'Shorts styles', code: "{ shorts: 'sagging' | 'low' | 'baggy' }", shortsStyles: ['sagging', 'low', 'baggy'],
     play: ({ all }) => {
       const tl = gsap.timeline();
       all.forEach((f) => tl.add(act.idle(f, 1.4), 0).add(act.dance(f, { beats: 6 }), 1.4).add(act.hitchShorts(f, { hold: 0.3 }), 3.2));

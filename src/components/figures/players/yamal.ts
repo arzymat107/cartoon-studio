@@ -1,8 +1,8 @@
 /**
  * Lamine Yamal: the "Portrait" version (Y1), traced from a reference photo in a three-quarter view – curly mop
  * with blond tips, faded sides, low thick brows, heavy-lidded smiling eyes and the braces.
- * Signature: huge baggy shorts hanging off his hips, flapping as he moves (`hitchShorts()` pulls
- * them up – briefly; `flapShorts()` is a gust of wind).
+ * Signature: shorts worn a little low, the undershorts' waistband peeking out (`hitchShorts()` pulls
+ * them up – briefly; `flapShorts()` is a gust of wind). `{ shorts: 'baggy' }` for huge baggy ones.
  * Barça #10 kit by default (no crest), Spain #19 as `SPAIN_KIT`; lanky build.
  *
  *   new YamalFigure({ x: 540, y: 1600, scale: 1.6 })
@@ -82,7 +82,7 @@ export const YAMAL: FigureSpec = {
   skin: SKIN,
   kit: BARCA_KIT,
   build: 'lanky',
-  shorts: 'baggy',
+  shorts: 'sagging',
   face: FACE,
 };
 

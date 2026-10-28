@@ -2,7 +2,7 @@
  * Lamine Yamal – the "Caricature" version (Y2): a head drawn (not traced) from a reference photo – a huge
  * curly mop with blond tips and faded sides, a long slim face, low thick brows, sleepy heavy-lidded
  * eyes and the braces grin – on the 'cartoon' body with a bigger head. Same signature as Y1: the
- * huge baggy shorts. Barça #10 kit by default (no crest), Spain #19 as `SPAIN_KIT`.
+ * shorts worn a little low. Barça #10 kit by default (no crest), Spain #19 as `SPAIN_KIT`.
  *
  *   new YamalCaricatureFigure({ x: 540, y: 1600, scale: 1.6 })      animate with figureActions
  *   createYamalCaricaturePortrait({ x, y, scale: 0.4 })               head and shoulders only

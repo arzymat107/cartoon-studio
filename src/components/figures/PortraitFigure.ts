@@ -44,11 +44,15 @@ export interface FigureSpec {
 }
 
 /**
+ * 'sagging' = normal shorts worn a little low, the undershorts' waistband peeking out above them.
  * 'low' = pulled down: sagging off the hips to the knees, the undershorts' waistband showing.
  * 'baggy' = the caricature: huge basketball-style shorts in one piece, hanging off the hips past the
  *   knees and flapping as he moves.
  */
-export type ShortsStyle = 'normal' | 'low' | 'baggy';
+export type ShortsStyle = 'normal' | 'sagging' | 'low' | 'baggy';
+
+/** How far 'sagging' shorts sit below normal ones. */
+const SAG = 34;
 
 /** Default scale of the 680 × 880 portrait on the body. */
 const HEAD_SCALE = 0.2;
@@ -250,7 +254,12 @@ export class PortraitFigure extends Actor {
     const { kit } = this;
     const fabric = shade(kit.shorts, 0.17);
     const scale = `scale(${this.build.torsoWidth} 1)`;
-    if (this.shortsStyle !== 'normal') {
+    if (this.shortsStyle === 'sagging') {
+      // Just the undershorts' white waistband, peeking out above the lowered shorts.
+      const under = this.torso.draw('g', { transform: scale });
+      new Shape(under, '#f2f2f2', '#c9c9c9', 2, this.look).set('M -47 -26 Q 0 -32 47 -26 L 48 2 Q 0 -4 -48 2 Z');
+      under.appendChild(svg('path', { d: 'M -47 -14 Q 0 -20 47 -14', stroke: '#c9c9c9', 'stroke-width': 1.5, fill: 'none' }));
+    } else if (this.shortsStyle !== 'normal') {
       // Black undershorts with a white waistband, showing between the shirt and the sagging shorts.
       const under = this.torso.draw('g', { transform: scale });
       new Shape(under, '#1d1d1f', '#0e0e10', 6, this.look).set(smoothPath([[-47, -28], [-49, 0], [-50, 30], [0, 36], [50, 30], [49, 0], [47, -28], [0, -30]]));
@@ -291,20 +300,23 @@ export class PortraitFigure extends Actor {
       this.shortsFlaps.push(flap);
       return;
     }
+    const sag = this.shortsStyle === 'sagging' ? SAG : 0;
+    if (sag) g.setAttribute('transform', `translate(0 ${sag}) ${scale}`);
     new Shape(g, kit.shorts, fabric, 9, this.look)
       .set(smoothPath([[-44, -38], [-49, -6], [-50, 18], [-30, 26], [-7, 24], [0, 16], [7, 24], [30, 26], [50, 18], [49, -6], [44, -38], [0, -40]]));
     g.appendChild(svg('path', { d: 'M 0 -18 L 0 16', stroke: fabric, 'stroke-width': 1.5, fill: 'none' }));
-    this.drawShortsLegs(fabric);
+    this.drawShortsLegs(fabric, sag);
   }
 
   /**
    * The legs of normal shorts, a little way down the thighs and moving with them. Drawn over the hip
-   * piece and clipped just below the waistband, so the shorts read as one piece, not two.
+   * piece and clipped just below the waistband, so the shorts read as one piece, not two. `sag`
+   * moves them that far down, with the hip piece.
    */
-  private drawShortsLegs(fabric: string): void {
+  private drawShortsLegs(fabric: string, sag: number): void {
     const { kit, build: b } = this;
     const clipId = uid('figure-shorts');
-    this.shorts.draw('clipPath', { id: clipId }).appendChild(svg('rect', { x: -300, y: 2, width: 600, height: 600 }));
+    this.shorts.draw('clipPath', { id: clipId }).appendChild(svg('rect', { x: -300, y: 2 + sag, width: 600, height: 600 }));
     // Leg geometry is in figure space: undo the torso's transform.
     const layer = this.shorts.draw('g', { 'clip-path': `url(#${clipId})` }).appendChild(svg('g'));
     const legs = ([[-1, this.leftLeg, this.leftShin], [1, this.rightLeg, this.rightShin]] as const).map(([side, thigh, shin]) => ({
@@ -312,8 +324,10 @@ export class PortraitFigure extends Actor {
       shape: new Shape(layer, kit.shorts, fabric, 9, this.look),
       hem: layer.appendChild(svg('path', { stroke: shade(kit.shorts, 0.3), 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round' })),
     }));
-    const LENGTH = 0.29;
-    const width = (u: number) => (27 + u * 6) * b.legWidth;
+    // Sagging shorts: the legs start `sag` further down the thigh, exactly as normal ones start at the hip.
+    const start = sag / (b.thigh + b.shin);
+    const LENGTH = 0.29 + start;
+    const width = (u: number) => (27 + (u - start) * 6) * b.legWidth;
     const update = () => {
       const t = this.torso;
       layer.setAttribute('transform', `scale(${1 / t.scaleX} ${1 / t.scaleY}) rotate(${-t.rotation}) translate(${-t.x} ${-t.y})`);
@@ -324,7 +338,7 @@ export class PortraitFigure extends Actor {
         const E: Point = [S[0] - Math.sin(a1) * b.thigh, S[1] + Math.cos(a1) * b.thigh];
         const W: Point = [E[0] - Math.sin(a2) * b.shin, E[1] + Math.cos(a2) * b.shin];
         const curve = new Curve(S, E, W, b.thigh / (b.thigh + b.shin));
-        shape.set(curve.outline(0, LENGTH, width));
+        shape.set(curve.outline(start, LENGTH, width));
         const { p, n } = curve.at(LENGTH - 0.02);
         const w = width(LENGTH) - 2;
         hem.setAttribute('d', `M ${f(p[0] + n[0] * w)} ${f(p[1] + n[1] * w)} L ${f(p[0] - n[0] * w)} ${f(p[1] - n[1] * w)}`);
