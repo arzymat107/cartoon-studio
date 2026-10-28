@@ -42,10 +42,10 @@ export const MBAPPE_CARICATURE: FigureSpec = {
   face: FACE,
   style: 'cartoon',
   headScale: 0.25,
-  // Compact sprinter: short torso, huge powerful thighs, big hands and boots.
+  // Tall sprinter: long legs, strong thighs, big hands and boots.
   build: {
-    upperArm: 52, forearm: 48, thigh: 90, shin: 78, armWidth: 1.2, legWidth: 1.5, torsoWidth: 1.1,
-    hand: 1.4, foot: 1.45, torso: 0.82, neckWidth: 1.25,
+    upperArm: 62, forearm: 58, thigh: 128, shin: 114, armWidth: 1.2, legWidth: 1.25, torsoWidth: 1.1,
+    hand: 1.4, foot: 1.45, torso: 0.96, neckWidth: 1.25,
   },
 };
 
