@@ -111,6 +111,12 @@ export const synth = {
   /** Air swish – fast moves, camera zooms. */
   whoosh: () => noise({ duration: 0.55, volume: 0.12, filter: 'bandpass', from: 300, to: 2600, q: 1.2 }),
 
+  /** Cartoon dust-cloud "poof" – someone vanishes. */
+  poof: () => {
+    noise({ duration: 0.45, volume: 0.32, filter: 'lowpass', from: 2400, to: 220, attack: 0.01 });
+    tone({ from: 220, to: 70, duration: 0.2, volume: 0.22 });
+  },
+
   /** A little bird. */
   chirp: () => {
     const base = random(2600, 3600);

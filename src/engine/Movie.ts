@@ -11,6 +11,8 @@ export interface Episode {
   /** Frame size. Default 1920×1080 (YouTube); use 1080×1920 for Shorts / TikTok / Reels. */
   width?: number;
   height?: number;
+  /** Fade between scenes in seconds (default 0.5); 0 = hard cuts. */
+  transition?: number;
 }
 
 export interface Chapter {
@@ -34,7 +36,7 @@ export class Movie {
   readonly chapters: Chapter[] = [];
   private readonly listeners = new Set<() => void>();
 
-  constructor(stage: Stage, episode: Episode, { transition = 0.5 }: MovieOptions = {}) {
+  constructor(stage: Stage, episode: Episode, { transition = episode.transition ?? 0.5 }: MovieOptions = {}) {
     this.timeline = gsap.timeline({ paused: true });
 
     for (const SceneType of episode.scenes) {

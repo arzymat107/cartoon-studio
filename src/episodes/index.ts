@@ -6,6 +6,7 @@ import { FinedScene } from './fined/scenes/FinedScene';
 import { DICTATOR_CHAPTERS, figureShowcase, SHORTS_CHAPTERS, TROPHY_CHAPTERS } from './figure-showcase/scenes';
 import { FarewellScene } from './farewell/scenes/FarewellScene';
 import { SPEECH_SCENES } from './kane-speech/scenes';
+import { WHO_IS_BEST_SCENES } from './who-is-best/scenes';
 import { DressingRoomScene } from './madrid-laughs/scenes/DressingRoomScene';
 import { FullTimeScene } from './madrid-laughs/scenes/FullTimeScene';
 import { TableScene as MadridTableScene } from './madrid-laughs/scenes/TableScene';
@@ -63,6 +64,13 @@ export const episodes: Record<string, Episode> = {
     width: 1080,
     height: 1920,
     scenes: SPEECH_SCENES,
+  },
+  'who-is-best': {
+    title: 'Who Is The Best? – Kane, Yamal, Mbappé (Short)',
+    width: 1080,
+    height: 1920,
+    transition: 0,
+    scenes: WHO_IS_BEST_SCENES,
   },
   'mbappe-actions': {
     title: 'Mbappé – All Actions (reference)',
