@@ -1,4 +1,4 @@
-import { KANE, KANE_CARICATURE, MBAPPE, MBAPPE_CARICATURE, YAMAL, YAMAL_CARICATURE } from '@/components';
+import { KANE, MBAPPE, YAMAL } from '@/components';
 import type { Episode } from '@/engine';
 import { BenchedScene } from './benched/scenes/BenchedScene';
 import { FriendScene } from './demo/scenes/FriendScene';
@@ -78,35 +78,17 @@ export const episodes: Record<string, Episode> = {
     height: 1920,
     scenes: figureShowcase(MBAPPE, { signature: DICTATOR_CHAPTERS }),
   },
-  'mbappe-caricature': {
-    title: 'Mbappé · Caricature – every action',
-    width: 1080,
-    height: 1920,
-    scenes: figureShowcase(MBAPPE_CARICATURE, { signature: DICTATOR_CHAPTERS }),
-  },
   'yamal-actions': {
     title: 'Yamal · Portrait – every action',
     width: 1080,
     height: 1920,
     scenes: figureShowcase(YAMAL, { greeting: 'Hola\nculers!', signature: SHORTS_CHAPTERS }),
   },
-  'yamal-caricature': {
-    title: 'Yamal · Caricature – every action',
-    width: 1080,
-    height: 1920,
-    scenes: figureShowcase(YAMAL_CARICATURE, { greeting: 'Hola\nculers!', signature: SHORTS_CHAPTERS }),
-  },
   'kane-actions': {
     title: 'Kane · Portrait – every action',
     width: 1080,
     height: 1920,
     scenes: figureShowcase(KANE, { greeting: 'Servus\nMünchen!', signature: TROPHY_CHAPTERS }),
-  },
-  'kane-caricature': {
-    title: 'Kane · Caricature – every action',
-    width: 1080,
-    height: 1920,
-    scenes: figureShowcase(KANE_CARICATURE, { greeting: 'Servus\nMünchen!', signature: TROPHY_CHAPTERS }),
   },
 };
 
