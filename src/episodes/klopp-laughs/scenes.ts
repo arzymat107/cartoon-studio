@@ -1,5 +1,5 @@
 /**
- * "Klopp Can't Stop Laughing": a cut-out Klopp (from klopp_transparent.png) goes from a grin to a
+ * "Klopp Can't Stop Laughing": a cut-out Klopp (from klopp.png) goes from a grin to a
  * chuckle to a full-body belly laugh and back.
  *
  * Techniques: anticipation (a squash before each big beat), squash & stretch around the feet,

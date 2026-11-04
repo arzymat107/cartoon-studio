@@ -1,5 +1,5 @@
 /**
- * Jürgen Klopp as a cut-out puppet made from one drawing (klopp_transparent.png, 1040 × 2448).
+ * Jürgen Klopp as a cut-out puppet made from one drawing (klopp.png, 1040 × 2448).
  *
  * The picture is used twice: a body copy clipped below the collar, and a head copy clipped above it
  * (with the beard reaching down over the collar), so the head can tilt and bob on its own. The two
@@ -11,7 +11,7 @@
  *     ├ mouth      pivot at the upper lip; scaleY opens and closes it
  *     └ tears      tears flying from the eye corners (head space)
  */
-import kloppUrl from '@/assets/characters/Klopp/klopp_transparent.png';
+import kloppUrl from '@/assets/characters/Klopp/klopp.png';
 import { Actor, svg, uid } from '@/engine';
 
 /** Points in the picture's own pixels. */
