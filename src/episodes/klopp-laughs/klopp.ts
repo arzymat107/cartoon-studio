@@ -15,16 +15,16 @@ import kloppUrl from '@/assets/characters/Klopp/klopp.png';
 import { Actor, svg, uid } from '@/engine';
 
 /** Points in the picture's own pixels. */
-const FEET = { x: 515, y: 2345 };
-const NECK = { x: 515, y: 830 };
-const LIP = { x: 512, y: 622 };
+const FEET = { x: 521, y: 2359 };
+const NECK = { x: 518, y: 850 };
+const LIP = { x: 515, y: 608 };
 /** Outer eye corners, where the tears spring from. */
-export const EYE_CORNERS: [number, number][] = [[330 - NECK.x, 505 - NECK.y], [655 - NECK.x, 505 - NECK.y]];
+export const EYE_CORNERS: [number, number][] = [[345 - NECK.x, 470 - NECK.y], [690 - NECK.x, 470 - NECK.y]];
 
 /** Everything above the collar, plus the beard hanging over it. */
-const HEAD_CLIP = 'M 0 0 L 1040 0 L 1040 765 L 690 765 Q 650 850 560 880 L 470 880 Q 380 850 340 765 L 0 765 Z';
-/** Everything below the top of the collar (overlaps the head by ~25 px). */
-const BODY_CLIP = 'M 0 740 L 1040 740 L 1040 2448 L 0 2448 Z';
+const HEAD_CLIP = 'M 0 0 L 1040 0 L 1040 735 L 702 735 Q 670 840 565 895 L 470 895 Q 365 840 335 735 L 0 735 Z';
+/** Everything below the top of the collar (overlaps the head by ~20 px). */
+const BODY_CLIP = 'M 0 715 L 1040 715 L 1040 2448 L 0 2448 Z';
 
 const OUTLINE = '#3a0a0a';
 
@@ -53,7 +53,7 @@ export class KloppRig extends Actor {
     this.shakeLines = new Actor({ name: 'shakeLines', opacity: 0 });
     for (const side of [-1, 1]) {
       for (let i = 0; i < 3; i++) {
-        const x = 515 + side * (430 + i * 34);
+        const x = FEET.x + side * (430 + i * 34);
         const y = 940 + i * 70;
         this.shakeLines.draw('path', {
           d: `M ${x} ${y} Q ${x + side * 22} ${y + 45} ${x} ${y + 90}`,
