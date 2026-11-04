@@ -6,3 +6,6 @@ exports
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# Character art (kept locally, not in git)
+src/assets/characters/
