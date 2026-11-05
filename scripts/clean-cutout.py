@@ -6,7 +6,7 @@ Cleans up a character cut-out (transparent PNG made from an AI image):
   2. Removes the light fringe: trims a thin ring of near-white pixels from the outer edge.
   3. Smooths the edge: a slight anti-aliased alpha instead of a jagged 0/255 edge.
 
-  python3 scripts/clean-cutout.py src/assets/characters/Carrick/carrick_sitting.png [...]
+  python3 scripts/clean-cutout.py ../data-for-cartoons/characters/Carrick/carrick_sitting.png [...]
   python3 scripts/clean-cutout.py carrick_launch.png --keep 540,268 --keep 398,1712
 
 --keep x,y marks the enclosed transparent area under that pixel as a real gap (e.g. between hair
@@ -14,7 +14,9 @@ strands or behind a knee) that must stay transparent even though it is small.
 --fill x,y does the opposite: the enclosed area under that pixel is filled however big it is
 (e.g. white shorts that the background removal erased completely).
 
-Each file is cleaned in place; the original is kept next to it as <name>.orig.png (once).
+Each file is cleaned in place; the untouched original is kept as raw/<name>.png next to it (once),
+and every clean starts again from that original. To clean a replaced picture, delete its raw/ copy
+first (or put the new meta.ai download there).
 """
 import shutil
 import sys
@@ -53,8 +55,9 @@ def outside_mask(alpha: Image.Image) -> bytearray:
 
 
 def clean(path: Path, keep: list[tuple[int, int]] = (), fill: list[tuple[int, int]] = ()) -> None:
-    backup = path.with_name(path.stem + '.orig.png')
+    backup = path.parent / 'raw' / path.name
     if not backup.exists():
+        backup.parent.mkdir(exist_ok=True)
         shutil.copy2(path, backup)
     im = Image.open(backup).convert('RGBA')
     w, h = im.size
@@ -112,7 +115,7 @@ def clean(path: Path, keep: list[tuple[int, int]] = (), fill: list[tuple[int, in
     soft = alpha.filter(ImageFilter.GaussianBlur(0.8))
     im.putalpha(Image.eval(soft, lambda v: 0 if v < 40 else min(255, int((v - 40) * 255 / 175))))
     im.save(path)
-    print(f'{path}: filled {holes} hole pixels, trimmed {trimmed} fringe pixels (original: {backup.name})')
+    print(f'{path}: filled {holes} hole pixels, trimmed {trimmed} fringe pixels (original: raw/{backup.name})')
 
 
 if __name__ == '__main__':

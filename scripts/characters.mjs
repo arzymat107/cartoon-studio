@@ -11,9 +11,10 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { charactersDir } from './characters-dir.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dir = join(root, 'src/assets/characters');
+const dir = charactersDir();
 const library = JSON.parse(readFileSync(join(root, 'src/characters/library.json'), 'utf8'));
 const args = process.argv.slice(2);
 const sheet = args.includes('--sheet');
@@ -36,6 +37,7 @@ for (const [name, c] of Object.entries(library.characters)) {
 }
 if (!matches.length) console.log('No picture matches – it may need generating (see the make-short skill).');
 
+console.log(`\nPictures folder: ${dir}`);
 const known = new Set(Object.values(library.pictures).map((p) => p.file));
 const extra = existsSync(dir)
   ? readdirSync(dir, { withFileTypes: true }).filter((d) => d.isDirectory()).flatMap((d) =>
@@ -44,7 +46,7 @@ const extra = existsSync(dir)
   : [];
 if (extra.length) console.log(`\nNot in src/characters/library.json yet:\n${extra.map((f) => `  + ${f}`).join('\n')}`);
 const missing = matches.filter(([, p]) => !existsSync(join(dir, p.file)));
-if (missing.length) console.log(`\n✗ ${missing.length} picture(s) missing from src/assets/characters (git-ignored – copy them from the machine that has them).`);
+if (missing.length) console.log(`\n✗ ${missing.length} picture(s) missing from ${dir} – clone or pull the private data-for-cartoons repo next to this one.`);
 
 if (sheet) {
   const files = matches.map(([, p]) => join(dir, p.file)).filter((f) => existsSync(f));

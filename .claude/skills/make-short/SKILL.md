@@ -13,7 +13,9 @@ House rules (from the user):
 - **Wordless:** no on-screen text, no speech. Only music, sound effects and voice noises
   (gulp, ow, phew, scream, chuckle, aaah) that express action and emotion.
 - **Characters come from meta.ai** – the user generates them from your prompts. They're
-  saved in `src/assets/characters/<Name>/` (git-ignored, local only).
+  saved in `../data-for-cartoons/characters/<Name>/` – the **private** `data-for-cartoons` repo
+  next to this one (this repo is public; the app reads it via `@characters`, set by
+  `scripts/characters-dir.mjs` or `CHARACTERS_DIR` in `.env.local`).
 - **Commit directly on main.**
 - **Phone safe zones:** YouTube's interface covers parts of the 1080×1920 frame on phones.
   Faces, key actions and props that carry the joke must stay out of them; background, floor
@@ -71,8 +73,8 @@ anchor, points, styleRef, notes, usedIn). Add the character to `characters` if t
 Re-run `npm run characters`: it lists any picture on disk that isn't catalogued yet. When a
 Short reuses a picture, add the episode to its `usedIn`.
 
-The pictures are git-ignored; only the catalog is committed. A ✗ in the list means a file is
-missing on this machine.
+The pictures live in the private data-for-cartoons repo; only the catalog is committed here.
+A ✗ in the list means a file is missing on this machine (pull data-for-cartoons).
 
 ### Prompts for new pictures
 
@@ -97,8 +99,8 @@ Tell the user the exact file name to save each picture as: `<name>_<pose>.png`.
 ## 3. Check and clean the pictures
 
 ```bash
-python3 scripts/contact-sheet.py src/assets/characters/<Name>/*.png          # on green: look for holes
-python3 scripts/contact-sheet.py --grid src/assets/characters/<Name>/<file>  # read picture coordinates
+python3 scripts/contact-sheet.py ../data-for-cartoons/characters/<Name>/*.png          # on green: look for holes
+python3 scripts/contact-sheet.py --grid ../data-for-cartoons/characters/<Name>/<file>  # read picture coordinates
 python3 scripts/clean-cutout.py <file> [--keep x,y]... [--fill x,y]...
 ```
 
@@ -110,7 +112,7 @@ python3 scripts/clean-cutout.py <file> [--keep x,y]... [--fill x,y]...
 
 Re-check the sheet after cleaning.
 
-The script cleans from `<name>.orig.png` when one exists. If the user replaces a picture, delete its old `.orig.png` first, or the old picture gets cleaned. Once the user is happy, the `.orig` backups can be deleted.
+The first clean saves the untouched meta.ai download as `<Name>/raw/<file>`, and every later clean starts again from it – keep these originals. If the user replaces a picture, delete its old `raw/` copy first (or put the new download there), or the old picture gets cleaned.
 
 ## 4. Rigs, props, scene
 
@@ -176,7 +178,7 @@ Fix the scene and re-render until every beat reads.
 
 The user can also watch it live at `http://127.0.0.1:5173/?episode=<slug>` with `npm run dev`.
 
-**Commit on main:** commit the episode code, `sounds.json` and the new sounds. Character pictures stay uncommitted (they're git-ignored).
+**Commit on main:** commit the episode code, `sounds.json` and the new sounds here. Commit and push new or changed character pictures (with their `raw/` originals) in `../data-for-cartoons` – that repo is private; never copy pictures into this public one.
 
 ## 7. Report and publish ⏸
 

@@ -7,5 +7,6 @@ exports
 !.vscode/extensions.json
 .idea
 
-# Character art (kept locally, not in git)
+# Character art lives in the private data-for-cartoons repo (scripts/characters-dir.mjs);
+# this stops a stray copy from being committed here.
 src/assets/characters/

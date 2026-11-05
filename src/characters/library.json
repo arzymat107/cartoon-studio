@@ -1,5 +1,5 @@
 {
-  "$comment": "Catalog of every character picture in src/assets/characters/<file> (the pictures are git-ignored; this file is committed). Points are picture pixels; `anchor` names the point that becomes the rig's origin. Check with `npm run characters`.",
+  "$comment": "Catalog of every character picture in <characters folder>/<file>. The pictures live in the private data-for-cartoons repo (see scripts/characters-dir.mjs); this catalog is committed here. Points are picture pixels; `anchor` names the point that becomes the rig's origin. Check with `npm run characters`.",
   "characters": {
     "Carrick": {
       "who": "Michael Carrick, Manchester United manager",

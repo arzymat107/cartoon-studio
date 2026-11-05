@@ -2,8 +2,8 @@
 Puts character cut-outs side by side on a green background, so missing parts (erased white
 shoes, eyes, shorts) and leftover white fringe are easy to spot.
 
-  python3 scripts/contact-sheet.py src/assets/characters/Ole/*.png
-  python3 scripts/contact-sheet.py --grid src/assets/characters/Ole/ole_eager.png
+  python3 scripts/contact-sheet.py ../data-for-cartoons/characters/Ole/*.png
+  python3 scripts/contact-sheet.py --grid ../data-for-cartoons/characters/Ole/ole_eager.png
 
 --grid draws a labelled 100 px grid over each picture, to read off picture coordinates
 (rig origins, chin points, --keep / --fill points for clean-cutout.py).

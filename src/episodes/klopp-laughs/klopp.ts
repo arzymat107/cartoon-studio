@@ -11,7 +11,7 @@
  *     ├ mouth      pivot at the upper lip; scaleY opens and closes it
  *     └ tears      tears flying from the eye corners (head space)
  */
-import kloppUrl from '@/assets/characters/Klopp/klopp.png';
+import kloppUrl from '@characters/Klopp/klopp.png';
 import { Actor, svg, uid } from '@/engine';
 
 /** Points in the picture's own pixels. */

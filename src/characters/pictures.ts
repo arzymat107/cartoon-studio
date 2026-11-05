@@ -1,5 +1,6 @@
 /**
- * The character library: every meta.ai picture in src/assets/characters/, described in
+ * The character library: every meta.ai picture in the characters folder (`@characters`, kept in
+ * the private data-for-cartoons repo – see scripts/characters-dir.mjs), described in
  * library.json (who, pose, face, which way they face, measured anchor points), plus the
  * pieces to turn pictures into puppets.
  *
@@ -29,9 +30,11 @@ export interface PictureInfo {
   usedIn: string[];
 }
 
-const files = import.meta.glob<string>(['/src/assets/characters/*/*.png', '!/src/assets/characters/*/*.orig.png'], {
+const found = import.meta.glob<string>(['@characters/*/*.png', '!@characters/*/*.orig.png'], {
   eager: true, import: 'default', query: '?url',
 });
+/** Picture URLs by catalog file name (`<Name>/<file>.png`). */
+const files = new Map(Object.entries(found).map(([path, url]) => [path.split('/').slice(-2).join('/'), url]));
 
 export function pictureInfo(id: PictureId): PictureInfo {
   return library.pictures[id] as unknown as PictureInfo;
@@ -40,8 +43,8 @@ export function pictureInfo(id: PictureId): PictureInfo {
 /** URL of a picture. The pictures are git-ignored, so a fresh checkout may not have them. */
 export function pictureUrl(id: PictureId): string {
   const { file } = pictureInfo(id);
-  const url = files[`/src/assets/characters/${file}`];
-  if (!url) throw new Error(`Character picture src/assets/characters/${file} is missing (pictures are git-ignored and live only on the machine that made them).`);
+  const url = files.get(file);
+  if (!url) throw new Error(`Character picture ${file} is missing from the characters folder (data-for-cartoons/characters, or CHARACTERS_DIR in .env.local).`);
   return url;
 }
 
