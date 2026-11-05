@@ -13,3 +13,10 @@ attribution required; credited here anyway). Fetched by `npm run sounds`: trimme
 | `fanfare.mp3` | [Game Success Fanfare Short](https://freesound.org/s/677858/) | el_boss |
 | `wind.mp3` | [wind 6](https://freesound.org/s/726317/) | ZIP.Creates |
 | `rimshot.mp3` | [Musical, Percussion, Drums, Ba-Dum-Tss](https://freesound.org/s/713649/) | Vein_Adams |
+| `fire-crackle.mp3` | [Fire Crackling](https://freesound.org/s/676385/) | StevenMyat_ |
+| `fire-ignite.mp3` | [Fireball](https://freesound.org/s/683179/) | NearTheAtmoshphere |
+| `extinguisher.mp3` | [S23-13 Carbon dioxide fire extinguisher; long blast.wav](https://freesound.org/s/676004/) | craigsmith |
+| `sizzle.mp3` | [Stove Water Sizzle](https://freesound.org/s/170235/) | roachpowder |
+| `launch.mp3` | [S18-15a Fireworks rocket launching.wav](https://freesound.org/s/675773/) | craigsmith |
+| `crash.mp3` | [S10-23 Wood and glass crash.wav](https://freesound.org/s/675851/) | craigsmith |
+| `chair-unfold.mp3` | [Unfolding metal chair.wav](https://freesound.org/s/188219/) | SpliceSound |

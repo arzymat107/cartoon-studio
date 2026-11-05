@@ -6,3 +6,4 @@ attribution required; credited here anyway). Fetched by `npm run sounds`: trimme
 | File | Freesound sound | Author |
 | ---- | --------------- | ------ |
 | `comedy-loop.mp3` | [Numskull](https://freesound.org/s/650939/) | Beetlemuse |
+| `sneaky.mp3` | [Short Pizzicato Song](https://freesound.org/s/529008/) | DanJFilms |

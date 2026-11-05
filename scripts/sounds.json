@@ -1,13 +1,234 @@
 {
   "sounds": [
-    { "name": "music/comedy-loop", "query": "comedy music", "duration": [20, 180], "pick": 650939 },
-    { "name": "sfx/poof", "query": "poof", "duration": [0.2, 3], "max": 0.9, "pick": 512217 },
-    { "name": "sfx/pop", "query": "cartoon pop", "duration": [0.05, 1], "max": 0.5, "silence": -70, "pick": 757612 },
-    { "name": "sfx/whoosh", "query": "cartoon whoosh", "duration": [0.2, 2], "max": 0.9, "silence": -70, "pick": 325261 },
-    { "name": "sfx/think", "query": "question cartoon", "duration": [0.2, 3], "max": 1.6, "pick": 396195 },
-    { "name": "sfx/sad-trombone", "query": "sad trombone", "duration": [0.5, 5], "max": 3, "pick": 362205 },
-    { "name": "sfx/fanfare", "query": "short fanfare", "duration": [0.5, 5], "max": 2.5, "pick": 677858 },
-    { "name": "sfx/wind", "query": "wind gust", "duration": [3, 30], "max": 5, "pick": 726317 },
-    { "name": "sfx/rimshot", "query": "ba dum tss", "duration": [0.3, 4], "max": 2, "pick": 713649 }
+    {
+      "name": "music/comedy-loop",
+      "query": "comedy music",
+      "duration": [
+        20,
+        180
+      ],
+      "pick": 650939
+    },
+    {
+      "name": "sfx/poof",
+      "query": "poof",
+      "duration": [
+        0.2,
+        3
+      ],
+      "max": 0.9,
+      "pick": 512217
+    },
+    {
+      "name": "sfx/pop",
+      "query": "cartoon pop",
+      "duration": [
+        0.05,
+        1
+      ],
+      "max": 0.5,
+      "silence": -70,
+      "pick": 757612
+    },
+    {
+      "name": "sfx/whoosh",
+      "query": "cartoon whoosh",
+      "duration": [
+        0.2,
+        2
+      ],
+      "max": 0.9,
+      "silence": -70,
+      "pick": 325261
+    },
+    {
+      "name": "sfx/think",
+      "query": "question cartoon",
+      "duration": [
+        0.2,
+        3
+      ],
+      "max": 1.6,
+      "pick": 396195
+    },
+    {
+      "name": "sfx/sad-trombone",
+      "query": "sad trombone",
+      "duration": [
+        0.5,
+        5
+      ],
+      "max": 3,
+      "pick": 362205
+    },
+    {
+      "name": "sfx/fanfare",
+      "query": "short fanfare",
+      "duration": [
+        0.5,
+        5
+      ],
+      "max": 2.5,
+      "pick": 677858
+    },
+    {
+      "name": "sfx/wind",
+      "query": "wind gust",
+      "duration": [
+        3,
+        30
+      ],
+      "max": 5,
+      "pick": 726317
+    },
+    {
+      "name": "sfx/rimshot",
+      "query": "ba dum tss",
+      "duration": [
+        0.3,
+        4
+      ],
+      "max": 2,
+      "pick": 713649
+    },
+    {
+      "name": "sfx/fire-crackle",
+      "query": "fire crackling",
+      "duration": [
+        4,
+        40
+      ],
+      "max": 8,
+      "pick": 676385
+    },
+    {
+      "name": "sfx/fire-ignite",
+      "query": "fire whoosh",
+      "duration": [
+        0.3,
+        5
+      ],
+      "max": 2,
+      "pick": 683179
+    },
+    {
+      "name": "sfx/extinguisher",
+      "query": "extinguisher",
+      "duration": [
+        0.5,
+        15
+      ],
+      "max": 4,
+      "pick": 676004
+    },
+    {
+      "name": "sfx/sizzle",
+      "query": "sizzle",
+      "duration": [
+        0.5,
+        8
+      ],
+      "max": 3,
+      "pick": 170235
+    },
+    {
+      "name": "sfx/launch",
+      "query": "rocket",
+      "duration": [
+        0.5,
+        8
+      ],
+      "max": 3,
+      "pick": 675773
+    },
+    {
+      "name": "sfx/crash",
+      "query": "wood crash debris",
+      "duration": [
+        0.5,
+        5
+      ],
+      "max": 2.5,
+      "pick": 675851
+    },
+    {
+      "name": "sfx/chair-unfold",
+      "query": "folding chair",
+      "duration": [
+        0.3,
+        5
+      ],
+      "max": 2,
+      "pick": 188219
+    },
+    {
+      "name": "vocals/ow",
+      "query": "man ouch",
+      "duration": [
+        0.2,
+        3
+      ],
+      "max": 1.5,
+      "pick": 743350
+    },
+    {
+      "name": "vocals/scream",
+      "query": "man scream cartoon",
+      "duration": [
+        0.5,
+        4
+      ],
+      "max": 2.5,
+      "pick": 823503
+    },
+    {
+      "name": "vocals/phew",
+      "query": "sigh",
+      "duration": [
+        0.3,
+        3
+      ],
+      "max": 2,
+      "pick": 389631
+    },
+    {
+      "name": "vocals/gulp",
+      "query": "cartoon gulp",
+      "duration": [
+        0.1,
+        2
+      ],
+      "max": 1,
+      "pick": 450624
+    },
+    {
+      "name": "vocals/sneaky-chuckle",
+      "query": "chuckle",
+      "duration": [
+        0.3,
+        4
+      ],
+      "max": 2.5,
+      "pick": 458101
+    },
+    {
+      "name": "vocals/ahh",
+      "query": "relief ahh",
+      "duration": [
+        0.3,
+        3
+      ],
+      "max": 2,
+      "pick": 801137
+    },
+    {
+      "name": "music/sneaky",
+      "query": "sneaky pizzicato music",
+      "duration": [
+        8,
+        120
+      ],
+      "pick": 529008
+    }
   ]
 }
