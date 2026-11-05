@@ -1,10 +1,10 @@
 /**
  * Renders an episode to an MP4 video with sound (ready for YouTube).
  *
- *   npm run export                          → exports/demo.mp4 (episode's size, 30 fps)
- *   npm run export -- --episode football    → exports/football.mp4 (vertical 1080×1920)
+ *   npm run export                          → exports/hot-seat.mp4 (episode's size, 30 fps)
+ *   npm run export -- --episode klopp-laughs → exports/klopp-laughs.mp4
  *   --progress-json                         machine-readable progress (used by the Export button)
- *   npm run export -- --episode demo --fps 60 --out exports/my-cartoon.mp4
+ *   npm run export -- --episode hot-seat --fps 60 --out exports/my-cartoon.mp4
  *
  * How it works: a headless browser (your installed Edge or Chrome) opens the cartoon in
  * export mode, renders the soundtrack offline, then steps through the timeline frame by
@@ -25,7 +25,7 @@ const option = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
   return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 };
-const episode = option('episode', 'demo');
+const episode = option('episode', 'hot-seat');
 const fps = Number(option('fps', 30));
 const out = resolve(root, option('out', `exports/${episode}.mp4`));
 const jsonProgress = process.argv.includes('--progress-json');

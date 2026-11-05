@@ -26,7 +26,7 @@ const SAFE = { top: 250 / 1920, bottom: 500 / 1920, right: 180 / 1080, rightFrom
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const at = args.indexOf('--episode');
-const episode = at > -1 ? args.splice(at, 2)[1] : 'demo';
+const episode = at > -1 ? args.splice(at, 2)[1] : 'hot-seat';
 const times = args.map(Number).filter((t) => Number.isFinite(t));
 if (!times.length) {
   console.error('usage: npm run frames -- --episode <name> <time> [time…]');

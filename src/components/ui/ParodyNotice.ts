@@ -1,15 +1,5 @@
-/** Screen-space elements shared by every football scene: scoreboard and parody notice. */
-import { Scoreboard, TextLabel } from '@/components';
 import type { Actor } from '@/engine';
-
-export function createScoreboard(width: number): Scoreboard {
-  return new Scoreboard({
-    x: width / 2,
-    y: 60,
-    home: { name: 'Messi', color: '#75c3ea', accent: '#ffffff' },
-    away: { name: 'Ronaldo', color: '#c8102e', accent: '#1e7f3a' },
-  });
-}
+import { TextLabel } from './TextLabel';
 
 /** Always visible: makes clear this is a fan-made parody, not real footage or an official product. */
 export function createParodyNotice(width: number, height: number): Actor {

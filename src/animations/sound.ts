@@ -88,3 +88,15 @@ export function birdsong(duration: number, { min = 1.2, max = 3.5 } = {}): Timel
   }
   return tl.set({}, {}, duration);
 }
+
+const AUDIENCE = ['laughs/audience-1', 'laughs/audience-2', 'laughs/audience-3', 'laughs/audience-4'];
+let nextAudience = 0;
+
+/**
+ * Sitcom laugh track: a recorded audience laugh (a different one each call, so repeats don't
+ * sound canned), cut to `duration`.
+ */
+export function laughTrack(duration = 1.6): Timeline {
+  const name = AUDIENCE[nextAudience++ % AUDIENCE.length];
+  return gsap.timeline().add(clip(name, { volume: 0.55, duration: duration + 0.5 }), 0);
+}

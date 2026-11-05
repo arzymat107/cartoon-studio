@@ -1,6 +1,6 @@
 /**
  * Every audio file under src/assets/sounds/ is available by name – its path without the extension:
- *   src/assets/sounds/voices/bob-hello.mp3  →  'voices/bob-hello'
+ *   src/assets/sounds/vocals/gulp.mp3  →  'vocals/gulp'
  */
 const ROOT = '/src/assets/sounds/';
 

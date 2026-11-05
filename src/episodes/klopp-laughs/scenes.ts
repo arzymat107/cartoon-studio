@@ -7,11 +7,10 @@
  * high-frequency shaking with shake lines, a flapping mouth, tears, popping "HA" lettering,
  * a spinning sunburst, camera zoom and shake, and an elastic follow-through when he settles.
  */
-import { clip, popIn, sfx } from '@/animations';
+import { clip, laughTrack, popIn, sfx } from '@/animations';
 import { synth } from '@/audio';
 import { Actor, Scene, seededRandom, svg, type SceneClass, type Timeline } from '@/engine';
-import { createParodyNotice } from '../football/overlay';
-import { laughTrack } from '../madrid-laughs/sound';
+import { createParodyNotice } from '@/components';
 import { EYE_CORNERS, KloppRig } from './klopp';
 
 const FONT = 'Impact, "Arial Black", system-ui, sans-serif';
