@@ -7,6 +7,10 @@ Cleans up a character cut-out (transparent PNG made from an AI image):
   3. Smooths the edge: a slight anti-aliased alpha instead of a jagged 0/255 edge.
 
   python3 scripts/clean-cutout.py src/assets/characters/Carrick/carrick_sitting.png [...]
+  python3 scripts/clean-cutout.py carrick_launch.png --keep 540,268 --keep 398,1712
+
+--keep x,y marks the enclosed transparent area under that pixel as a real gap (e.g. between hair
+strands or behind a knee) that must stay transparent even though it is small.
 
 Each file is cleaned in place; the original is kept next to it as <name>.orig.png (once).
 """
@@ -46,7 +50,7 @@ def outside_mask(alpha: Image.Image) -> bytearray:
     return out
 
 
-def clean(path: Path) -> None:
+def clean(path: Path, keep: list[tuple[int, int]] = ()) -> None:
     backup = path.with_name(path.stem + '.orig.png')
     if not backup.exists():
         shutil.copy2(path, backup)
@@ -75,7 +79,7 @@ def clean(path: Path) -> None:
                     if 0 <= nx < w and 0 <= ny < h and not seen[j] and alpha[nx, ny] < ALPHA_SOLID:
                         seen[j] = 1
                         queue.append((nx, ny))
-            if len(component) <= MAX_HOLE:
+            if len(component) <= MAX_HOLE and not any(p in keep for p in component):
                 holes += len(component)
             else:
                 for x, y in component:
@@ -109,5 +113,13 @@ def clean(path: Path) -> None:
 
 
 if __name__ == '__main__':
-    for arg in sys.argv[1:]:
-        clean(Path(arg))
+    args, keep, paths = sys.argv[1:], [], []
+    while args:
+        arg = args.pop(0)
+        if arg == '--keep':
+            x, y = args.pop(0).split(',')
+            keep.append((int(x), int(y)))
+        else:
+            paths.append(arg)
+    for arg in paths:
+        clean(Path(arg), keep)
