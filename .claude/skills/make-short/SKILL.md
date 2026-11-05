@@ -15,6 +15,17 @@ House rules (from the user):
 - **Characters come from meta.ai** – the user generates them from your prompts. They're
   saved in `src/assets/characters/<Name>/` (git-ignored, local only).
 - **Commit directly on main.**
+- **Phone safe zones:** YouTube's interface covers parts of the 1080×1920 frame on phones.
+  Faces, key actions and props that carry the joke must stay out of them; background, floor
+  and feet may pass under them.
+
+  | Zone | Covered by | Keep clear |
+  |---|---|---|
+  | Top | status bar / camera island, search, back button | y < 250 |
+  | Bottom | channel name, subscribe, title, hashtags, sound | y > 1420 |
+  | Right, middle down | like, dislike, comment, share, remix buttons | x > 900 for y > 960 |
+
+  `npm run frames` shades these zones red on its sheet (the values are `SAFE` in `scripts/frames.mjs`).
 
 Work in steps and stop for the user at the ⏸ marks.
 
@@ -91,6 +102,9 @@ Create `src/episodes/<slug>/` with `rigs.ts`, `props.ts` and `scenes.ts`, and re
 - **Camera:** `camera.focus` / `camera.reset` for zooms.
 - **Randomness:** `seededRandom` for jitter, so every render is the same.
 - **Helpers:** hot-seat's `shake`, `hop`, `puff`, `smoke`, `fire` and `flicker` show the patterns. Pass `x0` to `shake` when the actor starts off-screen.
+- **Safe zones:** plan the layout inside the safe area from the start: floor at about y 1430,
+  heads below y 250, nothing important bottom-right. Zoom targets (`camera.focus`) must keep
+  faces inside it too. Hot-seat raises its whole set with a resting camera offset (`HOME`) instead of moving every coordinate.
 - **Header:** put a beat list with times at the top of the file.
 - **Ending:** end the scene ~1 s after the last sound.
 
@@ -119,6 +133,8 @@ npm run export -- --episode <slug>                 # → exports/<slug>.mp4
 
 **Frames:** render a frame at every beat and look at the sheet. Check that:
 - faces read;
+- faces, key actions and important props stay out of the red safe zones (brief moments
+  like a jump or a flight passing through are fine);
 - poses line up when they switch;
 - nothing floats above the floor or is cut off at the frame edge;
 - effects are drawn in front of or behind the right layer.

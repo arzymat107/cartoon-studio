@@ -19,9 +19,17 @@ import { BRUNO_NOZZLE, BrunoRig, CarrickRig, OleRig, OleSeated } from './rigs';
 const SCALE = 0.5;
 /** Where Carrick sits (world), = the underside of his thighs on the cushion. */
 const SEAT = { x: 690, y: 1230 };
-const BRUNO = { x: 205, y: 1730 };
+const BRUNO = { x: 205, y: 1640 };
 const OLE = { x: 905, y: FLOOR_Y };
 const END = 24.2;
+/**
+ * The whole set sits 130 px higher than the world coordinates say, so faces, fire and the
+ * thermometer stay clear of the phone's overlays (title and channel at the bottom, buttons on
+ * the right from the middle down). The camera's resting view is this offset instead of 0.
+ */
+const HOME = { x: 0, y: -130, scale: 1 };
+/** The thermometer hangs top right, above the like/share buttons. */
+const THERMO = { x: 990, y: 1030 };
 
 interface FlameSlot {
   holder: Actor;
@@ -69,12 +77,12 @@ class HotSeatScene extends Scene {
     this.oleSeated = new OleSeated({ x: SEAT.x, y: SEAT.y + 50, scale: SCALE, opacity: 0 });
     this.carrick = new CarrickRig({ x: SEAT.x, y: SEAT.y, scale: SCALE });
     this.bruno = new BrunoRig({ x: -380, y: BRUNO.y, scale: SCALE });
-    this.thermo = new Thermometer({ x: 975, y: 1820, scale: 0.85 });
+    this.thermo = new Thermometer({ x: THERMO.x, y: THERMO.y, scale: 0.65 });
 
     this.add(
-      stadium(width), this.skyFx, dugout(width, height), back, this.backFx, this.ole,
+      stadium(width), this.skyFx, dugout(width, height), back, this.backFx, this.thermo, this.ole,
       this.seat, this.chair, this.oleSeated, this.carrick, front, this.roof,
-      this.bruno, this.thermo, this.frontFx,
+      this.bruno, this.frontFx,
     );
   }
 
@@ -185,6 +193,7 @@ class HotSeatScene extends Scene {
       tl.to(thermo.tube, { ...Thermometer.level(value), duration, ease }, at)
         .to(seat.glow, { opacity: Math.max(0, (value - 0.25) / 0.75), duration, ease }, at);
     };
+    tl.set(camera, HOME, 0);
     this.flicker(tl);
 
     // Music and the crowd.
@@ -215,7 +224,7 @@ class HotSeatScene extends Scene {
     this.hop(tl, 4.6, 95, 0.4);
     for (let i = 0; i < 4; i++) this.puff(tl, 4.7 + i * 0.05, SEAT.x - 160 + i * 100, SEAT.y + 10, { size: 0.7, rise: 260, life: 1.1, color: '#eeeeee', outline: '#9a9a9a' });
     heat(4.6, 0.8, 1.4);
-    tl.to(camera, { ...camera.focus(640, 1000, 1.12), duration: 0.6, ease: 'power2.out' }, 4.6);
+    tl.to(camera, { ...camera.focus(640, 900, 1.12), duration: 0.6, ease: 'power2.out' }, 4.6);
     tl.add(clip('sfx/fire-ignite', { volume: 0.8 }), 5.0)
       .add(clip('sfx/fire-crackle', { volume: 0.5, duration: 3.7 }), 5.0);
     this.fire(tl, 5.0, 0.45, 0.4, 'back.out(2)');
@@ -226,7 +235,7 @@ class HotSeatScene extends Scene {
     this.hop(tl, 6.25, 55);
 
     // 4. Bruno to the rescue (6.6–10.5).
-    tl.to(camera, { ...camera.reset(), duration: 0.5, ease: 'power2.inOut' }, 6.6)
+    tl.to(camera, { ...HOME, duration: 0.5, ease: 'power2.inOut' }, 6.6)
       .add(clip('sfx/whoosh', { volume: 0.9 }), 6.6)
       .to(bruno, { x: BRUNO.x + 30, duration: 0.5, ease: 'power2.out' }, 6.6)
       .to(bruno, { x: BRUNO.x, duration: 0.25, ease: 'sine.inOut' }, 7.1);
@@ -307,7 +316,7 @@ class HotSeatScene extends Scene {
     for (let i = 0; i < 6; i++) {
       tl.to(ole, { scaleY: SCALE * 0.97, y: OLE.y, duration: 0.09, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 16.05 + i * 0.18);
     }
-    tl.to(camera, { ...camera.reset(), duration: 0.4, ease: 'power2.inOut' }, 17.0);
+    tl.to(camera, { ...HOME, duration: 0.4, ease: 'power2.inOut' }, 17.0);
 
     // 7. Launch (17.2–19.6): anticipation squash, boing, up through the roof, into the sky.
     tl.to(carrick, { scaleY: SCALE * 0.86, scaleX: SCALE * 1.08, duration: 0.35, ease: 'power2.in' }, 17.2)
@@ -359,7 +368,7 @@ class HotSeatScene extends Scene {
     tl.to(seat.glow, { opacity: 0, duration: 1 }, 18.0).to(seat.scorch, { opacity: 1, duration: 0.6 }, 18.0);
     heat(18.4, 0.5, 1.5);
     this.smoke(tl, 18.4, 20.4, 0.28, { size: 0.7, rise: 360 });
-    tl.to(camera, { ...camera.reset(), duration: 0.6, ease: 'power2.inOut' }, 19.6)
+    tl.to(camera, { ...HOME, duration: 0.6, ease: 'power2.inOut' }, 19.6)
       .add(clip('sfx/whoosh', { volume: 0.6 }), 19.6);
 
     // 8. Ole takes the seat (20.3–24.2): poof, the camping chair is up, he leans back. Aaah.
@@ -378,7 +387,7 @@ class HotSeatScene extends Scene {
     // Ice cold for Ole: the needle drops right to the bottom.
     heat(21.0, 0.02, 0.8, 'power2.in');
     tl.to(thermo.cold, { opacity: 1, duration: 0.4 }, 21.6);
-    const sparkle = twinkle(975, 1820);
+    const sparkle = twinkle(THERMO.x, THERMO.y);
     this.frontFx.add(sparkle);
     tl.to(sparkle, { scale: 0.8, opacity: 1, rotation: 90, duration: 0.2, ease: 'back.out(3)' }, 21.8)
       .to(sparkle, { scale: 0, opacity: 0, duration: 0.25 }, 22.1)

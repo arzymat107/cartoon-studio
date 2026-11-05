@@ -5,13 +5,23 @@
  *   npm run frames -- --episode hot-seat 2.4 5 9.3 17.8
  *
  * Writes exports/frames/<episode>/t<time>.png and exports/frames/<episode>/sheet.png
- * (frames side by side, 6 per row, labelled with their time).
+ * (frames side by side, 6 per row, labelled with their time). On a vertical episode the sheet
+ * shades the phone's overlay zones (SAFE below) in red: nothing important may sit there.
  */
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { createServer } from 'vite';
+
+/**
+ * Parts of a vertical 1080×1920 Short that phones cover with YouTube's own interface
+ * (as fractions of the frame, so they scale with the size):
+ *   top     status bar / camera island, search and back buttons
+ *   bottom  channel name, subscribe, title, hashtags, sound
+ *   right   like / dislike / comment / share / remix buttons, from the middle down
+ */
+const SAFE = { top: 250 / 1920, bottom: 500 / 1920, right: 180 / 1080, rightFrom: 960 / 1920 };
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -50,13 +60,20 @@ try {
 
   // Contact sheet: the frames side by side, 6 per row, each labelled with its time.
   const cols = Math.min(6, files.length);
+  const pct = (v) => `${(v * 100).toFixed(2)}%`;
+  const zones = height > width ? [
+    `top:0;left:0;right:0;height:${pct(SAFE.top)}`,
+    `bottom:0;left:0;right:0;height:${pct(SAFE.bottom)}`,
+    `top:${pct(SAFE.rightFrom)};bottom:${pct(SAFE.bottom)};right:0;width:${pct(SAFE.right)}`,
+  ].map((style) => `<i style="${style}"></i>`).join('') : '';
   const cells = files.map(({ t, file }) =>
-    `<figure><img src="data:image/png;base64,${readFileSync(file).toString('base64')}"><figcaption>${t} s</figcaption></figure>`).join('');
+    `<figure><img src="data:image/png;base64,${readFileSync(file).toString('base64')}">${zones}<figcaption>${t} s</figcaption></figure>`).join('');
   await page.setViewportSize({ width: cols * 366 + 6, height: 400 });
   await page.setContent(`<style>
     body { margin: 0; padding: 6px; background: #fff; display: grid; grid-template-columns: repeat(${cols}, 360px); gap: 6px; }
     figure { margin: 0; position: relative; } img { width: 360px; display: block; }
-    figcaption { position: absolute; top: 8px; left: 8px; padding: 2px 8px; font: bold 26px sans-serif; color: #fff; background: #000a; }
+    i { position: absolute; background: #ff000040; outline: 2px dashed #ff0000a0; outline-offset: -2px; }
+    figcaption { position: absolute; top: 54px; left: 8px; padding: 2px 8px; font: bold 26px sans-serif; color: #fff; background: #000a; }
   </style>${cells}`);
   await page.screenshot({ path: join(outDir, 'sheet.png'), fullPage: true });
   console.log(join(outDir, 'sheet.png'));
