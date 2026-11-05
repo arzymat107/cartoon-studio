@@ -14,7 +14,7 @@ import { clip, sfx } from '@/animations';
 import { synth } from '@/audio';
 import { Actor, Scene, seededRandom, type SceneClass, type Timeline } from '@/engine';
 import { campingChair, debris, dugout, flame, FLOOR_Y, foamBlob, HotSeat, puff, Roof, ROOF, stadium, Thermometer, twinkle } from './props';
-import { BRUNO_NOZZLE, BrunoRig, CarrickRig, OleRig, OleSeated } from './rigs';
+import { BRUNO_NOZZLE, BrunoRig, CarrickRig, OleRig, OleSeated } from '@/characters';
 
 const SCALE = 0.5;
 /** Where Carrick sits (world), = the underside of his thighs on the cushion. */

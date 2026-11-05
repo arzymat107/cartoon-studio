@@ -1,0 +1,115 @@
+{
+  "$comment": "Catalog of every character picture in src/assets/characters/<file> (the pictures are git-ignored; this file is committed). Points are picture pixels; `anchor` names the point that becomes the rig's origin. Check with `npm run characters`.",
+  "characters": {
+    "Carrick": {
+      "who": "Michael Carrick, Manchester United manager",
+      "look": "short brown hair greying at the sides, full beard; navy zip training top, navy trousers, black trainers",
+      "base": "carrick_sitting"
+    },
+    "Bruno": {
+      "who": "Bruno Fernandes, Manchester United captain",
+      "look": "curly dark hair, big ears, short beard; red United shirt, white shorts, red socks, black boots",
+      "base": "bruno_proud"
+    },
+    "Ole": {
+      "who": "Ole Gunnar Solskjær, former Manchester United manager",
+      "look": "grey swept hair, cheeky grin; long charcoal coat over a dark top, dark trousers, black shoes",
+      "base": "ole_eager"
+    },
+    "Klopp": {
+      "who": "Jürgen Klopp",
+      "look": "black cap, glasses, beard, big grin; red puffer gilet over black, black trousers",
+      "base": "klopp"
+    }
+  },
+  "pictures": {
+    "carrick_sitting": {
+      "character": "Carrick", "file": "Carrick/carrick_sitting.png", "size": [1024, 2448],
+      "body": "sitting", "view": "3/4, facing left", "face": "calm, slight smile",
+      "anchor": "seat", "points": { "seat": [700, 1690] },
+      "notes": "No chair drawn: sits on any seat drawn in code. The four face pictures below are this exact pose with another face.",
+      "usedIn": ["hot-seat"]
+    },
+    "carrick_sweat": {
+      "character": "Carrick", "file": "Carrick/carrick_sweat.png", "size": [1024, 2448],
+      "body": "sitting", "view": "3/4, facing left", "face": "nervous smile, sweat drops",
+      "anchor": "seat", "points": { "seat": [694, 1696] }, "styleRef": "carrick_sitting",
+      "usedIn": ["hot-seat"]
+    },
+    "carrick_pain": {
+      "character": "Carrick", "file": "Carrick/carrick_pain.png", "size": [1024, 2448],
+      "body": "sitting", "view": "3/4, facing left", "face": "eyes squeezed shut, gritted teeth, red cheeks",
+      "anchor": "seat", "points": { "seat": [692, 1694] }, "styleRef": "carrick_sitting",
+      "usedIn": ["hot-seat"]
+    },
+    "carrick_relief": {
+      "character": "Carrick", "file": "Carrick/carrick_relief.png", "size": [1024, 2448],
+      "body": "sitting", "view": "3/4, facing left", "face": "eyes closed, blowing out a puff of air",
+      "anchor": "seat", "points": { "seat": [690, 1694] }, "styleRef": "carrick_sitting",
+      "usedIn": ["hot-seat"]
+    },
+    "carrick_panic": {
+      "character": "Carrick", "file": "Carrick/carrick_panic.png", "size": [1024, 2448],
+      "body": "sitting", "view": "3/4, facing left", "face": "screaming, eyes wide, hair on end",
+      "anchor": "seat", "points": { "seat": [696, 1704], "chin": [380, 830] }, "styleRef": "carrick_sitting",
+      "notes": "Its head is also swapped onto the jump and launch pictures (see CarrickRig).",
+      "usedIn": ["hot-seat"]
+    },
+    "carrick_jump": {
+      "character": "Carrick", "file": "Carrick/carrick_jump.png", "size": [1024, 2448],
+      "body": "jumping", "view": "front", "face": "surprised, mouth open",
+      "anchor": "middle", "points": { "middle": [560, 1400], "chin": [378, 815] }, "styleRef": "carrick_sitting",
+      "notes": "Both arms up, knees bent.",
+      "usedIn": ["hot-seat"]
+    },
+    "carrick_launch": {
+      "character": "Carrick", "file": "Carrick/carrick_launch.png", "size": [1024, 2448],
+      "body": "leaping / flying up", "view": "3/4, facing left", "face": "surprised, mouth open",
+      "anchor": "middle", "points": { "middle": [600, 1400], "chin": [440, 855] }, "styleRef": "carrick_sitting",
+      "notes": "One arm high, legs together.",
+      "usedIn": ["hot-seat"]
+    },
+    "bruno_extinguisher": {
+      "character": "Bruno", "file": "Bruno/bruno_extinguisher.png", "size": [1024, 2448],
+      "body": "standing", "view": "front", "face": "big grin",
+      "anchor": "feet", "points": { "feet": [470, 2385], "nozzle": [545, 1000] }, "styleRef": "carrick_sitting",
+      "notes": "Holding a red fire extinguisher at his chest. No spray drawn: spray is added in code from `nozzle`.",
+      "usedIn": ["hot-seat"]
+    },
+    "bruno_proud": {
+      "character": "Bruno", "file": "Bruno/bruno_proud.png", "size": [1024, 2448],
+      "body": "standing", "view": "front", "face": "big proud grin",
+      "anchor": "feet", "points": { "feet": [478, 2395] }, "styleRef": "carrick_sitting",
+      "notes": "Hands on hips, extinguisher standing on the floor by his right foot.",
+      "usedIn": ["hot-seat"]
+    },
+    "ole_chair": {
+      "character": "Ole", "file": "Ole/ole_chair.png", "size": [1024, 2448],
+      "body": "standing / tiptoeing", "view": "3/4, facing right", "face": "sly smile, finger to lips (shhh)",
+      "anchor": "feet", "points": { "feet": [538, 2354] }, "styleRef": "carrick_sitting",
+      "notes": "Folded camping chair under his arm. Flip with a negative scaleX to face left.",
+      "usedIn": ["hot-seat"]
+    },
+    "ole_eager": {
+      "character": "Ole", "file": "Ole/ole_eager.png", "size": [1024, 2448],
+      "body": "standing", "view": "front", "face": "eager grin, eyes wide",
+      "anchor": "feet", "points": { "feet": [552, 2351] }, "styleRef": "carrick_sitting",
+      "notes": "Rubbing his hands together, folded chair standing beside him.",
+      "usedIn": ["hot-seat"]
+    },
+    "ole_seated": {
+      "character": "Ole", "file": "Ole/ole_seated.png", "size": [1024, 2448],
+      "body": "sitting, leaning back", "view": "3/4, facing right", "face": "smug, relaxed",
+      "anchor": "seat", "points": { "seat": [650, 1700] }, "styleRef": "carrick_sitting",
+      "notes": "Hands behind his head. No chair drawn: sits on any seat drawn in code.",
+      "usedIn": ["hot-seat"]
+    },
+    "klopp": {
+      "character": "Klopp", "file": "Klopp/klopp.png", "size": [1024, 2448],
+      "body": "standing", "view": "front", "face": "big grin",
+      "anchor": "feet", "points": { "feet": [521, 2359], "neck": [518, 850], "lip": [515, 608] },
+      "notes": "Hands behind his back. KloppRig (episodes/klopp-laughs) splits head and body at `neck` to make him laugh.",
+      "usedIn": ["klopp-laughs"]
+    }
+  }
+}

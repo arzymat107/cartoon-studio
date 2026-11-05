@@ -45,7 +45,36 @@ List, for the user to confirm:
 
 Keep the pose count low; reuse one picture with different motion wherever possible.
 
-## 2. Character prompts for meta.ai ⏸
+## 2. Characters: reuse first, then meta.ai ⏸
+
+**Check the library before asking for anything new.** `npm run characters` lists every
+character and picture: pose, face, which way they face, and measured points. Search it with
+`npm run characters -- sitting` or `-- Ole`, and add `--sheet` to look at the matches. The
+catalog is `src/characters/library.json`; ready-made puppets (`CarrickRig`, `BrunoRig`,
+`OleRig`…) are in `src/characters/rigs.ts`, imported from `@/characters`.
+
+For each pose the storyboard needs, try these in order and only generate what's left:
+1. **Use it as it is:** same picture, different motion (squash, hop, shake, lean, slide, spin).
+2. **Flip it:** a negative `scaleX` turns someone facing right into facing left.
+3. **Swap the face:** clip a head from another picture of the same character and pin it on
+   at the `chin` point (`panicHead` in rigs.ts) – one new face picture serves every body.
+4. **Add it in code:** sweat drops, blush, tears, steam, a hat, a prop in the hand, a seat
+   (sitting pictures have no chair drawn, so they sit on anything).
+5. **Generate only the gap** – ideally just a new face on an existing body ("same image,
+   only change the face to …"), since that lines up with no extra work.
+
+Show the user the reuse plan ("reusing 5, need 2 new: …") before giving prompts.
+
+After the user adds a picture: clean it (step 3), measure its anchor and any useful points
+with `--grid`, and add an entry to `library.json` (character, file, size, body, view, face,
+anchor, points, styleRef, notes, usedIn). Add the character to `characters` if they're new.
+Re-run `npm run characters`: it lists any picture on disk that isn't catalogued yet. When a
+Short reuses a picture, add the episode to its `usedIn`.
+
+The pictures are git-ignored; only the catalog is committed. A ✗ in the list means a file is
+missing on this machine.
+
+### Prompts for new pictures
 
 **Style reference:** chosen per Short, not fixed. Suggest one existing character picture that fits this Short's poses (standing vs sitting), or a new style; the user decides. Every character in this Short uses that same reference. Extra poses of a character already made use that character's own base picture.
 
@@ -85,13 +114,15 @@ The script cleans from `<name>.orig.png` when one exists. If the user replaces a
 
 ## 4. Rigs, props, scene
 
-Create `src/episodes/<slug>/` with `rigs.ts`, `props.ts` and `scenes.ts`, and register the episode in `src/episodes/index.ts` (`width: 1080, height: 1920`).
+Create `src/episodes/<slug>/` with `props.ts` and `scenes.ts`, and register the episode in `src/episodes/index.ts` (`width: 1080, height: 1920`).
 
-**`rigs.ts`:** copy `picture()` and `PoseRig` from hot-seat.
+**Rigs:** reuse `@/characters` – `PoseRig` takes picture ids from the library and places
+each by its catalogued anchor; add a new character's rig to `src/characters/rigs.ts` so later
+Shorts can use it too. Only scene-specific puppets belong in the episode folder.
 - **Pose switching:** each pose is a full picture, and `rig.show(tl, pose, at)` switches between them instantly.
-- **Origin:** pick one body point as the rig's origin (feet when standing, the underside of the thighs when sitting). Place every picture so that point lines up; read the coordinates with `--grid`.
-- **Face poses that drift by a few pixels:** measure the shift on the body and correct it, like `FACE_SHIFT`.
-- **Head swap:** clip the head from a face picture with a `clipPath` and pin it onto another pose's chin at a slight scale/rotation. Draw it slightly bigger so it covers the old head, and don't erase anything (see `panicHead`).
+- **Origin:** each picture's `anchor` in the catalog: feet when standing, the underside of the thighs when sitting, the middle of the body when flying. Read coordinates with `--grid`.
+- **Face pictures that drift by a few pixels:** measure the shift on the body and store the corrected anchor in the catalog (e.g. `carrick_sweat`'s seat is 6 px off `carrick_sitting`'s).
+- **Head swap:** clip the head from a face picture with a `clipPath` and pin it onto another pose's chin at a slight scale/rotation. Draw it slightly bigger so it covers the old head, and don't erase anything (see `panicHead` in `src/characters/rigs.ts`).
 
 **`props.ts`:** plain SVG props in the cartoon style (outline `#3a0a0a`, flat fills). Hot-seat has reusable pieces worth copying:
 - the stadium, dugout and roof hole;
@@ -99,7 +130,7 @@ Create `src/episodes/<slug>/` with `rigs.ts`, `props.ts` and `scenes.ts`, and re
 - the thermometer.
 
 **`scenes.ts`:** one `Scene` with a GSAP timeline; layer order is set by the order you add actors.
-- **Camera:** `camera.focus` / `camera.reset` for zooms.
+- **Camera:** `camera.focus` for zooms, and a resting `HOME` view (see hot-seat).
 - **Randomness:** `seededRandom` for jitter, so every render is the same.
 - **Helpers:** hot-seat's `shake`, `hop`, `puff`, `smoke`, `fire` and `flicker` show the patterns. Pass `x0` to `shake` when the actor starts off-screen.
 - **Safe zones:** plan the layout inside the safe area from the start: floor at about y 1430,

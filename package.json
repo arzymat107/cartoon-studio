@@ -12,7 +12,8 @@
     "voices": "node scripts/generate-voices.mjs",
     "sounds": "node scripts/fetch-sounds.mjs",
     "export": "node scripts/export-video.mjs",
-    "frames": "node scripts/frames.mjs"
+    "frames": "node scripts/frames.mjs",
+    "characters": "node scripts/characters.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0"
