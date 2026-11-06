@@ -48,11 +48,6 @@ export function pictureUrl(id: PictureId): string {
   return url;
 }
 
-/** Whether the picture's file is in the characters folder (it may not be generated yet). */
-export function hasPicture(id: PictureId): boolean {
-  return files.has(pictureInfo(id).file);
-}
-
 /** A named point of a picture, relative to its anchor (or to another point). */
 export function point(id: PictureId, name: string, from = pictureInfo(id).anchor): [number, number] {
   const { points } = pictureInfo(id);

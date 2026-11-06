@@ -6,7 +6,7 @@
  *   flying poses    the middle of the body
  */
 import { Actor, svg, uid, type Timeline } from '@/engine';
-import { hasPicture, picture, pictureInfo, pictureUrl, pictureWithout, point, PoseRig, type PictureId } from './pictures';
+import { picture, pictureInfo, pictureUrl, pictureWithout, point, PoseRig, type PictureId } from './pictures';
 
 type RigOptions = { x?: number; y?: number; scale?: number; opacity?: number };
 
@@ -96,14 +96,16 @@ export type RonaldoPose = 'standing' | 'sad' | 'smile' | 'bare' | 'bareSad' | 'b
  * Ronaldo standing (calm, sad, smiling) with the captain's armband, the same three without it
  * (`bare…`: the sad/smile pictures with the armband cut out, over ronaldo_bare), and the siuu
  * jump without it. Origin between the feet; the standing pictures face right.
- * Until ronaldo_bare / ronaldo_siuu_bare exist, the banded pictures stand in for them.
+ * The siuu face is drawn in code (see siuuFace).
  */
 export class RonaldoRig extends PoseRig<RonaldoPose> {
   private readonly number: Actor;
+  /** The siuu mouth: a long tube, origin where it leaves the face – grow it with scaleX. */
+  readonly tube: Actor;
 
   constructor(options: RigOptions = {}) {
-    const bare = hasPicture('ronaldo_bare') ? 'ronaldo_bare' : 'ronaldo_standing';
-    const siuu = hasPicture('ronaldo_siuu_bare') ? 'ronaldo_siuu_bare' : 'ronaldo_siuu';
+    const bare = 'ronaldo_bare';
+    const tube = siuuTube();
     super('Ronaldo', {
       standing: 'ronaldo_standing',
       sad: 'ronaldo_sad',
@@ -111,8 +113,9 @@ export class RonaldoRig extends PoseRig<RonaldoPose> {
       bare,
       bareSad: [picture(bare), pictureWithout('ronaldo_sad', [...ARMBAND.ronaldo_sad])],
       bareSmile: [picture(bare), pictureWithout('ronaldo_smile', [...ARMBAND.ronaldo_smile])],
-      siuu: scaled([picture(siuu)], RONALDO_SIUU_SCALE),
+      siuu: scaled([siuuFace(tube)], RONALDO_SIUU_SCALE),
     }, 'standing', options);
+    this.tube = tube;
     this.number = new Actor({ name: 'number 7, unmirrored', opacity: 0 });
     this.number.el.appendChild(mirroredSpot('ronaldo_sad', NUMBER_7.ronaldo_sad));
     this.add(this.number);
@@ -125,6 +128,43 @@ export class RonaldoRig extends PoseRig<RonaldoPose> {
   face(tl: Timeline, left: boolean, at: number, scale: number): void {
     tl.set(this, { scaleX: left ? -scale : scale }, at).set(this.number, { opacity: left ? 1 : 0 }, at);
   }
+}
+
+const SKIN = '#f4c09d';
+
+/** The siuu mouth: a long, straight skin-coloured tube with a hole at the tip, base at (0, 0). */
+function siuuTube(): Actor {
+  const a = new Actor({ name: 'siuu tube' });
+  a.draw('path', { d: 'M -60 -34 Q -25 -24 10 -22 L 178 -20 L 178 22 L 10 22 Q -25 26 -60 40 Z', fill: SKIN });
+  const line = { fill: 'none', stroke: '#2a0a0a', 'stroke-width': 7, 'stroke-linecap': 'round' };
+  a.draw('path', { d: 'M 18 -22 L 178 -20 A 21 21 0 0 1 178 22 L 18 22', ...line });
+  a.draw('path', { d: 'M 40 -12 L 160 -11', stroke: '#ffffff', 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.35 });
+  a.draw('ellipse', { cx: 186, cy: 1, rx: 8, ry: 13, fill: '#1e0e0e' });
+  return a;
+}
+
+/**
+ * The siuu face on ronaldo_siuu_bare: the fierce eyes and brows of ronaldo_siuu (its heads line
+ * up 3 px left and 6 px up), the open mouth covered with skin, and the tube in its place.
+ */
+function siuuFace(tube: Actor): SVGGElement {
+  const body = pictureInfo('ronaldo_siuu_bare');
+  const [ox, oy] = body.points[body.anchor];
+  const [mx, my] = body.points.mouth;
+  const g = svg('g', { transform: `translate(${-ox} ${-oy})` });
+  g.appendChild(svg('image', { href: pictureUrl('ronaldo_siuu_bare'), width: body.size[0], height: body.size[1] }));
+  const mask = uid('siuu-eyes');
+  const blur = uid('siuu-blur');
+  g.appendChild(svg('filter', { id: blur })).appendChild(svg('feGaussianBlur', { stdDeviation: 6 }));
+  g.appendChild(svg('mask', { id: mask })).appendChild(svg('rect', { x: 540, y: 588, width: 172, height: 80, rx: 30, fill: '#ffffff', filter: `url(#${blur})` }));
+  const eyes = pictureInfo('ronaldo_siuu');
+  g.appendChild(svg('image', { href: pictureUrl('ronaldo_siuu'), x: -3, y: -6, width: eyes.size[0], height: eyes.size[1], mask: `url(#${mask})` }));
+  g.appendChild(svg('ellipse', { cx: mx + 5, cy: my - 2, rx: 60, ry: 50, fill: SKIN }));
+  tube.x = mx + 40;
+  tube.y = my + 2;
+  tube.scaleY = 1.3;
+  g.appendChild(tube.el);
+  return g;
 }
 
 /** The 7 on the shirt, as [x0, y0, x1, y1] picture pixels. */
