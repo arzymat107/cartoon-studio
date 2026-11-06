@@ -17,7 +17,8 @@
  *             (slow motion). Snapshot flash.
  *   21.6–23.4 Fade to black. Last piano notes, a distant whistle.
  */
-import { clip, sfx } from '@/animations';
+import { gsap } from 'gsap';
+import { clip, sfx, sound } from '@/animations';
 import { synth } from '@/audio';
 import { Actor, Scene, seededRandom, type SceneClass, type Timeline } from '@/engine';
 import { KidRig, point, RonaldoRig } from '@/characters';
@@ -234,10 +235,10 @@ class LastLightScene extends Scene {
     tl.to(ronaldo, { scaleY: SCALE * 0.9, duration: 0.2, ease: 'power2.in' }, 18.4)
       .set(ronaldo, { scaleY: SCALE }, 18.6);
     ronaldo.show(tl, 'siuu', 18.6);
-    // …and louder for Ronaldo: "Siiii… UUUU!"
-    tl.add(sfx(synth.swish), 18.5)
-      .add(sfx(synth.swish), 18.62)
-      .add(clip('vocals/siuu', { volume: 1 }), 18.8);
+    // …and Ronaldo's own "Siuuuu!" (a private sound, data-for-cartoons/sounds); without it,
+    // a hiss and the stadium's "uuuu".
+    tl.add(sound('vocals/ronaldo-siuu', () => gsap.timeline()
+      .add(sfx(synth.swish), 0).add(sfx(synth.swish), 0.12).add(clip('vocals/siuu', { volume: 1 }), 0.3), { volume: 1 }), 18.5);
     kid.show(tl, 'siuu', 18.6);
     for (const [actor, up] of [[ronaldo, 150], [kid, 170]] as const) {
       tl.to(actor, { y: GROUND_Y - up, duration: 0.4, ease: 'power2.out' }, 18.6)

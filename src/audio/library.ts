@@ -1,18 +1,19 @@
 /**
  * Every audio file under src/assets/sounds/ is available by name – its path without the extension:
  *   src/assets/sounds/vocals/gulp.mp3  →  'vocals/gulp'
+ * So are the private sounds in data-for-cartoons/sounds/ (not CC0, so not in this repo; a fresh
+ * checkout may not have them – use sound(name, fallback)).
  */
-const ROOT = '/src/assets/sounds/';
-
-const files = import.meta.glob<string>('/src/assets/sounds/**/*.{mp3,ogg,wav,m4a,webm}', {
+const files = import.meta.glob<string>(['/src/assets/sounds/**/*.{mp3,ogg,wav,m4a,webm}', '@private-sounds/**/*.{mp3,ogg,wav,m4a,webm}'], {
   eager: true,
   query: '?url',
   import: 'default',
 });
 
-const urls = new Map<string, string>(
-  Object.entries(files).map(([path, url]) => [path.slice(ROOT.length).replace(/\.[^.]+$/, ''), url]),
-);
+/** 'vocals/gulp' from '…/sounds/vocals/gulp.mp3'. */
+const soundName = (path: string): string => path.slice(path.lastIndexOf('/sounds/') + '/sounds/'.length).replace(/\.[^.]+$/, '');
+
+const urls = new Map<string, string>(Object.entries(files).map(([path, url]) => [soundName(path), url]));
 
 const durations = new Map<string, number>();
 
