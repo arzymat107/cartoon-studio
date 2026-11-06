@@ -7,3 +7,4 @@ attribution required; credited here anyway). Fetched by `npm run sounds`: trimme
 | ---- | --------------- | ------ |
 | `comedy-loop.mp3` | [Numskull](https://freesound.org/s/650939/) | Beetlemuse |
 | `sneaky.mp3` | [Short Pizzicato Song](https://freesound.org/s/529008/) | DanJFilms |
+| `sad-piano.mp3` | [Bittersweet Piano #1 (With Intro/Outro) (A Major)](https://freesound.org/s/755823/) | kanaizo |

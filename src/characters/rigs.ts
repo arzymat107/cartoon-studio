@@ -5,8 +5,8 @@
  *   standing poses  between the feet
  *   flying poses    the middle of the body
  */
-import { svg, uid } from '@/engine';
-import { picture, pictureInfo, pictureUrl, point, PoseRig, type PictureId } from './pictures';
+import { Actor, svg, uid, type Timeline } from '@/engine';
+import { hasPicture, picture, pictureInfo, pictureUrl, pictureWithout, point, PoseRig, type PictureId } from './pictures';
 
 type RigOptions = { x?: number; y?: number; scale?: number; opacity?: number };
 
@@ -74,5 +74,82 @@ export class OleRig extends PoseRig<OlePose> {
 export class OleSeated extends PoseRig<'seated'> {
   constructor(options: RigOptions = {}) {
     super('Ole seated', { seated: 'ole_seated' }, 'seated', options);
+  }
+}
+
+// ── Ronaldo ──────────────────────────────────────────────────────────────
+
+/** The armband in each banded picture, as [x0, y0, x1, y1] picture pixels. */
+const ARMBAND = { ronaldo_sad: [688, 1018, 815, 1170], ronaldo_smile: [690, 1018, 817, 1170] } as const;
+/** ronaldo_siuu draws him smaller than the standing pictures. */
+const RONALDO_SIUU_SCALE = 1.33;
+
+function scaled(parts: SVGGElement[], scale: number): SVGGElement[] {
+  const g = svg('g', { transform: `scale(${scale})` });
+  for (const p of parts) g.appendChild(p);
+  return [g];
+}
+
+export type RonaldoPose = 'standing' | 'sad' | 'smile' | 'bare' | 'bareSad' | 'bareSmile' | 'siuu';
+
+/**
+ * Ronaldo standing (calm, sad, smiling) with the captain's armband, the same three without it
+ * (`bare…`: the sad/smile pictures with the armband cut out, over ronaldo_bare), and the siuu
+ * jump without it. Origin between the feet; the standing pictures face right.
+ * Until ronaldo_bare / ronaldo_siuu_bare exist, the banded pictures stand in for them.
+ */
+export class RonaldoRig extends PoseRig<RonaldoPose> {
+  private readonly number: Actor;
+
+  constructor(options: RigOptions = {}) {
+    const bare = hasPicture('ronaldo_bare') ? 'ronaldo_bare' : 'ronaldo_standing';
+    const siuu = hasPicture('ronaldo_siuu_bare') ? 'ronaldo_siuu_bare' : 'ronaldo_siuu';
+    super('Ronaldo', {
+      standing: 'ronaldo_standing',
+      sad: 'ronaldo_sad',
+      smile: 'ronaldo_smile',
+      bare,
+      bareSad: [picture(bare), pictureWithout('ronaldo_sad', [...ARMBAND.ronaldo_sad])],
+      bareSmile: [picture(bare), pictureWithout('ronaldo_smile', [...ARMBAND.ronaldo_smile])],
+      siuu: scaled([picture(siuu)], RONALDO_SIUU_SCALE),
+    }, 'standing', options);
+    this.number = new Actor({ name: 'number 7, unmirrored', opacity: 0 });
+    this.number.el.appendChild(mirroredSpot('ronaldo_sad', NUMBER_7.ronaldo_sad));
+    this.add(this.number);
+  }
+
+  /**
+   * Turn him to face left (true) or right. Flipping mirrors the 7 on his shirt, so while he faces
+   * left the 7 is mirrored back – that patch is made for the bareSad pose (the walk away).
+   */
+  face(tl: Timeline, left: boolean, at: number, scale: number): void {
+    tl.set(this, { scaleX: left ? -scale : scale }, at).set(this.number, { opacity: left ? 1 : 0 }, at);
+  }
+}
+
+/** The 7 on the shirt, as [x0, y0, x1, y1] picture pixels. */
+const NUMBER_7 = { ronaldo_sad: [504, 1008, 636, 1236] } as const;
+
+/** A spot of a picture mirrored onto itself, placed like picture(): undoes a flip there. */
+function mirroredSpot(id: PictureId, [x0, y0, x1, y1]: readonly [number, number, number, number]): SVGGElement {
+  const info = pictureInfo(id);
+  const [ox, oy] = info.points[info.anchor];
+  const cx = (x0 + x1) / 2;
+  const clip = uid('spot');
+  const g = svg('g', { transform: `translate(${-ox} ${-oy}) translate(${cx} 0) scale(-1 1) translate(${-cx} 0)` });
+  g.appendChild(svg('clipPath', { id: clip })).appendChild(svg('rect', { x: x0, y: y0, width: x1 - x0, height: y1 - y0 }));
+  g.appendChild(svg('image', { href: pictureUrl(id), width: info.size[0], height: info.size[1], 'clip-path': `url(#${clip})` }));
+  return g;
+}
+
+// ── Kid ──────────────────────────────────────────────────────────────────
+
+/** kid_siuu draws the boy's head smaller than kid_standing. */
+const KID_SIUU_SCALE = 1.2;
+
+/** A young fan in an oversized number 7 shirt. Standing faces left; origin between the feet. */
+export class KidRig extends PoseRig<'standing' | 'siuu'> {
+  constructor(options: RigOptions = {}) {
+    super('Kid', { standing: 'kid_standing', siuu: scaled([picture('kid_siuu')], KID_SIUU_SCALE) }, 'standing', options);
   }
 }

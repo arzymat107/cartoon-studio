@@ -20,6 +20,16 @@
       "who": "Jürgen Klopp",
       "look": "black cap, glasses, beard, big grin; red puffer gilet over black, black trousers",
       "base": "klopp"
+    },
+    "Ronaldo": {
+      "who": "Cristiano Ronaldo, Portugal captain",
+      "look": "short dark hair with a quiff; red Portugal-style shirt with dark green trim and a yellow 7, dark green shorts, red socks, black boots, yellow captain's armband on his left upper arm",
+      "base": "ronaldo_standing"
+    },
+    "Kid": {
+      "who": "A young Portugal fan, about 8 (not a real person)",
+      "look": "dark hair; oversized red number 7 shirt with dark green trim, dark green shorts, red socks, black boots",
+      "base": "kid_standing"
     }
   },
   "pictures": {
@@ -110,6 +120,62 @@
       "anchor": "feet", "points": { "feet": [521, 2359], "neck": [518, 850], "lip": [515, 608] },
       "notes": "Hands behind his back. KloppRig (episodes/klopp-laughs) splits head and body at `neck` to make him laugh.",
       "usedIn": ["klopp-laughs"]
+    },
+    "ronaldo_standing": {
+      "character": "Ronaldo", "file": "Ronaldo/ronaldo_standing.png", "size": [1024, 2448],
+      "body": "standing", "view": "3/4, facing right", "face": "calm, serious",
+      "anchor": "feet", "points": { "feet": [425, 2310], "band": [762, 1096] }, "styleRef": "bruno_proud",
+      "notes": "Arms hanging. Captain's armband on the arm on the right of the picture (box 700–825 × 1020–1165).",
+      "usedIn": ["ronaldo-last-light"]
+    },
+    "ronaldo_sad": {
+      "character": "Ronaldo", "file": "Ronaldo/ronaldo_sad.png", "size": [1024, 2448],
+      "body": "standing", "view": "3/4, facing right", "face": "sad, glistening eyes, a tear",
+      "anchor": "feet", "points": { "feet": [413, 2313], "band": [750, 1099] }, "styleRef": "ronaldo_standing",
+      "notes": "ronaldo_standing with another face, drawn 12 px further left.",
+      "usedIn": ["ronaldo-last-light"]
+    },
+    "ronaldo_smile": {
+      "character": "Ronaldo", "file": "Ronaldo/ronaldo_smile.png", "size": [1024, 2448],
+      "body": "standing", "view": "3/4, facing right", "face": "warm proud smile, teary",
+      "anchor": "feet", "points": { "feet": [415, 2314], "band": [752, 1100] }, "styleRef": "ronaldo_standing",
+      "notes": "ronaldo_standing with another face, drawn 10 px further left.",
+      "usedIn": ["ronaldo-last-light"]
+    },
+    "ronaldo_bare": {
+      "character": "Ronaldo", "file": "Ronaldo/ronaldo_bare.png", "size": [1024, 2448],
+      "body": "standing", "view": "3/4, facing right", "face": "calm, serious",
+      "anchor": "feet", "points": { "feet": [425, 2310] }, "styleRef": "ronaldo_standing",
+      "notes": "ronaldo_standing without the armband. RonaldoRig puts the sad and smile faces on it.",
+      "usedIn": ["ronaldo-last-light"]
+    },
+    "ronaldo_siuu": {
+      "character": "Ronaldo", "file": "Ronaldo/ronaldo_siuu.png", "size": [1024, 2448],
+      "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned right", "face": "joyful shout, mouth open",
+      "anchor": "feet", "points": { "feet": [486, 2040], "middle": [578, 1150] }, "styleRef": "ronaldo_standing",
+      "notes": "Has the armband. The figure is drawn smaller than ronaldo_standing: scale it ×1.33 to match.",
+      "usedIn": []
+    },
+    "ronaldo_siuu_bare": {
+      "character": "Ronaldo", "file": "Ronaldo/ronaldo_siuu_bare.png", "size": [1024, 2448],
+      "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned right", "face": "joyful shout, mouth open",
+      "anchor": "feet", "points": { "feet": [486, 2040], "middle": [578, 1150] }, "styleRef": "ronaldo_siuu",
+      "notes": "ronaldo_siuu without the armband. Scale ×1.33 to match ronaldo_standing.",
+      "usedIn": ["ronaldo-last-light"]
+    },
+    "kid_standing": {
+      "character": "Kid", "file": "Kid/kid_standing.png", "size": [1024, 2448],
+      "body": "standing", "view": "3/4, facing left", "face": "looking up, hopeful shy smile",
+      "anchor": "feet", "points": { "feet": [475, 2320], "handL": [190, 1590], "handR": [700, 1640] }, "styleRef": "bruno_proud",
+      "notes": "Oversized shirt, no armband, hands at his sides (handL/handR = the hands on the left/right of the picture).",
+      "usedIn": ["ronaldo-last-light"]
+    },
+    "kid_siuu": {
+      "character": "Kid", "file": "Kid/kid_siuu.png", "size": [1024, 2448],
+      "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned left", "face": "joyful shout, mouth open",
+      "anchor": "feet", "points": { "feet": [555, 2080] }, "styleRef": "kid_standing",
+      "notes": "Wears the captain's armband. Head drawn smaller than kid_standing: scale ×1.2 to match.",
+      "usedIn": ["ronaldo-last-light"]
     }
   }
 }

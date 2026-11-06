@@ -11,7 +11,7 @@
  * Before generating a new picture in meta.ai, look here (or run `npm run characters`): flip,
  * swap a face, or reuse a pose with different motion first.
  */
-import { Actor, svg, type Timeline } from '@/engine';
+import { Actor, svg, uid, type Timeline } from '@/engine';
 import library from './library.json';
 
 export type PictureId = keyof typeof library.pictures;
@@ -48,6 +48,11 @@ export function pictureUrl(id: PictureId): string {
   return url;
 }
 
+/** Whether the picture's file is in the characters folder (it may not be generated yet). */
+export function hasPicture(id: PictureId): boolean {
+  return files.has(pictureInfo(id).file);
+}
+
 /** A named point of a picture, relative to its anchor (or to another point). */
 export function point(id: PictureId, name: string, from = pictureInfo(id).anchor): [number, number] {
   const { points } = pictureInfo(id);
@@ -63,6 +68,24 @@ export function picture(id: PictureId, at?: string): SVGGElement {
   const [ox, oy] = info.points[at ?? info.anchor];
   const g = svg('g', { transform: `translate(${-ox} ${-oy})` });
   g.appendChild(svg('image', { href: pictureUrl(id), width: info.size[0], height: info.size[1] }));
+  return g;
+}
+
+/**
+ * The whole picture with a rectangular hole cut out (picture pixels `[x0, y0, x1, y1]`), placed
+ * like picture(). Layer it over a similar picture to swap everything except that spot – e.g. a
+ * new face over a body whose arm differs.
+ */
+export function pictureWithout(id: PictureId, [x0, y0, x1, y1]: [number, number, number, number]): SVGGElement {
+  const info = pictureInfo(id);
+  const [w, h] = info.size;
+  const [ox, oy] = info.points[info.anchor];
+  const clip = uid('hole');
+  const g = svg('g', { transform: `translate(${-ox} ${-oy})` });
+  g.appendChild(svg('clipPath', { id: clip })).appendChild(svg('path', {
+    d: `M 0 0 H ${w} V ${h} H 0 Z M ${x0} ${y0} V ${y1} H ${x1} V ${y0} Z`, 'clip-rule': 'evenodd',
+  }));
+  g.appendChild(svg('image', { href: pictureUrl(id), width: w, height: h, 'clip-path': `url(#${clip})` }));
   return g;
 }
 

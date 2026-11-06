@@ -188,6 +188,55 @@
         120
       ],
       "pick": 529008
+    },
+    {
+      "name": "music/sad-piano",
+      "query": "sad piano",
+      "duration": [
+        25,
+        240
+      ],
+      "pick": 755823
+    },
+    {
+      "name": "sfx/rain",
+      "query": "light rain",
+      "duration": [
+        10,
+        120
+      ],
+      "max": 26,
+      "pick": 555321
+    },
+    {
+      "name": "sfx/heartbeat",
+      "query": "heartbeat",
+      "duration": [
+        0.5,
+        6
+      ],
+      "max": 2,
+      "pick": 493132
+    },
+    {
+      "name": "sfx/crowd-roar",
+      "query": "stadium crowd cheer",
+      "duration": [
+        3,
+        40
+      ],
+      "max": 8,
+      "pick": 397434
+    },
+    {
+      "name": "vocals/sigh",
+      "query": "man sigh",
+      "duration": [
+        0.4,
+        4
+      ],
+      "max": 2.5,
+      "pick": 318087
     }
   ]
 }

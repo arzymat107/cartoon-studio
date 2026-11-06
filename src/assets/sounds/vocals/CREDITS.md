@@ -11,3 +11,4 @@ attribution required; credited here anyway). Fetched by `npm run sounds`: trimme
 | `gulp.mp3` | [Cartoon - Gulp!](https://freesound.org/s/450624/) | Breviceps |
 | `sneaky-chuckle.mp3` | [deep laugh chuckle.mp3](https://freesound.org/s/458101/) | hsmith1986 |
 | `ahh.mp3` | [Relief - Ahhh](https://freesound.org/s/801137/) | Sadiquecat |
+| `sigh.mp3` | [Sigh_3_Male_Deep](https://freesound.org/s/318087/) | Drkvixn91 |

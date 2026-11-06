@@ -16,3 +16,6 @@ attribution required; credited here anyway). Fetched by `npm run sounds`: trimme
 | `launch.mp3` | [S18-15a Fireworks rocket launching.wav](https://freesound.org/s/675773/) | craigsmith |
 | `crash.mp3` | [S10-23 Wood and glass crash.wav](https://freesound.org/s/675851/) | craigsmith |
 | `chair-unfold.mp3` | [Unfolding metal chair.wav](https://freesound.org/s/188219/) | SpliceSound |
+| `rain.mp3` | [Rain.wav](https://freesound.org/s/555321/) | theStorm666 |
+| `heartbeat.mp3` | [Simple heartbeat](https://freesound.org/s/493132/) | Bpianoholic |
+| `crowd-roar.mp3` | [Crowd Cheer](https://freesound.org/s/397434/) | FoolBoyMedia |
