@@ -81,7 +81,7 @@ export class OleSeated extends PoseRig<'seated'> {
 
 /** The armband in each banded picture, as [x0, y0, x1, y1] picture pixels. */
 const ARMBAND = { ronaldo_sad: [688, 1018, 815, 1170], ronaldo_smile: [690, 1018, 817, 1170] } as const;
-/** ronaldo_siuu_bare draws him smaller than the standing pictures. */
+/** ronaldo_siuu draws him smaller than the standing pictures. */
 const RONALDO_SIUU_SCALE = 1.24;
 
 function scaled(parts: SVGGElement[], scale: number): SVGGElement[] {
@@ -109,7 +109,7 @@ export class RonaldoRig extends PoseRig<RonaldoPose> {
       bare,
       bareSad: [picture(bare), pictureWithout('ronaldo_sad', [...ARMBAND.ronaldo_sad])],
       bareSmile: [picture(bare), pictureWithout('ronaldo_smile', [...ARMBAND.ronaldo_smile])],
-      siuu: scaled([picture('ronaldo_siuu_bare')], RONALDO_SIUU_SCALE),
+      siuu: scaled([picture('ronaldo_siuu')], RONALDO_SIUU_SCALE),
     }, 'standing', options);
     this.number = new Actor({ name: 'number 7, unmirrored', opacity: 0 });
     this.number.el.appendChild(mirroredSpot('ronaldo_sad', NUMBER_7.ronaldo_sad));
