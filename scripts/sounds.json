@@ -237,16 +237,6 @@
       ],
       "max": 2.5,
       "pick": 318087
-    },
-    {
-      "name": "vocals/siuu",
-      "query": "crowd oooh",
-      "duration": [
-        0.5,
-        6
-      ],
-      "max": 3,
-      "pick": 613179
     }
   ]
 }
