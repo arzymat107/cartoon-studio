@@ -12,7 +12,7 @@
  *   15.3–16.4 The boy picks up the armband and lifts it – it catches the light.
  *   16.4–17.2 Ronaldo looks back, smiles, nods.
  *   17.4      The boy jumps – siuu! The floodlights blaze on, the crowd is real, the rain stops.
- *   18.6–20.6 Ronaldo jumps with him – lips out in a long "uuuu" tube; both hang in the air
+ *   18.6–20.6 Ronaldo jumps with him – lips pushed out, "uuuu"; both hang in the air
  *             (slow motion). Snapshot flash.
  *   21.6–23.4 Fade to black. Last piano notes, a distant whistle.
  */
@@ -224,9 +224,6 @@ class LastLightScene extends Scene {
     tl.to(ronaldo, { scaleY: SCALE * 0.9, duration: 0.2, ease: 'power2.in' }, 18.4)
       .set(ronaldo, { scaleY: SCALE }, 18.6);
     ronaldo.show(tl, 'siuu', 18.6);
-    // The "uuuu": his lips shoot out into a long tube and stay there.
-    tl.fromTo(ronaldo.tube, { scaleX: 0.15 }, { scaleX: 1, duration: 0.45, ease: 'back.out(2.5)', immediateRender: false }, 18.65)
-      .to(ronaldo.tube, { scaleX: 1.08, duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 3 }, 19.1);
     kid.show(tl, 'siuu', 18.6);
     for (const [actor, up] of [[ronaldo, 150], [kid, 170]] as const) {
       tl.to(actor, { y: GROUND_Y - up, duration: 0.4, ease: 'power2.out' }, 18.6)
