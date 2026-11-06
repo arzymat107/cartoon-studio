@@ -149,13 +149,6 @@
       "notes": "ronaldo_standing without the armband. RonaldoRig puts the sad and smile faces on it.",
       "usedIn": ["ronaldo-last-light"]
     },
-    "ronaldo_siuu": {
-      "character": "Ronaldo", "file": "Ronaldo/ronaldo_siuu.png", "size": [1024, 2448],
-      "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned right", "face": "fierce frown, lips pushed out in a fleshy pout",
-      "anchor": "feet", "points": { "feet": [450, 2165] }, "styleRef": "ronaldo_standing",
-      "notes": "Has the armband. The pout came out fleshy and girly – ronaldo_siuu_bare has the better siuu face.",
-      "usedIn": []
-    },
     "ronaldo_siuu_bare": {
       "character": "Ronaldo", "file": "Ronaldo/ronaldo_siuu_bare.png", "size": [1024, 2448],
       "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned right", "face": "siuu: lips pushed far out in a simple skin-coloured pout with a dark round hole",
