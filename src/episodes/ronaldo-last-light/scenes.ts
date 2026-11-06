@@ -9,7 +9,8 @@
  *   7.4–11    Close on the armband. It slides down his arm and drops onto the grass by the ball.
  *             A sigh.
  *   12.2–15.2 He turns and walks out of the light. A boy in an oversized number 7 shirt runs in.
- *   15.3–16.4 The boy picks up the armband and lifts it – it catches the light.
+ *   15.3–17 The boy picks up the armband, lifts it – it catches the light – and puts it on his
+ *             left arm.
  *   16.4–17.2 Ronaldo looks back, smiles, nods.
  *   17.4      The boy jumps – siuu! The floodlights blaze on, the crowd is real, the rain stops.
  *   18.6–20.6 Ronaldo jumps with him – lips pushed out, "uuuu"; both hang in the air
@@ -36,6 +37,8 @@ const BAND_REST = { x: 545, y: GROUND_Y + 45 };
 const [BAND_DX, BAND_DY] = point('ronaldo_standing', 'band').map((v) => v * SCALE);
 /** The boy's hand (the one nearer Ronaldo), relative to his feet. */
 const [HAND_DX, HAND_DY] = point('kid_standing', 'handL').map((v) => v * KID_SCALE);
+/** The boy's left upper arm (on the right of the picture), where he puts the armband on. */
+const [ARM_DX, ARM_DY] = point('kid_standing', 'armR').map((v) => v * KID_SCALE);
 /** When the lights come on and the rain stops. */
 const LIGHTS = 17.4;
 
@@ -198,7 +201,11 @@ class LastLightScene extends Scene {
       .to(this.glint, { x: KID_X + HAND_DX + 10, y: GROUND_Y + HAND_DY - 140, duration: 0 }, 16.1)
       .to(this.glint, { scale: 0.9, opacity: 1, rotation: 90, duration: 0.25, ease: 'back.out(3)' }, 16.1)
       .to(this.glint, { scale: 0, opacity: 0, rotation: 180, duration: 0.3 }, 16.45)
-      .add(sfx(() => { synth.note(1568, 0.6, 'sine', 0.1); synth.note(2349, 0.8, 'sine', 0.07); }), 16.1);
+      .add(sfx(() => { synth.note(1568, 0.6, 'sine', 0.1); synth.note(2349, 0.8, 'sine', 0.07); }), 16.1)
+      // …and puts it on his left arm, like a captain.
+      .to(band, { x: KID_X + ARM_DX, y: GROUND_Y + 10 + ARM_DY, rotation: -11, scale: 0.5, duration: 0.4, ease: 'power2.inOut' }, 16.55)
+      .add(sfx(synth.swish), 16.55)
+      .to(kid, { scaleY: KID_SCALE * 1.04, duration: 0.12, ease: 'power2.out', yoyo: true, repeat: 1 }, 16.95);
 
     // 6. Ronaldo looks back – a smile and a nod.
     ronaldo.face(tl, false, 16.4, SCALE);

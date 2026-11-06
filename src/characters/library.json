@@ -159,8 +159,8 @@
     "kid_standing": {
       "character": "Kid", "file": "Kid/kid_standing.png", "size": [1024, 2448],
       "body": "standing", "view": "3/4, facing left", "face": "looking up, hopeful shy smile",
-      "anchor": "feet", "points": { "feet": [475, 2320], "handL": [190, 1590], "handR": [700, 1640] }, "styleRef": "bruno_proud",
-      "notes": "Oversized shirt, no armband, hands at his sides (handL/handR = the hands on the left/right of the picture).",
+      "anchor": "feet", "points": { "feet": [475, 2320], "handL": [190, 1590], "handR": [700, 1640], "armR": [790, 1150] }, "styleRef": "bruno_proud",
+      "notes": "Oversized shirt, no armband, hands at his sides (handL/handR = the hands on the left/right of the picture; armR = his left upper arm, where a captain's armband goes).",
       "usedIn": ["ronaldo-last-light"]
     },
     "kid_siuu": {
