@@ -165,8 +165,8 @@
     },
     "kid_siuu": {
       "character": "Kid", "file": "Kid/kid_siuu.png", "size": [1024, 2448],
-      "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned left", "face": "joyful shout, mouth open",
-      "anchor": "feet", "points": { "feet": [555, 2080] }, "styleRef": "kid_standing",
+      "body": "mid-air jump, arms spread wide (siuu celebration)", "view": "front, half-turned left", "face": "siuu: lips pushed out in a small simple pout, eyes up",
+      "anchor": "feet", "points": { "feet": [530, 2190] }, "styleRef": "ronaldo_siuu",
       "notes": "Wears the captain's armband. Head drawn smaller than kid_standing: scale ×1.2 to match.",
       "usedIn": ["ronaldo-last-light"]
     }
