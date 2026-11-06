@@ -145,7 +145,7 @@
     "ronaldo_bare": {
       "character": "Ronaldo", "file": "Ronaldo/ronaldo_bare.png", "size": [1024, 2448],
       "body": "standing", "view": "3/4, facing right", "face": "calm, serious",
-      "anchor": "feet", "points": { "feet": [425, 2310] }, "styleRef": "ronaldo_standing",
+      "anchor": "feet", "points": { "feet": [417, 2306] }, "styleRef": "ronaldo_standing",
       "notes": "ronaldo_standing without the armband. RonaldoRig puts the sad and smile faces on it.",
       "usedIn": ["ronaldo-last-light"]
     },
