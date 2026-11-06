@@ -12,3 +12,4 @@ attribution required; credited here anyway). Fetched by `npm run sounds`: trimme
 | `sneaky-chuckle.mp3` | [deep laugh chuckle.mp3](https://freesound.org/s/458101/) | hsmith1986 |
 | `ahh.mp3` | [Relief - Ahhh](https://freesound.org/s/801137/) | Sadiquecat |
 | `sigh.mp3` | [Sigh_3_Male_Deep](https://freesound.org/s/318087/) | Drkvixn91 |
+| `siuu.mp3` | ["OOOH" group of males sound](https://freesound.org/s/613179/) | jbledger1984 |

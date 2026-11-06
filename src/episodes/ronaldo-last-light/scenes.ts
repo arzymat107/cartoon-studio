@@ -224,13 +224,20 @@ class LastLightScene extends Scene {
       .to(this.lights.glow, { opacity: 1, duration: 0.15 }, LIGHTS)
       .to(this.crowd, { opacity: 1, duration: 0.3 }, LIGHTS)
       .add(sfx(synth.clang), LIGHTS)
-      .add(clip('sfx/crowd-roar', { volume: 0.9, duration: 3.4 }), LIGHTS);
+      .add(clip('sfx/crowd-roar', { volume: 0.9, duration: 3.4 }), LIGHTS)
+      // The stadium answers the boy: "Si… uuuu!"
+      .add(sfx(synth.swish), LIGHTS)
+      .add(clip('vocals/siuu', { volume: 0.7 }), LIGHTS + 0.25);
     this.popFlashes(tl, LIGHTS + 0.1, 20.6, 0.05);
 
     // 8. Together (18.4–20.6): Ronaldo jumps too; they hang in the air.
     tl.to(ronaldo, { scaleY: SCALE * 0.9, duration: 0.2, ease: 'power2.in' }, 18.4)
       .set(ronaldo, { scaleY: SCALE }, 18.6);
     ronaldo.show(tl, 'siuu', 18.6);
+    // …and louder for Ronaldo: "Siiii… UUUU!"
+    tl.add(sfx(synth.swish), 18.5)
+      .add(sfx(synth.swish), 18.62)
+      .add(clip('vocals/siuu', { volume: 1 }), 18.8);
     kid.show(tl, 'siuu', 18.6);
     for (const [actor, up] of [[ronaldo, 150], [kid, 170]] as const) {
       tl.to(actor, { y: GROUND_Y - up, duration: 0.4, ease: 'power2.out' }, 18.6)
