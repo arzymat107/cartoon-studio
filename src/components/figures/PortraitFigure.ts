@@ -36,6 +36,8 @@ export interface FigureSpec {
   face: FaceSpec;
   /** 'traced' (default): soft-shaded body to match a traced portrait. 'toon': flat body with a thick outline. */
   style?: 'traced' | 'toon';
+  /** Size of the 680 × 880 portrait on the body (default 0.2); bigger = a caricature's oversized head. */
+  headScale?: number;
 }
 
 /**
@@ -138,7 +140,7 @@ export class PortraitFigure extends Actor {
     this.shortsStyle = shorts;
     const b = (this.build = typeof build === 'string' ? FIGURE_BUILDS[build] : build);
     this.hipY = -(b.thigh + b.shin + 12);
-    this.height = -this.hipY - WAIST - this.headY + 168 + (this.costume?.hatHeight ?? 0);
+    this.height = -this.hipY - WAIST - this.headY + 168 * ((spec.headScale ?? HEAD_SCALE) / HEAD_SCALE) + (this.costume?.hatHeight ?? 0);
     this.flat = spec.style === 'toon';
     this.softId = this.flat ? FLAT : uid('figure-soft');
     if (!this.flat) {
@@ -164,7 +166,7 @@ export class PortraitFigure extends Actor {
     }
 
     this.head = new Actor({ name: 'head', y: this.headY, rotation: FIGURE_REST.head });
-    this.head.add(createPortrait(spec, { y: -12, scale: HEAD_SCALE }));
+    this.head.add(createPortrait(spec, { y: -12, scale: spec.headScale ?? HEAD_SCALE }));
     // The figure draws its own neck and shirt.
     for (const part of this.head.el.querySelectorAll('[data-part="neck"], [data-part="shirt"]')) part.remove();
     [this.eyes, this.brows, this.leftLid, this.rightLid, this.mouth] = this.faceParts();

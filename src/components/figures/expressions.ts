@@ -67,6 +67,11 @@ export interface FaceSpec {
    * 'toon': flat cartoon eyes – a white shape outlined all round and a black dot pupil.
    */
   eyeStyle?: 'traced' | 'toon';
+  /** Toon eyes only: outline width (default 7) and pupil radius (default 11). */
+  eyeLine?: number;
+  pupil?: number;
+  /** Brow thickness as a fraction of the default (1); 0.5 = thin brows. */
+  browWeight?: number;
 }
 
 /** Default eye and brow shapes, tuned on the Mbappé M1 portrait. */
@@ -105,12 +110,12 @@ const lerp = (a: Point, b: Point, t: number): Point => [a[0] + (b[0] - a[0]) * t
 const pt = ([x, y]: Point, dx = 0, dy = 0) => `${f(x + dx)} ${f(y + dy)}`;
 
 /** A flat cartoon eye: white shape outlined all round, black dot pupil with one highlight. */
-function toonEye([outer, inner]: [Point, Point], e: EyeShape, c: FaceSpec['colors']): string {
+function toonEye([outer, inner]: [Point, Point], e: EyeShape, c: FaceSpec['colors'], face?: FaceSpec): string {
   const { up, low, innerDrop = 0, outerDrop = 0, iris = 1, look = [0, 0], closed = false } = e;
   const a = lerp(outer, inner, 0.15);
   const b = lerp(outer, inner, 0.85);
   if (closed) {
-    return `<path d="M ${pt(outer, 0, 6)} C ${pt(a, 0, -up)} ${pt(b, 0, -up)} ${pt(inner, 0, 6)}" stroke="${c.line}" stroke-width="9" fill="none" stroke-linecap="round"/>`;
+    return `<path d="M ${pt(outer, 0, 6)} C ${pt(a, 0, -up)} ${pt(b, 0, -up)} ${pt(inner, 0, 6)}" stroke="${c.line}" stroke-width="${f((face?.eyeLine ?? 7) * 1.3)}" fill="none" stroke-linecap="round"/>`;
   }
   const upper = `M ${pt(outer)} C ${pt(a, 0, -up + outerDrop)} ${pt(b, 0, -up + innerDrop)} ${pt(inner)}`;
   const shape = `${upper} C ${pt(b, 0, low)} ${pt(a, 0, low)} ${pt(outer)} Z`;
@@ -118,14 +123,15 @@ function toonEye([outer, inner]: [Point, Point], e: EyeShape, c: FaceSpec['color
   const top = Math.max(4, up * 0.75 - (innerDrop + outerDrop) * 0.35);
   const center: Point = [mid[0] + look[0], mid[1] - (top - low * 0.75) / 2 + look[1]];
   const id = uid('figure-eye');
-  const r = 11 * iris;
+  const r = (face?.pupil ?? 11) * iris;
+  const w = face?.eyeLine ?? 7;
   return `<clipPath id="${id}"><path d="${shape}"/></clipPath>
     <path d="${shape}" fill="${c.white}"/>
     <g clip-path="url(#${id})">
       <circle cx="${f(center[0])}" cy="${f(center[1])}" r="${f(r)}" fill="${c.line}"/>
       <circle cx="${f(center[0] + r * 0.35)}" cy="${f(center[1] - r * 0.4)}" r="${f(Math.max(2.5, r * 0.3))}" fill="#fff"/>
     </g>
-    <path d="${shape}" stroke="${c.line}" stroke-width="7" fill="none" stroke-linejoin="round"/>`;
+    <path d="${shape}" stroke="${c.line}" stroke-width="${f(w)}" fill="none" stroke-linejoin="round"/>`;
 }
 
 /** One eye between its outer and inner corner. */
@@ -161,20 +167,21 @@ function eye([outer, inner]: [Point, Point], e: EyeShape, c: FaceSpec['colors'])
 }
 
 /** A tapered brow from its outer to its inner end. `side` 1 = screen-left brow. */
-function brow([outer, inner]: [Point, Point], b: BrowShape, side: -1 | 1, color: string): string {
+function brow([outer, inner]: [Point, Point], b: BrowShape, side: -1 | 1, color: string, weight = 1): string {
   const o: Point = [outer[0], outer[1] + b.outer];
   const i: Point = [inner[0] + side * (b.pinch ?? 0), inner[1] + b.inner];
   const a = lerp(o, i, 0.3);
   const c = lerp(o, i, 0.72);
-  return `<path d="M ${pt(o)} C ${pt(a, 0, -b.arch)} ${pt(c, 0, -b.arch)} ${pt(i)} L ${pt(i, -side * 2, 22)} C ${pt(c, 0, -b.arch + 20)} ${pt(a, 0, -b.arch + 16)} ${pt(o, 0, 11)} Z" fill="${color}"/>`;
+  return `<path d="M ${pt(o)} C ${pt(a, 0, -b.arch)} ${pt(c, 0, -b.arch)} ${pt(i)} L ${pt(i, -side * 2, 22 * weight)} C ${pt(c, 0, -b.arch + 20 * weight)} ${pt(a, 0, -b.arch + 16 * weight)} ${pt(o, 0, 11 * weight)} Z" fill="${color}"/>`;
 }
 
 /** Markup for a pair of eyes and brows in the face's eye style – also used to draw a neutral face. */
 export function eyesAndBrowsMarkup(face: FaceSpec, { eyes, brows }: EyesAndBrows): { brows: string; eyes: string } {
   const draw = face.eyeStyle === 'toon' ? toonEye : eye;
+  const bw = face.browWeight ?? 1;
   return {
-    brows: brow(face.leftBrow, brows[0], 1, face.colors.brow) + brow(face.rightBrow, brows[1], -1, face.colors.brow),
-    eyes: draw(face.leftEye, eyes[0], face.colors) + draw(face.rightEye, eyes[1], face.colors),
+    brows: brow(face.leftBrow, brows[0], 1, face.colors.brow, bw) + brow(face.rightBrow, brows[1], -1, face.colors.brow, bw),
+    eyes: draw(face.leftEye, eyes[0], face.colors, face) + draw(face.rightEye, eyes[1], face.colors, face),
   };
 }
 
