@@ -1,7 +1,10 @@
 /**
  * Ronaldo R1 check: the portrait big, the full figure in a few expressions, then a motion test.
  *
- *   npm run frames -- --episode ronaldo-r1 0.5 4 8
+ *   npm run frames -- --episode ronaldo-r1 0.5 2.5 5 9
+ *
+ * The first second is the portrait at 1:1 in the top-left corner (its 680 × 880 frame = stage pixels
+ * 0..680 × 0..880), for laying a reference photo over it.
  */
 import { TextLabel, type FigureExpression } from '@/components';
 import { Actor, Scene, type SceneClass, type Timeline } from '@/engine';
@@ -62,4 +65,19 @@ class MotionScene extends Scene {
   }
 }
 
-export const RONALDO_R1_SCENES: SceneClass[] = [PortraitScene, MotionScene];
+class TraceScene extends Scene {
+  readonly title = 'Ronaldo R1 – 1:1 for tracing';
+
+  build(): void {
+    const { width, height } = this.stage;
+    const bg = new Actor({ name: 'bg' });
+    bg.draw('rect', { x: 0, y: 0, width, height, fill: '#ffffff' });
+    this.add(bg, createRonaldoPortrait({ x: 340, y: 850, scale: 1 }));
+  }
+
+  animate(tl: Timeline): void {
+    tl.set({}, {}, 1);
+  }
+}
+
+export const RONALDO_R1_SCENES: SceneClass[] = [TraceScene, PortraitScene, MotionScene];
