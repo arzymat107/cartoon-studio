@@ -15,6 +15,11 @@
  *   A "Block"   – thick black outline, chunky shapes, big eye whites under heavy lids
  *   B "Paper"   – no outlines: flat colour blocks with one hard-edged shadow side, dot eyes
  *   C "Riso"    – wobbly ink line, colour fill printed slightly off the line, halftone shadow
+ *   D "Cutout"  – paper collage: flat tilted pieces with small drop shadows, no lines
+ *   E "Vinyl"   – toy figure: outlines in a darker shade of each colour, gloss, shiny eyes, blush
+ *   F "Pop"     – comic print in four inks (black, red, yellow, paper) with halftone shadows
+ *
+ *   npm run frames -- --episode style-lab 0.5 2
  */
 import { SvgArt, TextLabel } from '@/components';
 import { Actor, Scene, type SceneClass, type Timeline } from '@/engine';
@@ -151,6 +156,110 @@ ${shift(`
 <path d="${MOUTH}" ${cLine(6)}/>
 </svg>`;
 
+// ── D · Cutout ───────────────────────────────────────────────────────────────
+// Paper collage: every piece a flat, slightly tilted cut-out casting a small shadow; no lines.
+
+const D_SKIN = '#f0b896';
+const tilt = (deg: number, markup: string) => `<g transform="rotate(${deg} 300 400)">${markup}</g>`;
+const CUTOUT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700">
+<defs>
+  <filter id="d-drop" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="5" dy="7" stdDeviation="2" flood-color="#3b2a1e" flood-opacity=".35"/></filter>
+  <clipPath id="d-face"><path d="${FACE}"/></clipPath>
+</defs>
+<g filter="url(#d-drop)">
+  <path d="${SHIRT}" fill="#fbfaf5"/>
+  <path d="${COLLAR}" fill="#25366e"/>
+  <path d="${NECK}" fill="#dc9d78"/>
+  ${tilt(-3, `<path d="${EAR}" fill="${D_SKIN}"/>`)}${tilt(3, `<path d="${mirror(EAR)}" fill="${D_SKIN}"/>`)}
+  <path d="${FACE}" fill="${D_SKIN}"/>
+</g>
+<g filter="url(#d-drop)">${tilt(1.5, `<g clip-path="url(#d-face)"><path d="${BEARD}" fill="#a9774c"/></g>`)}</g>
+<path d="${LIPS}" fill="#e09a80" filter="url(#d-drop)"/>
+<g filter="url(#d-drop)">${tilt(-2, `<path d="${HAIR}" fill="#c8985a"/><path d="${HAIR_LIGHT}" fill="#e0b97c"/>`)}</g>
+<g filter="url(#d-drop)">
+  <path d="${BROW_L}" fill="#6e4a2c"/><path d="${mirror(BROW_L)}" fill="#6e4a2c"/>
+  <path d="${EYE_WHITE_L}" fill="#fffdf6"/><path d="${mirror(EYE_WHITE_L)}" fill="#fffdf6"/>
+</g>
+<circle cx="252" cy="366" r="8" fill="#22170f"/><circle cx="348" cy="366" r="8" fill="#22170f"/>
+<g filter="url(#d-drop)"><path d="${LID_L}" fill="#e3a481"/><path d="${mirror(LID_L)}" fill="#e3a481"/></g>
+<path d="M 288 350 C 288 400 282 440 276 466 C 270 490 288 500 302 496 C 318 500 332 488 322 466 C 314 440 310 400 312 350 Z" fill="#e8a986" filter="url(#d-drop)"/>
+<path d="M 270 564 Q 300 574 330 564 L 328 570 Q 300 582 272 570 Z" fill="#4a2617"/>
+</svg>`;
+
+// ── E · Vinyl ────────────────────────────────────────────────────────────────
+// Toy-figure look: every shape outlined in a darker shade of its own colour, glossy highlights,
+// shiny dot eyes, a touch of blush.
+
+const vLine = (c: string, w = 9) => `stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
+const E_SKIN = '#f6bf9c', E_SKIN_LINE = '#c47a58';
+const VINYL = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700">
+<defs><clipPath id="e-face"><path d="${FACE}"/></clipPath></defs>
+<path d="${NECK}" fill="#eaa883" ${vLine(E_SKIN_LINE)}/>
+<path d="${SHIRT}" fill="#ffffff" ${vLine('#9aa3b8')}/>
+<path d="${COLLAR}" fill="#2a3d7c" ${vLine('#1a2650', 5)}/>
+<path d="${EAR}" fill="${E_SKIN}" ${vLine(E_SKIN_LINE)}/><path d="${mirror(EAR)}" fill="${E_SKIN}" ${vLine(E_SKIN_LINE)}/>
+<path d="${FACE}" fill="${E_SKIN}"/>
+<g clip-path="url(#e-face)">
+  <path d="${BEARD}" fill="#c08a58"/>
+  <path d="${BEARD_EDGE}" fill="none" ${vLine('#94643a', 6)}/>
+  <ellipse cx="214" cy="440" rx="26" ry="14" fill="#f39a8a" opacity=".55"/>
+  <ellipse cx="386" cy="440" rx="26" ry="14" fill="#f39a8a" opacity=".55"/>
+</g>
+<path d="${LIPS}" fill="${E_SKIN}"/>
+<path d="${FACE}" fill="none" ${vLine(E_SKIN_LINE)}/>
+<path d="${HAIR}" fill="#d6a564" ${vLine('#94683a')}/>
+<path d="${HAIR_LIGHT}" fill="#f1cf94"/>
+<path d="M 400 140 C 412 160 418 186 418 210" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+<path d="${CREASES}" fill="none" ${vLine(E_SKIN_LINE, 4)}/>
+<path d="${BROW_L}" fill="#8a5e36"/><path d="${mirror(BROW_L)}" fill="#8a5e36"/>
+<ellipse cx="252" cy="370" rx="11" ry="13" fill="#2a1a12"/><ellipse cx="348" cy="370" rx="11" ry="13" fill="#2a1a12"/>
+<circle cx="256" cy="365" r="4" fill="#fff"/><circle cx="352" cy="365" r="4" fill="#fff"/>
+<path d="${LID_L}" fill="${E_SKIN}"/><path d="${mirror(LID_L)}" fill="${E_SKIN}"/>
+<path d="${LID_LINE_L}" fill="none" ${vLine(E_SKIN_LINE, 7)}/><path d="${mirror(LID_LINE_L)}" fill="none" ${vLine(E_SKIN_LINE, 7)}/>
+<path d="${NOSE_SIDE}" fill="none" ${vLine(E_SKIN_LINE, 8)}/>
+<circle cx="296" cy="486" r="5" fill="#fff" opacity=".7"/>
+<path d="${MOUTH}" fill="none" ${vLine('#7a3a28', 7)}/>
+</svg>`;
+
+// ── F · Pop ──────────────────────────────────────────────────────────────────
+// Comic-print look with only four inks: black, red, yellow and the paper. Shadows are red halftone
+// dots, the beard a black halftone, the outline thick black ink.
+
+const P_INK = '#111111', P_RED = '#e62631', P_YELLOW = '#ffd21f', P_PAPER = '#fff6e6';
+const pLine = (w = 10) => `stroke="${P_INK}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
+const POP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700">
+<defs>
+  <pattern id="f-red" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="6" cy="6" r="3.4" fill="${P_RED}"/></pattern>
+  <pattern id="f-blush" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="4.5" cy="4.5" r="1.8" fill="${P_RED}"/></pattern>
+  <pattern id="f-black" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><circle cx="4.5" cy="4.5" r="3" fill="${P_INK}"/></pattern>
+  <clipPath id="f-face"><path d="${FACE}"/></clipPath>
+</defs>
+<path d="${NECK}" fill="${P_PAPER}" ${pLine()}/>
+<path d="M 236 600 L 364 600 L 364 640 L 236 640 Z" fill="url(#f-red)"/>
+<path d="${SHIRT}" fill="${P_PAPER}" ${pLine()}/>
+<path d="${COLLAR}" fill="${P_RED}" ${pLine(5)}/>
+<path d="${EAR}" fill="${P_PAPER}" ${pLine()}/><path d="${mirror(EAR)}" fill="url(#f-red)" ${pLine()}/>
+<path d="${FACE}" fill="${P_PAPER}"/>
+<g clip-path="url(#f-face)">
+  <path d="${FACE}" fill="url(#f-blush)" opacity=".35"/>
+  <path d="${SHADOW_SIDE}" fill="url(#f-red)"/>
+  <path d="${BEARD}" fill="${P_YELLOW}"/>
+  <path d="${BEARD}" fill="url(#f-black)" opacity=".75"/>
+  <path d="${LIPS}" fill="${P_PAPER}"/>
+</g>
+<path d="${FACE}" fill="none" ${pLine()}/>
+<path d="${HAIR}" fill="${P_YELLOW}" ${pLine()}/>
+<path d="${HAIR_STRANDS}" fill="none" ${pLine(7)}/>
+<path d="${CREASES}" fill="none" ${pLine(4)}/>
+<path d="${BROW_L}" fill="${P_INK}"/><path d="${mirror(BROW_L)}" fill="${P_INK}"/>
+<path d="${EYE_WHITE_L}" fill="#fff" ${pLine(6)}/><path d="${mirror(EYE_WHITE_L)}" fill="#fff" ${pLine(6)}/>
+<circle cx="252" cy="366" r="9" fill="${P_INK}"/><circle cx="348" cy="366" r="9" fill="${P_INK}"/>
+<path d="${LID_L}" fill="${P_PAPER}"/><path d="${mirror(LID_L)}" fill="${P_PAPER}"/>
+<path d="${LID_LINE_L}" fill="none" ${pLine(8)}/><path d="${mirror(LID_LINE_L)}" fill="none" ${pLine(8)}/>
+<path d="${NOSE_SIDE}" fill="none" ${pLine(8)}/>
+<path d="${MOUTH}" fill="none" ${pLine(7)}/>
+</svg>`;
+
 // ── the scene ────────────────────────────────────────────────────────────────
 
 const head = (markup: string, x: number, y: number, scale: number) => new SvgArt({ markup, x, y, scale, originX: 300, originY: 652 });
@@ -173,4 +282,22 @@ class LabScene extends Scene {
   }
 }
 
-export const STYLE_LAB_SCENES: SceneClass[] = [LabScene];
+class MoreScene extends Scene {
+  readonly title = 'Style lab – three more styles';
+
+  build(): void {
+    const { width, height } = this.stage;
+    const bg = new Actor({ name: 'bg' });
+    bg.draw('rect', { x: 0, y: 0, width, height, fill: '#f3ede2' });
+    this.add(bg, label('KANE · THREE MORE STYLES', width / 2, 300, 60));
+    this.add(head(CUTOUT, 280, 940, 0.78), label('D · CUTOUT', 280, 1060));
+    this.add(head(VINYL, 800, 940, 0.78), label('E · VINYL', 800, 1060));
+    this.add(head(POP, 540, 1580, 0.78), label('F · POP', 540, 1700));
+  }
+
+  animate(tl: Timeline): void {
+    tl.set({}, {}, 1);
+  }
+}
+
+export const STYLE_LAB_SCENES: SceneClass[] = [LabScene, MoreScene];
