@@ -6,6 +6,10 @@ export type Point = [number, number];
 /** Outline color and width of the body shapes. */
 export const LINE = '#2b1a12';
 export const STROKE = 1.3;
+/** Outline width in the flat Toon style: thicker, one weight for every shape. */
+export const TOON_STROKE = 2.2;
+/** Pass as `softId` to draw flat Toon shapes: one fill, a thick outline, no soft shadow. */
+export const FLAT = '';
 
 export interface SkinPalette {
   base: string;
@@ -15,11 +19,22 @@ export interface SkinPalette {
   deep: string;
 }
 
-/** A filled shape shaded like the portraits (soft shadow on the right edge), redrawable with `set()`. */
+/**
+ * A filled shape shaded like the portraits (soft shadow on the right edge), redrawable with `set()`.
+ * With `softId` = FLAT it is drawn in the Toon style instead: flat fill and a thick outline.
+ */
 export class Shape {
   private readonly paths: SVGPathElement[];
 
   constructor(parent: Element, color: string, shadow: string, depth: number, softId: string) {
+    if (softId === FLAT) {
+      const fill = parent.appendChild(svg('path', { fill: color }));
+      const line = parent.appendChild(svg('path', {
+        fill: 'none', stroke: LINE, 'stroke-width': TOON_STROKE, 'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+      }));
+      this.paths = [fill, line];
+      return;
+    }
     const clipId = uid('figure-form');
     const clip = parent.appendChild(svg('clipPath', { id: clipId })).appendChild(svg('path'));
     const base = parent.appendChild(svg('path', { fill: shadow }));

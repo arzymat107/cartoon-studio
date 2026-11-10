@@ -6,7 +6,7 @@ import { FIGURE_BUILDS, FIGURE_REST, type FigureBuild, type FigureBuildName } fr
 import { COSTUMES, type Costume, type CostumeName } from './costumes';
 import { FIGURE_EXPRESSIONS, expressionMarkup, type FigureExpression, type FaceSpec } from './expressions';
 import { boot, Curve, hand, Joint, Limb } from './limbs';
-import { f, fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
+import { f, FLAT, fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
 
 /**
  * Everything that makes a player: a portrait traced from a photo plus the data to animate it.
@@ -34,6 +34,8 @@ export interface FigureSpec {
   costume?: CostumeName;
   shorts?: ShortsStyle;
   face: FaceSpec;
+  /** 'traced' (default): soft-shaded body to match a traced portrait. 'toon': flat body with a thick outline. */
+  style?: 'traced' | 'toon';
 }
 
 /**
@@ -124,7 +126,9 @@ export class PortraitFigure extends Actor {
 
   /** Shirt number; un-mirrored when the figure is flipped so it stays readable. */
   private numberGroup?: SVGGElement;
-  private readonly softId = uid('figure-soft');
+  private readonly flat: boolean;
+  /** Id of the soft-shadow filter, or FLAT for a Toon figure. */
+  private readonly softId: string;
 
   constructor(spec: FigureSpec, { kit = spec.kit, build = spec.build ?? 'athletic', expression = 'neutral', costume = spec.costume, shorts = spec.shorts ?? 'normal', ...options }: PortraitFigureOptions = {}) {
     super({ name: spec.name, ...options });
@@ -135,8 +139,12 @@ export class PortraitFigure extends Actor {
     const b = (this.build = typeof build === 'string' ? FIGURE_BUILDS[build] : build);
     this.hipY = -(b.thigh + b.shin + 12);
     this.height = -this.hipY - WAIST - this.headY + 168 + (this.costume?.hatHeight ?? 0);
-    const filter = this.draw('filter', { id: this.softId, x: '-50%', y: '-50%', width: '200%', height: '200%' });
-    filter.appendChild(svg('feGaussianBlur', { stdDeviation: 2.5 }));
+    this.flat = spec.style === 'toon';
+    this.softId = this.flat ? FLAT : uid('figure-soft');
+    if (!this.flat) {
+      const filter = this.draw('filter', { id: this.softId, x: '-50%', y: '-50%', width: '200%', height: '200%' });
+      filter.appendChild(svg('feGaussianBlur', { stdDeviation: 2.5 }));
+    }
 
     const legs = new Actor({ name: 'legs' });
     [this.leftLeg, this.leftShin] = this.leg(legs, -1);
@@ -339,7 +347,7 @@ export class PortraitFigure extends Actor {
     const { skin } = this.spec;
     const neck = this.chest.draw('g', { transform: `translate(0 ${-WAIST})` });
     new Shape(neck, skin.base, skin.shade, 5, this.softId).set('M -14 -172 L 14 -172 Q 16 -150 20 -132 L -20 -132 Q -16 -150 -14 -172 Z');
-    neck.appendChild(svg('path', { d: 'M -14 -156 Q 0 -146 14 -158', stroke: skin.deep, 'stroke-width': 4, fill: 'none', opacity: 0.45, 'stroke-linecap': 'round' }));
+    if (!this.flat) neck.appendChild(svg('path', { d: 'M -14 -156 Q 0 -146 14 -158', stroke: skin.deep, 'stroke-width': 4, fill: 'none', opacity: 0.45, 'stroke-linecap': 'round' }));
   }
 
   /** Kit shirt and number, in chest space but drawn in torso coordinates (shifted by the waist). */
@@ -351,7 +359,7 @@ export class PortraitFigure extends Actor {
       [24, -18], [49, -28], [48, -62], [53, -96], [57, -124], [46, -138], [17, -142], [0, -128],
     ]);
     new Shape(g, kit.shirt, shade(kit.shirt, 0.17), 12, this.softId).set(shirt);
-    for (const d of ['M -36 -112 Q -30 -86 -36 -60', 'M 34 -104 Q 26 -80 30 -52', 'M -24 -30 Q -6 -38 12 -28']) {
+    for (const d of this.flat ? [] : ['M -36 -112 Q -30 -86 -36 -60', 'M 34 -104 Q 26 -80 30 -52', 'M -24 -30 Q -6 -38 12 -28']) {
       g.appendChild(svg('path', { d, stroke: shade(kit.shirt, 0.12), 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round' }));
     }
     if (kit.stripes) {

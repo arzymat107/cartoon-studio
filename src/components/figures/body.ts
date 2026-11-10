@@ -21,6 +21,8 @@ export const FIGURE_BUILDS = {
   lanky: { upperArm: 74, forearm: 68, thigh: 128, shin: 112, armWidth: 0.78, legWidth: 0.74, torsoWidth: 0.86, hand: 1.2, foot: 1.2 },
   /** Short and powerful: huge thighs, chunky arms, big boots. */
   stocky: { upperArm: 50, forearm: 46, thigh: 82, shin: 66, armWidth: 1.3, legWidth: 1.35, torsoWidth: 1.14, hand: 1.3, foot: 1.35 },
+  /** For the flat Toon heads: a bit longer and slimmer than athletic, so bends read clearly in motion. */
+  toon: { upperArm: 66, forearm: 62, thigh: 114, shin: 98, armWidth: 0.86, legWidth: 0.82, torsoWidth: 0.94, hand: 1.15, foot: 1.15 },
 } satisfies Record<string, FigureBuild>;
 
 export type FigureBuildName = keyof typeof FIGURE_BUILDS;
