@@ -1,4 +1,5 @@
 import type { Episode } from '@/engine';
+import { KANE_SCENES } from './kane/scenes';
 import { HOT_SEAT_SCENES } from './hot-seat/scenes';
 import { LAUGH_SCENES } from './klopp-laughs/scenes';
 import { LAST_LIGHT_SCENES } from './ronaldo-last-light/scenes';
@@ -8,6 +9,7 @@ export const episodes: Record<string, Episode> = {
   'hot-seat': { title: 'Carrick – The Hot Seat (Short)', width: 1080, height: 1920, scenes: HOT_SEAT_SCENES },
   'klopp-laughs': { title: "Klopp – Can't Stop Laughing (Short)", width: 1080, height: 1920, scenes: LAUGH_SCENES },
   'ronaldo-last-light': { title: 'Ronaldo – The Last Light (Short)', width: 1080, height: 1920, scenes: LAST_LIGHT_SCENES },
+  kane: { title: 'Kane · flat cartoon (check)', width: 1080, height: 1920, scenes: KANE_SCENES },
 };
 
 export const defaultEpisode = 'hot-seat';
