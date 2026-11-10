@@ -1,18 +1,13 @@
-﻿/**
- * Football acting. Like every animation helper, each returns a timeline to place on a scene timeline.
+/**
+ * Football props in motion: the ball, the net, the crowd. Like every animation helper, each returns a timeline to place on a scene timeline.
  *
- *   tl.add(walk(player, { to: ball.x - 70, duration: 0.6 }))
- *     .add(shoot(player, ball, { toX: 900, peak: 500, land: 150, duration: 1.2 }))
+ *   tl.add(flight(ball, { toX: 900, peak: 500, land: 150, duration: 1.2 }))
  */
 import { gsap } from 'gsap';
 import { synth } from '@/audio';
-import { Character, type Ball, type Goal, type Referee, type Stands } from '@/components';
+import type { Ball, Goal, Stands } from '@/components';
 import type { Timeline } from '@/engine';
-import { cheer } from './character';
-import { jump } from './motion';
 import { sfx } from './sound';
-
-const { ARM_REST, TORSO_Y } = Character;
 
 export interface FlightOptions {
   /** Where the ball comes down: absolute xвЂ¦ */
@@ -83,30 +78,7 @@ export function roll(ball: Ball, { dx = 200, duration = 1 } = {}): Timeline {
 }
 
 /** When the foot meets the ball, counted from the start of `shoot()`. */
-export const SHOT_CONTACT = 0.4;
-
-export interface ShootOptions extends FlightOptions {
-  /** 0.5 = soft, 1 = normal, 1.5 = rocket. Affects the sound. */
-  power?: number;
-}
-
 /** Wind up, kick, and send the ball on its flight (starts at `SHOT_CONTACT`). */
-export function shoot(player: Character, ball: Ball, { power = 1, ...path }: ShootOptions): Timeline {
-  const leg = player.rightLeg;
-  return gsap.timeline()
-    .to(leg, { rotation: 55, duration: 0.28, ease: 'power2.out' }, 0)
-    .to(player.torso, { rotation: -7, duration: 0.28 }, 0)
-    .to(player.leftArm, { rotation: 70, duration: 0.25 }, 0)
-    .to(player.rightArm, { rotation: -55, duration: 0.25 }, 0)
-    .to(leg, { rotation: -80, duration: 0.12, ease: 'power3.in' }, SHOT_CONTACT - 0.1)
-    .add(sfx(() => synth.kick(power)), SHOT_CONTACT)
-    .add(flight(ball, path), SHOT_CONTACT)
-    .to(leg, { rotation: 0, duration: 0.35, ease: 'power2.inOut' }, SHOT_CONTACT + 0.2)
-    .to(player.torso, { rotation: 0, duration: 0.35 }, SHOT_CONTACT + 0.2)
-    .to(player.leftArm, { rotation: ARM_REST, duration: 0.35 }, SHOT_CONTACT + 0.2)
-    .to(player.rightArm, { rotation: -ARM_REST, duration: 0.35 }, SHOT_CONTACT + 0.2);
-}
-
 /** Net bulges back and wobbles. */
 export function shakeNet(goal: Goal): Timeline {
   return gsap.timeline()
@@ -119,76 +91,14 @@ export function shakeNet(goal: Goal): Timeline {
  * Keepy-uppies: each touch flicks the ball up off the right foot (ball in front of the player).
  * With `drop: true` the last touch lets the ball fall to the ground.
  */
-export function juggle(player: Character, ball: Ball, { touches = 4, step = 0.55, height = 230, drop = true } = {}): Timeline {
-  const tl = gsap.timeline();
-  for (let i = 0; i < touches; i++) {
-    const t = i * step;
-    const last = i === touches - 1;
-    tl.to(player.rightLeg, { rotation: -40, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.out' }, t)
-      .add(sfx(() => synth.kick(0.3)), t + 0.1)
-      .add(flight(ball, { dx: 0, from: i === 0 ? 0 : 30, peak: height, land: last && drop ? 0 : 30, duration: step - 0.05, spin: 0.6 }), t + 0.1);
-  }
-  return tl;
-}
-
 /** Arms up and jumping вЂ“ goal celebration. */
-export function celebrate(char: Character, { jumps = 2, height = 110 } = {}): Timeline {
-  return gsap.timeline()
-    .add(cheer(char, { duration: jumps * 0.6 + 0.3 }), 0)
-    .add(jump(char, { times: jumps, height, duration: 0.55 }), 0.05);
-}
-
 /** Both hands on the head вЂ“ "I can't believe it!" */
-export function handsOnHead(char: Character, { duration = 1.4 } = {}): Timeline {
-  return gsap.timeline()
-    .to(char.leftArm, { rotation: 165, duration: 0.25, ease: 'back.out(2)' }, 0)
-    .to(char.rightArm, { rotation: -165, duration: 0.25, ease: 'back.out(2)' }, 0)
-    .to(char.mouth, { scaleY: () => char.mouthOpen, duration: 0.2 }, 0)
-    .to(char.leftArm, { rotation: ARM_REST, duration: 0.35 }, duration)
-    .to(char.rightArm, { rotation: -ARM_REST, duration: 0.35 }, duration)
-    .to(char.mouth, { scaleY: () => char.mouthRest, duration: 0.2 }, duration);
-}
-
 /**
  * Over-the-top fall: flails, crashes onto the ground and kicks the legs.
  * `direction` 1 = falls to the right (head ends up right of the feet), в€’1 = to the left.
  */
-export function flop(char: Character, { direction = 1 as 1 | -1, kicks = 3 } = {}): Timeline {
-  const lift = 30 * Math.abs(char.scaleY);
-  return gsap.timeline()
-    .to(char.leftArm, { rotation: 150, duration: 0.15 }, 0)
-    .to(char.rightArm, { rotation: -150, duration: 0.15 }, 0)
-    .to(char.mouth, { scaleY: () => char.mouthOpen, duration: 0.15 }, 0)
-    .to(char, { rotation: direction * 90, y: `-=${lift}`, duration: 0.45, ease: 'power2.in' }, 0.1)
-    .add(sfx(() => synth.kick(0.7)), 0.55)
-    .to(char, { rotation: direction * 82, duration: 0.1, repeat: 1, yoyo: true }, 0.55)
-    .to(char.leftLeg, { rotation: -35, duration: 0.11, repeat: kicks * 2 - 1, yoyo: true }, 0.8)
-    .to(char.rightLeg, { rotation: 35, duration: 0.11, repeat: kicks * 2 - 1, yoyo: true }, 0.86);
-}
-
 /** Back on the feet after `flop()`. */
-export function getUp(char: Character, { duration = 0.5 } = {}): Timeline {
-  const lift = 30 * Math.abs(char.scaleY);
-  return gsap.timeline()
-    .to(char, { rotation: 0, y: `+=${lift}`, duration, ease: 'back.out(1.5)' }, 0)
-    .to([char.leftLeg, char.rightLeg], { rotation: 0, duration: 0.2 }, 0)
-    .to(char.leftArm, { rotation: ARM_REST, duration }, 0)
-    .to(char.rightArm, { rotation: -ARM_REST, duration }, 0)
-    .to(char.torso, { y: TORSO_Y, duration }, 0)
-    .to(char.mouth, { scaleY: () => char.mouthRest, duration: 0.2 }, 0);
-}
-
 /** Whistle and show a card high in the air. */
-export function showCard(referee: Referee, color: 'yellow' | 'red' = 'yellow', { duration = 1.8 } = {}): Timeline {
-  const card = color === 'yellow' ? referee.yellowCard : referee.redCard;
-  return gsap.timeline()
-    .add(sfx(() => synth.whistle(1, 0.45)), 0)
-    .to(referee.rightArm, { rotation: -175, duration: 0.25, ease: 'back.out(2)' }, 0.1)
-    .to(card, { opacity: 1, duration: 0.05 }, 0.2)
-    .to(referee.rightArm, { rotation: -ARM_REST, duration: 0.35 }, duration)
-    .to(card, { opacity: 0, duration: 0.1 }, duration + 0.15);
-}
-
 /** Fans jump in a wave, with a roar. */
 export function crowdCheer(stands: Stands, { duration = 2.5, height = 16 } = {}): Timeline {
   const hops = Math.max(1, Math.round(duration / 0.36));
