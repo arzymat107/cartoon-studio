@@ -44,20 +44,20 @@ const soft = `filter="url(#${ID}-soft)"`;
 
 // ── shapes (traced, see the mapping above) ──────────────────────────────────
 
-const FACE = spline(symmetric([
+export const FACE = spline(symmetric([
   [340, 852], [395, 844], [440, 830], [490, 808], [526, 774], [544, 730], [556, 642], [566, 540], [580, 440], [584, 360], [574, 290], [548, 226], [496, 184], [420, 162], [340, 156],
 ], W));
 
-const EAR = 'M 114 488 C 84 460 50 466 44 506 C 38 552 50 606 72 636 C 86 656 106 658 118 640 Z';
-const EAR_FOLD = 'M 80 506 C 64 516 60 552 68 584 C 74 604 84 618 94 622';
+export const EAR = 'M 114 488 C 84 460 50 466 44 506 C 38 552 50 606 72 636 C 86 656 106 658 118 640 Z';
+export const EAR_FOLD = 'M 80 506 C 64 516 60 552 68 584 C 74 604 84 618 94 622';
 
 /** Dark hair: the head's silhouette on top, then the hairline back across the forehead. */
-const HAIR_SHAPE = spline([
+export const HAIR_SHAPE = spline([
   [104, 330], [99, 267], [133, 212], [188, 176], [265, 146], [353, 124], [441, 135], [507, 168], [548, 222], [578, 290], [582, 346],
   [548, 326], [518, 308], [485, 290], [400, 284], [309, 286], [230, 294], [177, 302], [140, 316],
 ]);
 /** Skin-faded side under the dark hair (left; mirrored). */
-const FADE = spline([[92, 262], [88, 360], [98, 470], [146, 478], [160, 380], [150, 300], [120, 264]]);
+export const FADE = spline([[92, 262], [88, 360], [98, 470], [146, 478], [160, 380], [150, 300], [120, 264]]);
 
 const hairline = (x: number) => 286 + ((x - 330) / 230) ** 2 * 30;
 const crown = (x: number) => 124 + ((x - 350) / 215) ** 2 * 95;

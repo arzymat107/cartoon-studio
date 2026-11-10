@@ -10,6 +10,11 @@ export const STROKE = 1.3;
 export const TOON_STROKE = 2.2;
 /** Pass as `softId` to draw flat Toon shapes: one fill, a thick outline, no soft shadow. */
 export const FLAT = '';
+/** Pass as `softId` to draw Cel shapes: flat fill, one hard-edged shadow tone on the right, a bold near-black outline. */
+export const CEL = 'cel';
+/** Outline color and width in the Cel style. */
+export const CEL_LINE = '#151011';
+export const CEL_STROKE = 2.8;
 
 export interface SkinPalette {
   base: string;
@@ -21,7 +26,8 @@ export interface SkinPalette {
 
 /**
  * A filled shape shaded like the portraits (soft shadow on the right edge), redrawable with `set()`.
- * With `softId` = FLAT it is drawn in the Toon style instead: flat fill and a thick outline.
+ * With `softId` = FLAT it is drawn in the Toon style instead: flat fill and a thick outline;
+ * with CEL, flat fill plus a hard shadow tone and a bold near-black outline.
  */
 export class Shape {
   private readonly paths: SVGPathElement[];
@@ -33,6 +39,20 @@ export class Shape {
         fill: 'none', stroke: LINE, 'stroke-width': TOON_STROKE, 'stroke-linejoin': 'round', 'stroke-linecap': 'round',
       }));
       this.paths = [fill, line];
+      return;
+    }
+    if (softId === CEL) {
+      // The same light-shape-over-shadow trick as the traced style, but unblurred: a hard shadow edge.
+      const clipId = uid('figure-form');
+      const clip = parent.appendChild(svg('clipPath', { id: clipId })).appendChild(svg('path'));
+      const base = parent.appendChild(svg('path', { fill: shadow }));
+      const light = parent.appendChild(svg('g', { 'clip-path': `url(#${clipId})` })).appendChild(svg('path', {
+        fill: color, transform: `translate(${-depth * 0.8} ${-depth * 0.25})`,
+      }));
+      const line = parent.appendChild(svg('path', {
+        fill: 'none', stroke: CEL_LINE, 'stroke-width': CEL_STROKE, 'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+      }));
+      this.paths = [clip, base, light, line];
       return;
     }
     const clipId = uid('figure-form');

@@ -6,7 +6,7 @@ import { FIGURE_BUILDS, FIGURE_REST, type FigureBuild, type FigureBuildName } fr
 import { COSTUMES, type Costume, type CostumeName } from './costumes';
 import { FIGURE_EXPRESSIONS, expressionMarkup, type FigureExpression, type FaceSpec } from './expressions';
 import { boot, Curve, hand, Joint, Limb } from './limbs';
-import { f, FLAT, fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
+import { CEL, CEL_LINE, f, FLAT, fragment, LINE, Shape, shade, type Painter, type Point, type SkinPalette } from './paint';
 
 /**
  * Everything that makes a player: a portrait traced from a photo plus the data to animate it.
@@ -34,8 +34,11 @@ export interface FigureSpec {
   costume?: CostumeName;
   shorts?: ShortsStyle;
   face: FaceSpec;
-  /** 'traced' (default): soft-shaded body to match a traced portrait. 'toon': flat body with a thick outline. */
-  style?: 'traced' | 'toon';
+  /**
+   * 'traced' (default): soft-shaded body to match a traced portrait. 'toon': flat body with a thick outline.
+   * 'cel': flat fills with one hard shadow tone and a bold near-black outline, shirt folds drawn in.
+   */
+  style?: 'traced' | 'toon' | 'cel';
   /** Size of the 680 × 880 portrait on the body (default 0.2); bigger = a caricature's oversized head. */
   headScale?: number;
 }
@@ -141,8 +144,8 @@ export class PortraitFigure extends Actor {
     const b = (this.build = typeof build === 'string' ? FIGURE_BUILDS[build] : build);
     this.hipY = -(b.thigh + b.shin + 12);
     this.height = -this.hipY - WAIST - this.headY + 168 * ((spec.headScale ?? HEAD_SCALE) / HEAD_SCALE) + (this.costume?.hatHeight ?? 0);
-    this.flat = spec.style === 'toon';
-    this.softId = this.flat ? FLAT : uid('figure-soft');
+    this.flat = spec.style === 'toon' || spec.style === 'cel';
+    this.softId = spec.style === 'toon' ? FLAT : spec.style === 'cel' ? CEL : uid('figure-soft');
     if (!this.flat) {
       const filter = this.draw('filter', { id: this.softId, x: '-50%', y: '-50%', width: '200%', height: '200%' });
       filter.appendChild(svg('feGaussianBlur', { stdDeviation: 2.5 }));
@@ -231,7 +234,7 @@ export class PortraitFigure extends Actor {
       const actor = new Actor({ name: i ? 'rightLid' : 'leftLid', x, y, scaleY: 0, opacity: 0 });
       const g = actor.draw('g', { transform: `translate(${-x} ${-y})` });
       g.appendChild(svg('path', { d: cover, fill: skin.base }));
-      g.appendChild(svg('path', { d: lash, stroke: LINE, 'stroke-width': 8, fill: 'none', 'stroke-linecap': 'round' }));
+      g.appendChild(svg('path', { d: lash, stroke: this.spec.style === 'cel' ? CEL_LINE : LINE, 'stroke-width': 8, fill: 'none', 'stroke-linecap': 'round' }));
       return actor;
     });
 
@@ -361,6 +364,13 @@ export class PortraitFigure extends Actor {
       [24, -18], [49, -28], [48, -62], [53, -96], [57, -124], [46, -138], [17, -142], [0, -128],
     ]);
     new Shape(g, kit.shirt, shade(kit.shirt, 0.17), 12, this.softId).set(shirt);
+    if (this.spec.style === 'cel') {
+      // Drawn-in folds: a hard shadow under the chest and two creases down from the armpits.
+      g.appendChild(svg('path', { d: 'M 14 -96 Q 34 -84 44 -60 Q 30 -70 14 -96 Z', fill: shade(kit.shirt, 0.22) }));
+      for (const d of ['M -42 -114 Q -34 -96 -38 -78', 'M 40 -108 Q 32 -92 36 -74']) {
+        g.appendChild(svg('path', { d, stroke: CEL_LINE, 'stroke-width': 1.6, fill: 'none', 'stroke-linecap': 'round' }));
+      }
+    }
     for (const d of this.flat ? [] : ['M -36 -112 Q -30 -86 -36 -60', 'M 34 -104 Q 26 -80 30 -52', 'M -24 -30 Q -6 -38 12 -28']) {
       g.appendChild(svg('path', { d, stroke: shade(kit.shirt, 0.12), 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round' }));
     }
