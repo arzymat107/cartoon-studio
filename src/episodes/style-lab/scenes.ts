@@ -4,7 +4,7 @@
  *
  *   npm run frames -- --episode style-lab 0.5
  */
-import { SvgArt, TextLabel } from '@/components';
+import { createKanePortrait, createMbappePortrait, createYamalPortrait, SvgArt, TextLabel } from '@/components';
 import { Actor, Scene, type SceneClass, type Timeline } from '@/engine';
 import { HEADS } from './heads';
 import { STYLES } from './styles';
@@ -46,4 +46,21 @@ class GridScene extends Scene {
   }
 }
 
-export const STYLE_LAB_SCENES: SceneClass[] = [GridScene];
+/** For comparison: the detailed traced portraits (K1, M1, Y1) – the most detailed drawings we have. */
+class PortraitScene extends Scene {
+  readonly title = 'Style lab – traced portraits for comparison';
+
+  build(): void {
+    const { width, height } = this.stage;
+    const bg = new Actor({ name: 'bg' });
+    bg.draw('rect', { x: 0, y: 0, width, height, fill: '#f3ede2' });
+    this.add(bg, label('TRACED PORTRAITS (K1 · Y1 · M1)', width / 2, 200, 60));
+    this.add(createKanePortrait({ x: 330, y: 1100, scale: 0.75 }), createYamalPortrait({ x: 900, y: 1100, scale: 0.75 }), createMbappePortrait({ x: 1470, y: 1100, scale: 0.75 }));
+  }
+
+  animate(tl: Timeline): void {
+    tl.set({}, {}, 1);
+  }
+}
+
+export const STYLE_LAB_SCENES: SceneClass[] = [GridScene, PortraitScene];
