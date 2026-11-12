@@ -22,6 +22,11 @@ export function charactersDir() {
   return resolve(root, dir || '../data-for-cartoons/characters');
 }
 
+/** data-for-cartoons/bodies/ – cut-out body parts (PNG pieces + parts.json), `@bodies`. */
+export function bodiesDir() {
+  return resolve(charactersDir(), '../bodies');
+}
+
 /** data-for-cartoons/sounds/ – private sounds, loaded like src/assets/sounds/ (`@private-sounds`). */
 export function privateSoundsDir() {
   return resolve(charactersDir(), '../sounds');

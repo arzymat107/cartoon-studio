@@ -1,5 +1,5 @@
 /**
- * Walk cycle for the flat cartoon figures (KaneFigure).
+ * Walk cycle for the figures on the KaneFigure skeleton (KaneFigure, CutoutFigure).
  *
  *   tl.add(walk(kane, { to: 900 }))             // from where he stands to x = 900
  *   tl.add(walk(kane, { to: 200, cycle: 0.8 })) // back, faster
@@ -12,8 +12,19 @@
  * and seek. The figure moves at the speed of its planted foot, so the feet don't slide.
  */
 import { gsap } from 'gsap';
-import type { Timeline } from '@/engine';
-import { SHIN, THIGH, type KaneFigure } from './kane';
+import type { Actor, Timeline } from '@/engine';
+import { SHIN, THIGH } from './kane';
+
+/** Any figure on the KaneFigure skeleton (KaneFigure, CutoutFigure). */
+export interface Walker extends Actor {
+  body: Actor;
+  torso: Actor; head: Actor;
+  leftLeg: Actor; leftShin: Actor; rightLeg: Actor; rightShin: Actor;
+  leftArm: Actor; leftForearm: Actor; rightArm: Actor; rightForearm: Actor;
+  /** Hip → knee and knee → ground (figure units); default KaneFigure's. */
+  legs?: { thigh: number; shin: number };
+}
+type Legs = { thigh: number; shin: number };
 
 type Key = [thigh: number, shin: number];
 
@@ -63,33 +74,33 @@ function sample(keys: Key[], u: number, i: 0 | 1): number {
 
 const rad = (d: number) => (d * Math.PI) / 180;
 /** Foot position below the hip for a thigh and shin angle (forward is negative rotation). */
-const footX = ([a1, a2]: Key) => -(THIGH * Math.sin(rad(a1)) + SHIN * Math.sin(rad(a1 + a2)));
-const footY = ([a1, a2]: Key) => THIGH * Math.cos(rad(a1)) + SHIN * Math.cos(rad(a1 + a2));
+const footX = ([a1, a2]: Key, L: Legs) => -(L.thigh * Math.sin(rad(a1)) + L.shin * Math.sin(rad(a1 + a2)));
+const footY = ([a1, a2]: Key, L: Legs) => L.thigh * Math.cos(rad(a1)) + L.shin * Math.cos(rad(a1 + a2));
 const legAt = (g: Gait, u: number, w = 1): Key => [sample(g.leg, u, 0) * w, sample(g.leg, u, 1) * w];
 
 /** How far below the hip the ground is while the leg at phase `u` is planted. */
-const plantedDrop = (g: Gait, u: number, w: number) => THIGH + SHIN - footY(legAt(g, u, w));
+const plantedDrop = (g: Gait, u: number, w: number, L: Legs) => L.thigh + L.shin - footY(legAt(g, u, w), L);
 
 /**
  * Body drop (positive = down) at phase `u`: from the planted foot during stance; in flight, eased
  * from toe-off to the next contact with a hop on top.
  */
-function bodyY(g: Gait, u: number, w: number): number {
+function bodyY(g: Gait, u: number, w: number, L: Legs): number {
   // Every half cycle one leg goes through the same phases, so the planted leg is at phase `half`.
   const half = ((u % 0.5) + 0.5) % 0.5;
   if (half <= g.stance) {
     // Walk: both feet can be down (stance 0.5), so use whichever foot is lower.
-    const own = plantedDrop(g, half, w);
-    return g.stance >= 0.5 ? Math.min(own, plantedDrop(g, half + 0.5, w)) : own;
+    const own = plantedDrop(g, half, w, L);
+    return g.stance >= 0.5 ? Math.min(own, plantedDrop(g, half + 0.5, w, L)) : own;
   }
   const s = (half - g.stance) / (0.5 - g.stance);
-  const from = plantedDrop(g, g.stance, w);
-  const to = plantedDrop(g, 0, w);
+  const from = plantedDrop(g, g.stance, w, L);
+  const to = plantedDrop(g, 0, w, L);
   return from + (to - from) * s - g.hop * w * 4 * s * (1 - s);
 }
 
 /** Ground covered per cycle, in figure units: the planted foot's travel, scaled to the whole cycle. */
-const stride = (g: Gait) => ((footX(legAt(g, 0)) - footX(legAt(g, g.stance))) / g.stance);
+const stride = (g: Gait, L: Legs) => ((footX(legAt(g, 0), L) - footX(legAt(g, g.stance), L)) / g.stance);
 
 export interface GaitOptions {
   /** Where to stop (stage x). */
@@ -105,12 +116,42 @@ export interface GaitOptions {
 /** The gait with its leg swing scaled: thighs by `k`, knee bends a little less so the feet still clear the ground. */
 const scaled = (g: Gait, k: number): Gait => (k === 1 ? g : { ...g, leg: g.leg.map(([a1, a2]) => [a1 * k, a2 * k ** 0.6] as Key) });
 
-function move(fig: KaneFigure, gait: Gait, { to, from = fig.x, cycle = 1, step = 1 }: GaitOptions): Timeline {
+/** Pose the body (not its x) at phase `u` (cycles) with stride weight `w`. */
+function poseAt(fig: Walker, g: Gait, L: Legs, u: number, w: number): void {
+  const left = legAt(g, u, w);
+  const right = legAt(g, u + 0.5, w);
+  [fig.leftLeg.rotation, fig.leftShin.rotation] = left;
+  [fig.rightLeg.rotation, fig.rightShin.rotation] = right;
+  // Each arm swings with the opposite leg; the elbow bends more as the arm comes forward.
+  const arms: [number, Actor, Actor][] = [
+    [right[0], fig.leftArm, fig.leftForearm],
+    [left[0], fig.rightArm, fig.rightForearm],
+  ];
+  for (const [thigh, arm, forearm] of arms) {
+    arm.rotation = thigh * g.arm;
+    const forward = Math.max(0, -thigh) / 50;
+    forearm.rotation = w * (g.forearm[0] + g.forearm[1] * forward);
+  }
+  fig.torso.rotation = g.lean * w;
+  fig.head.rotation = -g.lean * 0.4 * w - 1.5 * w * Math.sin(u * 4 * Math.PI);
+  fig.body.y = bodyY(g, u, w, L);
+}
+
+/**
+ * Pose `fig` in place at phase `u` of a steady walk (u = 0: the far leg's heel strikes in front;
+ * 0.5: the near leg's). For pose sheets and stills; walk() is for moving.
+ */
+export function walkPose(fig: Walker, u: number, { step = 1 } = {}): void {
+  poseAt(fig, scaled(WALK, step), fig.legs ?? { thigh: THIGH, shin: SHIN }, u, 1);
+}
+
+function move(fig: Walker, gait: Gait, { to, from = fig.x, cycle = 1, step = 1 }: GaitOptions): Timeline {
   const g = scaled(gait, step);
+  const L = fig.legs ?? { thigh: THIGH, shin: SHIN };
   const scale = Math.abs(fig.scaleY);
   const dir = Math.sign(to - from) || 1;
   const distance = Math.abs(to - from);
-  const speed = (stride(g) * scale) / cycle;
+  const speed = (stride(g, L) * scale) / cycle;
   const ramp = cycle * g.rampCycles;
   const duration = distance / speed + ramp;
   const total = duration - ramp;
@@ -119,24 +160,7 @@ function move(fig: KaneFigure, gait: Gait, { to, from = fig.x, cycle = 1, step =
     // Stride weight: ramps 0 → 1 → 0, and the distance walked so far (its integral).
     const w = Math.max(0, Math.min(1, t / ramp, (duration - t) / ramp));
     const done = t < ramp ? (t * t) / (2 * ramp) : t < duration - ramp ? ramp / 2 + (t - ramp) : total - (duration - t) ** 2 / (2 * ramp);
-    const u = t / cycle;
-    const left = legAt(g, u, w);
-    const right = legAt(g, u + 0.5, w);
-    [fig.leftLeg.rotation, fig.leftShin.rotation] = left;
-    [fig.rightLeg.rotation, fig.rightShin.rotation] = right;
-    // Each arm swings with the opposite leg; the elbow bends more as the arm comes forward.
-    const arms: [number, typeof fig.leftArm, typeof fig.leftForearm][] = [
-      [right[0], fig.leftArm, fig.leftForearm],
-      [left[0], fig.rightArm, fig.rightForearm],
-    ];
-    for (const [thigh, arm, forearm] of arms) {
-      arm.rotation = thigh * g.arm;
-      const forward = Math.max(0, -thigh) / 50;
-      forearm.rotation = w * (g.forearm[0] + g.forearm[1] * forward);
-    }
-    fig.torso.rotation = g.lean * w;
-    fig.head.rotation = -g.lean * 0.4 * w - 1.5 * w * Math.sin(u * 4 * Math.PI);
-    fig.body.y = bodyY(g, u, w);
+    poseAt(fig, g, L, t / cycle, w);
     fig.x = from + dir * Math.min(distance, (done / total) * distance);
   };
 
@@ -151,7 +175,7 @@ function move(fig: KaneFigure, gait: Gait, { to, from = fig.x, cycle = 1, step =
     .fromTo(clock, { t: 0 }, { t: duration, duration, ease: 'none', immediateRender: false });
 }
 
-export function walk(fig: KaneFigure, options: GaitOptions): Timeline {
+export function walk(fig: Walker, options: GaitOptions): Timeline {
   return move(fig, WALK, { cycle: 1, ...options });
 }
 
